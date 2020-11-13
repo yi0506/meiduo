@@ -16,6 +16,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+# 根路径为：dev.py所在路径的上一层路径的上一层路径
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -55,9 +56,22 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'meiduo_mall.urls'
 
 TEMPLATES = [
+    # {
+    #     'BACKEND': 'django.template.backends.django.DjangoTemplates',
+    #     'DIRS': [],
+    #     'APP_DIRS': True,
+    #     'OPTIONS': {
+    #         'context_processors': [
+    #             'django.template.context_processors.debug',
+    #             'django.template.context_processors.request',
+    #             'django.contrib.auth.context_processors.auth',
+    #             'django.contrib.messages.context_processors.messages',
+    #         ],
+    #     },
+    # },
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'BACKEND': 'django.template.backends.jinja2.Jinja2',  # 配置jinja2模板引擎
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],  # 配置模板文件加载路径
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -66,6 +80,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            # 补充jinja2模板引擎的自定义环境
+            'environment': 'meiduo_mall.utils.jinja2_env.jinja2_environment',
         },
     },
 ]
@@ -124,4 +140,5 @@ STATIC_URL = '/static/'
 
 
 if __name__ == '__main__':
-    pass
+    print(BASE_DIR)
+    print(os.path.join(BASE_DIR, 'templates'))
