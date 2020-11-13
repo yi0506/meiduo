@@ -14,6 +14,11 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+from meiduo_mall.utils.db_ip import get_db_ip  # 服务器以manage.py启动，因此项目根目录路径为xxxx/meiduo/meiduo_mall
+
+# 获取数据库计算机的ip地址
+MEIDUO_DB_IP = get_db_ip()
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 # 根路径为：dev.py所在路径的上一层路径的上一层路径
@@ -92,11 +97,12 @@ WSGI_APPLICATION = 'meiduo_mall.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
+
 # 配置MySQL数据库
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',  # 数据库引擎
-        'HOST': '192.168.72.129',  # 数据库主机
+        'HOST': MEIDUO_DB_IP,  # 数据库主机
         'PORT': 3306,  # 数据库端口
         'USER': 'yi0506',  # 数据库用户名
         'PASSWORD': '211314',  # 数据库用户密码
@@ -110,7 +116,7 @@ CACHES = {
     # 默认存储数据库
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://192.168.72.129:6379/0",
+        "LOCATION": "redis://{}:6379/0".format(MEIDUO_DB_IP),
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -118,7 +124,7 @@ CACHES = {
     # session数据库
     "session": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://192.168.72.129:6379/1",
+        "LOCATION": "redis://{}:6379/1".format(MEIDUO_DB_IP),
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
