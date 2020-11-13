@@ -1,3 +1,6 @@
+# -*- coding: UTF-8 -*-
+# 开发环境配置文件
+
 """
 Django settings for meiduo_mall project.
 
@@ -118,3 +121,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+if __name__ == '__main__':
+    pass
