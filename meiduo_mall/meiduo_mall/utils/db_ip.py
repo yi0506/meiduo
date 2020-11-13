@@ -1,4 +1,5 @@
 # -*- coding: UTF-8 -*-
+"""设置动态获取数据库ip地址"""
 import socket
 
 
