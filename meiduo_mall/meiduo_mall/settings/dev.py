@@ -14,7 +14,18 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
-from meiduo_mall.utils.db_ip import get_db_ip  # 服务器以manage.py启动，因此项目根目录路径为xxxx/meiduo/meiduo_mall
+import sys
+import socket
+
+
+def get_db_ip():
+    """获取数据库ip"""
+    # 获取计算机名称
+    hostname = socket.gethostname()
+    # 获取本机IP
+    host_ip = socket.gethostbyname(hostname)
+    db_ip = "192.168.192.133" if host_ip == "172.24.178.15" else "192.168.72.129"
+    return db_ip
 
 
 # 获取数据库计算机的ip地址
@@ -23,7 +34,9 @@ MEIDUO_DB_IP = get_db_ip()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 # 根路径为：dev.py所在路径的上一层路径的上一层路径
+# BASE_DIR: xxxx/meiduo/meiduo_mall/meiduo_mall
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
 
 
 # Quick-start development settings - unsuitable for production
@@ -47,7 +60,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'meiduo_mall.apps.users'  # 用户模块
+    # 'meiduo_mall.apps.users',  # 用户模块
+    'users',  # 用户模块
 ]
 
 MIDDLEWARE = [
@@ -63,19 +77,6 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'meiduo_mall.urls'
 
 TEMPLATES = [
-    # {
-    #     'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    #     'DIRS': [],
-    #     'APP_DIRS': True,
-    #     'OPTIONS': {
-    #         'context_processors': [
-    #             'django.template.context_processors.debug',
-    #             'django.template.context_processors.request',
-    #             'django.contrib.auth.context_processors.auth',
-    #             'django.contrib.messages.context_processors.messages',
-    #         ],
-    #     },
-    # },
     {
         'BACKEND': 'django.template.backends.jinja2.Jinja2',  # 配置jinja2模板引擎
         'DIRS': [os.path.join(BASE_DIR, 'templates')],  # 配置模板文件加载路径
@@ -222,5 +223,4 @@ LOGGING = {
 
 
 if __name__ == '__main__':
-    print(BASE_DIR)
-    print(os.path.join(BASE_DIR, 'templates'))
+    pass
