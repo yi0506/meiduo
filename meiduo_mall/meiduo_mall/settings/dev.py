@@ -16,6 +16,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 import os
 from meiduo_mall.utils.db_ip import get_db_ip  # 服务器以manage.py启动，因此项目根目录路径为xxxx/meiduo/meiduo_mall
 
+
 # 获取数据库计算机的ip地址
 MEIDUO_DB_IP = get_db_ip()
 
@@ -46,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'meiduo_mall.apps.users'  # 用户模块
 ]
 
 MIDDLEWARE = [
