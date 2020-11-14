@@ -170,8 +170,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
+# 指定加载静态文件的路由前缀
 STATIC_URL = '/static/'
 
+# 指定静态文件的加载路径
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 # 配置工程日志
 LOGGING = {
