@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.contrib.staticfiles.storage import staticfiles_storage
 
 
-def jinja2_environments(**options):
+def jinja2_environment(**options):
     """自定义jinja2环境"""
     # 创建env对象
     env = Environment(**options)
