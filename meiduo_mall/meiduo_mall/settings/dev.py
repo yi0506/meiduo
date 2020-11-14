@@ -60,7 +60,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'meiduo_mall.apps.users',  # 用户模块
     'users',  # 用户模块
 ]
 
@@ -221,6 +220,8 @@ LOGGING = {
     }
 }
 
+# 指定自定义用户模型类： 值的语法 ----> '子应用.用户模型类'
+AUTH_USER_MODEL = 'users.User'
 
 if __name__ == '__main__':
     pass
