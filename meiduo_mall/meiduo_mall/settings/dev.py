@@ -33,7 +33,7 @@ MEIDUO_DB_IP = get_db_ip()
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-# 根路径为：dev.py所在路径的上一层路径的上一层路径
+# 根路径为：dev.py所在路径的上一层目录的上一层目录下
 # BASE_DIR: xxxx/meiduo/meiduo_mall/meiduo_mall
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
