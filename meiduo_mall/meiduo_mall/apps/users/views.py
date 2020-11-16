@@ -12,5 +12,5 @@ class RegisterView(View):
         return render(request, 'register.html')
 
     def post(self, requset):
-        """获取用户注册信息"""
+        """实现用户注册业务逻辑"""
         pass
