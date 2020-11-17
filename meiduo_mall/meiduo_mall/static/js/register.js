@@ -26,10 +26,14 @@ let vm = new Vue({
     methods: {
         // 校验用户名
         check_username(){
+            // 用户名5-20个字符
             let re = /^[a-zA-Z0-9_-]{5,20}$/;
+            // 使用正则进行匹配
             if (re.test(this.username)) {
+                // 匹配成功，不展示错误信息
                 this.error_name = false;
             } else {
+                // 匹配失败，展示错误信息
                 this.error_name_message = '请输入5-20个字符的用户名';
                 this.error_name = true;
             }
@@ -63,8 +67,10 @@ let vm = new Vue({
         },
         // 校验是否勾选协议
         check_allow(){
+            // 如果没有勾选，提示勾选信息
             if(!this.allow) {
                 this.error_allow = true;
+                // 如果勾选，不提示勾选信息
             } else {
                 this.error_allow = false;
             }
@@ -76,7 +82,7 @@ let vm = new Vue({
             this.check_password2();
             this.check_mobile();
             this.check_allow();
-
+            // 在校验之后，注册数据中，只要有错误，就禁用掉表单的提交事件
             if(this.error_name == true || this.error_password == true || this.error_password2 == true
                 || this.error_mobile == true || this.error_allow == true) {
                 // 禁用表单的提交
