@@ -15,17 +15,8 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 import sys
-import socket
 
-
-def get_db_ip():
-    """获取数据库ip"""
-    # 获取计算机名称
-    hostname = socket.gethostname()
-    # 获取本机IP
-    host_ip = socket.gethostbyname(hostname)
-    db_ip = "192.168.192.133" if host_ip == "172.24.178.15" else "192.168.72.129"
-    return db_ip
+from meiduo_mall.utils.db_ip import get_db_ip
 
 
 # 获取数据库计算机的ip地址
@@ -36,6 +27,8 @@ MEIDUO_DB_IP = get_db_ip()
 # 根路径为：dev.py所在路径的上一层目录的上一层目录下
 # BASE_DIR: xxxx/meiduo/meiduo_mall/meiduo_mall
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# 添加导包路径
 sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
 
 
