@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'users',  # 用户模块
+    'contents',  # 首页广告模块
 ]
 
 MIDDLEWARE = [

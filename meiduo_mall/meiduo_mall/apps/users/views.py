@@ -3,6 +3,7 @@ from django import http
 import re
 from django.views import View
 from users.models import User
+from django.db import DatabaseError
 
 
 class RegisterView(View):
@@ -20,19 +21,16 @@ class RegisterView(View):
         mobile = request.POST.get('mobile')
         password2 = request.POST.get('password2')
         allow = request.POST.get('allow')
-
         # 校验参数：前后端的校验需要分开，避免恶意用户越过前端逻辑发送请求，要保证后端的安全，前后端的校验逻辑相同
-        # 如果不满足条件，那么返回错误信息，403
         self.check_param(username=username, password=password, password2=password2, mobile=mobile, allow=allow)
-
         # 保存注册数据：注册业务的核心
-        # 返回响应结果
-
-        return http.HttpResponse('ha')
+        user = self.save_user_data(username=username, password=password, mobile=mobile, request=request)
+        # 返回响应结果，重定向的首页
+        return http.HttpResponse('注册成功，重定向到首页')
 
     @staticmethod
     def check_param(username, password, password2, mobile, allow):
-        """校验参数"""
+        """校验参数，如果不满足条件，那么返回错误信息，403"""
         # 判断参数是否齐全
         if not all([username, password, password2, mobile, allow]):
             return http.HttpResponseForbidden('缺少必要参数')
@@ -51,3 +49,12 @@ class RegisterView(View):
         # 判断是否勾选用户协议
         if allow != 'on':
             return http.HttpResponseForbidden('请勾选用户协议')
+
+    @staticmethod
+    def save_user_data(username, password, mobile, request):
+        try:
+            user = User.objects.create_user(username=username, password=password, mobile=mobile)
+        except DatabaseError:
+            return render(request, 'register.html', {'register_error_msg': '注册失败'})
+        else:
+            return user
