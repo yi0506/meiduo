@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.views import View
 from users.models import User
 from django.db import DatabaseError
+from django.contrib.auth import login
 
 
 class RegisterView(View):
@@ -25,7 +26,9 @@ class RegisterView(View):
         # 校验参数：前后端的校验需要分开，避免恶意用户越过前端逻辑发送请求，要保证后端的安全，前后端的校验逻辑相同
         self.check_param(username=username, password=password, password2=password2, mobile=mobile, allow=allow)
         # 保存注册数据：注册业务的核心
-        self.save_user_data(username=username, password=password, mobile=mobile, request=request)
+        user = self.save_user_data(username=username, password=password, mobile=mobile, request=request)
+        # 实现状态保持
+        login(request, user)
         # 返回响应结果，重定向的首页
         return redirect(reverse('contents:index'))
 

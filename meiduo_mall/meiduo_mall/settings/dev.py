@@ -115,6 +115,7 @@ CACHES = {
         "LOCATION": "redis://{}:6379/0".format(MEIDUO_DB_IP),
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "PASSWORD": "211314",
         }
     },
     # session数据库
@@ -123,6 +124,7 @@ CACHES = {
         "LOCATION": "redis://{}:6379/1".format(MEIDUO_DB_IP),
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "PASSWORD": "211314",
         }
     },
 }
