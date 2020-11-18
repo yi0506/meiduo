@@ -24,9 +24,10 @@ MEIDUO_DB_IP = get_db_ip()
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-# 根路径为：dev.py所在路径的上一层目录的上一层目录下
-# BASE_DIR: xxxx/meiduo/meiduo_mall/meiduo_mall
+# BASE_DIR：dev.py所在路径的上一层目录的上一层目录下  ---->   xxxx/meiduo/meiduo_mall/meiduo_mall
+# BASE_DIR与导包路径无关，导包路径需要参考manage.py的位置
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 
 # 添加导包路径
 sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
@@ -53,6 +54,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # 因为添加了导包路径，所有可以直接写子应用的模块名
     'users',  # 用户模块
     'contents',  # 首页广告模块
 ]

@@ -21,7 +21,7 @@ urlpatterns = [
 
     # users，总路由不校验，子路由校验
     url(r"^", include('users.urls', namespace='users')),
-    # contents,
+    # contents,总路由不校验，子路由校验
     url(r'^', include('contents.urls', namespace='contents')),
 
 ]

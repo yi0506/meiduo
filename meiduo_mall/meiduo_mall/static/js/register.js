@@ -37,6 +37,29 @@ let vm = new Vue({
                 this.error_name_message = '请输入5-20个字符的用户名';
                 this.error_name = true;
             }
+            // 校验用户名是否存在
+            // 只有匹配成功，输入的用户名符合条件才进行判断
+            if (this.error_name === false){
+                // url只写路径，从根路径开始写
+                let url = `/usernames/${this.username}/count/`;
+                axios.get(url, {
+                    responseType: 'json',
+                })
+                    .then((response)=>{
+                        if(response.data.count === 1){
+                            // 用户名已存在
+                            this.error_name_message = '用户名已存在';
+                            this.error_name = true;
+                        } else{
+                            // 用户名不存在
+                            this.error_name = false;
+                        }
+
+                    })
+                    .catch(error=>{
+                        console.log(error.response);
+                    })
+            }
         },
         // 校验密码
         check_password(){
@@ -49,7 +72,7 @@ let vm = new Vue({
         },
         // 校验确认密码
         check_password2(){
-            if(this.password != this.password2) {
+            if(this.password !== this.password2) {
                 this.error_password2 = true;
             } else {
                 this.error_password2 = false;
@@ -83,8 +106,8 @@ let vm = new Vue({
             this.check_mobile();
             this.check_allow();
             // 在校验之后，注册数据中，只要有错误，就禁用掉表单的提交事件
-            if(this.error_name == true || this.error_password == true || this.error_password2 == true
-                || this.error_mobile == true || this.error_allow == true) {
+            if(this.error_name === true || this.error_password === true || this.error_password2 === true
+                || this.error_mobile === true || this.error_allow === true) {
                 // 禁用表单的提交
                 window.event.returnValue = false;  // 阻止浏览器的默认行为（提交post请求），相当于return false;
             }

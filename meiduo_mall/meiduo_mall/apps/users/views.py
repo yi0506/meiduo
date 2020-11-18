@@ -3,9 +3,25 @@ from django import http
 import re
 from django.urls import reverse
 from django.views import View
-from users.models import User
+from users.models import User  # 这里可以直接从users开始导入，是由于添加了导包路径
 from django.db import DatabaseError
 from django.contrib.auth import login
+from meiduo_mall.utils.response_code import RETCODE, err_msg
+
+
+class UserNameCountView(View):
+    """判断用户名是否重复注册"""
+
+    def get(self, request, username):
+        """
+        :param request: 请求报文
+        :param username: 用户名
+        :return: json
+        """
+        # 实现主体业务逻辑：使用username查询对应的记录的条数(filter返回的是符合条件的查询集)
+        count = User.objects.filter(username=username).count()
+        # 返回响应结果
+        return http.JsonResponse({'code': RETCODE.OK, 'errmsg': err_msg[RETCODE.OK], 'count': count})
 
 
 class RegisterView(View):
@@ -26,11 +42,15 @@ class RegisterView(View):
         # 校验参数：前后端的校验需要分开，避免恶意用户越过前端逻辑发送请求，要保证后端的安全，前后端的校验逻辑相同
         self.check_param(username=username, password=password, password2=password2, mobile=mobile, allow=allow)
         # 保存注册数据：注册业务的核心
-        user = self.save_user_data(username=username, password=password, mobile=mobile, request=request)
-        # 实现状态保持
-        login(request, user)
-        # 返回响应结果，重定向的首页
-        return redirect(reverse('contents:index'))
+        try:
+            user = User.objects.create_user(username=username, password=password, mobile=mobile)
+        except DatabaseError:
+            return render(request, 'register.html', {'register_error_msg': '注册失败'})
+        else:
+            # 实现状态保持，如果注册数据与数据库中数据冲突会报错
+            login(request, user)
+            # 返回响应结果，重定向的首页
+            return redirect(reverse('contents:index'))
 
     @staticmethod
     def check_param(username, password, password2, mobile, allow):
@@ -53,12 +73,3 @@ class RegisterView(View):
         # 判断是否勾选用户协议
         if allow != 'on':
             return http.HttpResponseForbidden('请勾选用户协议')
-
-    @staticmethod
-    def save_user_data(username, password, mobile, request):
-        try:
-            user = User.objects.create_user(username=username, password=password, mobile=mobile)
-        except DatabaseError:
-            return render(request, 'register.html', {'register_error_msg': '注册失败'})
-        else:
-            return user
