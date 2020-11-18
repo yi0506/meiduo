@@ -87,6 +87,29 @@ let vm = new Vue({
                 this.error_mobile_message = '您输入的手机号格式不正确';
                 this.error_mobile = true;
             }
+            // 校验手机号是否存在
+            // 只有匹配成功，输入的手机号符合条件才进行判断
+            if (this.error_mobile === false){
+                // url只写路径，从根路径开始写
+                let url = `/mobiles/${this.mobile}/count/`;
+                axios.get(url, {
+                    responseType: 'json',
+                })
+                    .then((response)=>{
+                        if(response.data.count === 1){
+                            // 手机号已存在
+                            this.error_mobile_message = '手机号已存在';
+                            this.error_mobile = true;
+                        } else{
+                            // 手机号不存在
+                            this.error_mobile = false;
+                        }
+
+                    })
+                    .catch(error=>{
+                        console.log(error.response);
+                    })
+            }
         },
         // 校验是否勾选协议
         check_allow(){

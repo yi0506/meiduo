@@ -9,6 +9,14 @@ from django.contrib.auth import login
 from meiduo_mall.utils.response_code import RETCODE, err_msg
 
 
+class MobileCountView(View):
+    """判断手机号是否重复注册"""
+
+    def get(self, request, mobile):
+        count = User.objects.filter(mobile=mobile).count()
+        return http.JsonResponse({'code': RETCODE.OK, 'errmsg': err_msg[RETCODE.OK], 'count': count})
+
+
 class UserNameCountView(View):
     """判断用户名是否重复注册"""
 
