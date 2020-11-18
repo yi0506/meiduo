@@ -25,9 +25,8 @@ class RegisterView(View):
         # 校验参数：前后端的校验需要分开，避免恶意用户越过前端逻辑发送请求，要保证后端的安全，前后端的校验逻辑相同
         self.check_param(username=username, password=password, password2=password2, mobile=mobile, allow=allow)
         # 保存注册数据：注册业务的核心
-        user = self.save_user_data(username=username, password=password, mobile=mobile, request=request)
+        self.save_user_data(username=username, password=password, mobile=mobile, request=request)
         # 返回响应结果，重定向的首页
-        print(reverse('contents:index'), '首页路由')
         return redirect(reverse('contents:index'))
 
     @staticmethod
