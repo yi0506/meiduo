@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django import http
 import re
+from django.urls import reverse
 from django.views import View
 from users.models import User
 from django.db import DatabaseError
@@ -26,7 +27,8 @@ class RegisterView(View):
         # 保存注册数据：注册业务的核心
         user = self.save_user_data(username=username, password=password, mobile=mobile, request=request)
         # 返回响应结果，重定向的首页
-        return http.HttpResponse('注册成功，重定向到首页')
+        print(reverse('contents:index'), '首页路由')
+        return redirect(reverse('contents:index'))
 
     @staticmethod
     def check_param(username, password, password2, mobile, allow):
