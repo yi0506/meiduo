@@ -22,8 +22,23 @@ let vm = new Vue({
         // error_message
         error_name_message: "",
         error_mobile_message: '',
+
+        // v-bind
+        image_code_url: "",  // 图片验证码url
+        uuid : '',  // uuid
+    },
+
+    // 页面加载完成时，该方法会被调用，即模板第一次渲染完成后，vue会先对data中的模板变量进行渲染
+    mounted(){
+        // 页面加载完成后，生成图片验证码
+        this.generate_image_code_url();
     },
     methods: {
+        // 生成图片验证码url
+        generate_image_code_url(){
+            this.uuid = generateUUID();
+            this.image_code_url = '/image_codes/' + this.uuid + '/';
+        },
         // 校验用户名
         check_username(){
             // 用户名5-20个字符
