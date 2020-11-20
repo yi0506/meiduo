@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     # 因为添加了导包路径，所有可以直接写子应用的模块名
     'users',  # 用户模块
     'contents',  # 首页广告模块
+    'verifications',  # 验证码模块，该模块可不用注册，因为即不需要渲染模板，也不需要做模型的迁移
 ]
 
 MIDDLEWARE = [
