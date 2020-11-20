@@ -22,6 +22,8 @@ class UserNameCountView(View):
 
     def get(self, request, username):
         """
+        使用查询字符串的方式，会自动通过url的正则匹配去校验参数，因此不需要校验参数，直接实现主体业务逻辑
+
         :param request: 请求报文
         :param username: 用户名
         :return: json

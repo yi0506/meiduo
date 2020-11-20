@@ -130,6 +130,15 @@ CACHES = {
             "PASSWORD": "211314",
         }
     },
+    # 验证码
+    "verify_code": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://{}:6379/2".format(MEIDUO_DB_IP),
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "PASSWORD": "211314",
+        }
+    },
 }
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "session"
