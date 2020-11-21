@@ -11,6 +11,7 @@ let vm = new Vue({
         password2: '',
         mobile: '',
         allow: null,
+        image_code: '',
 
         // v-show
         error_name: false,
@@ -18,10 +19,12 @@ let vm = new Vue({
         error_password2: false,
         error_mobile: false,
         error_allow: false,
+        error_image_code: false,
 
         // error_message
         error_name_message: "",
         error_mobile_message: '',
+        error_image_code_message: '',
 
         // v-bind
         image_code_url: "",  // 图片验证码url
@@ -126,6 +129,19 @@ let vm = new Vue({
                     })
             }
         },
+        // 校验图形验证码
+        check_image_code(){
+            if(this.image_code.length !== 4){
+                this.error_image_code_message = '请输入4位图形验证码';
+                this.error_image_code = true;
+            } else{
+                this.error_image_code = false;
+            }
+
+        },
+        check_sms(){
+
+        },
         // 校验是否勾选协议
         check_allow(){
             // 如果没有勾选，提示勾选信息
@@ -142,10 +158,12 @@ let vm = new Vue({
             this.check_password();
             this.check_password2();
             this.check_mobile();
+            this.check_image_code();
+            this.check_sms();
             this.check_allow();
             // 在校验之后，注册数据中，只要有错误，就禁用掉表单的提交事件
             if(this.error_name === true || this.error_password === true || this.error_password2 === true
-                || this.error_mobile === true || this.error_allow === true) {
+                || this.error_mobile === true || this.error_allow === true || this.error_image_code === true) {
                 // 禁用表单的提交
                 window.event.returnValue = false;  // 阻止浏览器的默认行为（提交post请求），相当于return false;
             }
