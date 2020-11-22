@@ -139,6 +139,7 @@ let vm = new Vue({
             }
 
         },
+        // 校验短信验证码
         check_sms(){
 
         },
