@@ -30,16 +30,66 @@ _softVersion = '2013-12-26'
 # @param $tempId 模板Id
 
 
-def sendTemplateSMS(to, datas, tempId):
-    # 初始化REST SDK
-    rest = REST(_serverIP, _serverPort, _softVersion)
-    rest.setAccount(_accountSid, _accountToken)
-    rest.setAppId(_appId)
+class CCP(object):
+    """发送短信验证码的单例类"""
+    def __new__(cls, *args, **kwargs):
+        """创建单例模式"""
+        if not hasattr(cls, '__instance'):
+            # 创建单例
+            cls.__instance = super(CCP, cls).__new__(cls)
+            # 初始化REST SDK
+            cls.__instance.rest = REST(_serverIP, _serverPort, _softVersion)
+            cls.__instance.rest.setAccount(_accountSid, _accountToken)
+            cls.__instance.rest.setAppId(_appId)
+        # 返回单例
+        return cls.__instance
 
-    result = rest.sendTemplateSMS(to, datas, tempId)
-    print(result)
+    def send_template_sms(self, data, to='13793331139', tempId=1):
+        """
+        发送短信验证码
+        注意： 测试的短信模板编号为1
+        :param to:手机号码
+        :param data:内容数据，[str:'验证码', int:过期时间]
+        :param tempId:模板ID
+        :return 成功：0, 失败：-1
+        """
+        result = self.rest.sendTemplateSMS(to, data, tempId)
+        if result.get('statusCode') == '000000':
+            return 0
+        else:
+            return 1
 
 
 if __name__ == '__main__':
-    # 注意： 测试的短信模板编号为1
-    sendTemplateSMS('13793331139', ['123456', 5], 1)
+    # def sendTemplateSMS(to, datas, tempId):
+    #     # 初始化REST SDK
+    #     rest = REST(_serverIP, _serverPort, _softVersion)
+    #     rest.setAccount(_accountSid, _accountToken)
+    #     rest.setAppId(_appId)
+    #
+    #     result = rest.sendTemplateSMS(to, datas, tempId)
+    #     print(result)
+    #
+    # sendTemplateSMS('13793331139', ['123456', 5], 1)
+
+    result = CCP().send_template_sms(data=['12345', 5])
+    print(result)
+
+    # class MusicPlayer(object):
+    #
+    #     def __new__(cls, *args, **kwargs):
+    #         # 1. 判断是否存在instance这个类属性
+    #         if not hasattr(cls, 'instance'):
+    #             # 2. 如果不存在，则创建一个实例对象
+    #             cls.instance = super().__new__(cls)
+    #
+    #             # 初始化实例属性（动态分配实例属性）
+    #             for param in args:
+    #                 setattr(cls.instance, ,param)
+    #             for key, value in kwargs.items():
+    #                 setattr(cls.instance, key, param)
+    #             cls.instance.param1 = 'param1'
+    #             cls.instance.param2 = 'param2'
+    #
+    #         # 3. 返回cls.instance保存的对象引用
+    #         return cls.instance
