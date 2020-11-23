@@ -74,22 +74,3 @@ if __name__ == '__main__':
 
     result = CCP().send_template_sms(data=['12345', 5])
     print(result)
-
-    # class MusicPlayer(object):
-    #
-    #     def __new__(cls, *args, **kwargs):
-    #         # 1. 判断是否存在instance这个类属性
-    #         if not hasattr(cls, 'instance'):
-    #             # 2. 如果不存在，则创建一个实例对象
-    #             cls.instance = super().__new__(cls)
-    #
-    #             # 初始化实例属性（动态分配实例属性）
-    #             for param in args:
-    #                 setattr(cls.instance, ,param)
-    #             for key, value in kwargs.items():
-    #                 setattr(cls.instance, key, param)
-    #             cls.instance.param1 = 'param1'
-    #             cls.instance.param2 = 'param2'
-    #
-    #         # 3. 返回cls.instance保存的对象引用
-    #         return cls.instance

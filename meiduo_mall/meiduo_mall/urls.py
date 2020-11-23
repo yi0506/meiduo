@@ -23,7 +23,7 @@ urlpatterns = [
     url(r"^", include('users.urls', namespace='users')),
     # contents,总路由不校验，子路由校验
     url(r'^', include('contents.urls', namespace='contents')),
-    # verifications
+    # verifications,总路由不校验，子路由校验
     url(r'^', include('verifications.urls')),
 
 ]

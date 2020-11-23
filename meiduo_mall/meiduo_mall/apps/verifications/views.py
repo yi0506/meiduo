@@ -6,6 +6,18 @@ from django import http
 from meiduo_mall.utils import constants
 
 
+class SMSCodeView(View):
+    """短信验证码"""
+
+    def get(self, request, mobile):
+        """
+        :param request: 请求对象
+        :param mobile: 手机号码
+        :return: JSON --> {code：errmsg}
+        """
+        pass
+
+
 class ImageCodeView(View):
     """图形验证码"""
     def get(self, request, uuid):
