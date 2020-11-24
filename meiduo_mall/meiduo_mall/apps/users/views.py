@@ -7,6 +7,7 @@ from users.models import User  # 这里可以直接从users开始导入，是由
 from django.db import DatabaseError
 from django.contrib.auth import login
 from meiduo_mall.utils.response_code import RETCODE, err_msg
+from django_redis import get_redis_connection
 
 
 class MobileCountView(View):
@@ -43,28 +44,17 @@ class RegisterView(View):
 
     def post(self, request):
         """实现用户注册业务逻辑"""
+
         # 接收参数：表单参数
         username = request.POST.get('username')
         password = request.POST.get('password')
         mobile = request.POST.get('mobile')
         password2 = request.POST.get('password2')
+        sms_code_user = request.POST.get('sms_code')
         allow = request.POST.get('allow')
-        # 校验参数：前后端的校验需要分开，避免恶意用户越过前端逻辑发送请求，要保证后端的安全，前后端的校验逻辑相同
-        self.check_param(username=username, password=password, password2=password2, mobile=mobile, allow=allow)
-        # 保存注册数据：注册业务的核心
-        try:
-            user = User.objects.create_user(username=username, password=password, mobile=mobile)
-        except DatabaseError:
-            return render(request, 'register.html', {'register_error_msg': '注册失败'})
-        else:
-            # 实现状态保持，如果注册数据与数据库中数据冲突会报错
-            login(request, user)
-            # 返回响应结果，重定向的首页
-            return redirect(reverse('contents:index'))
 
-    @staticmethod
-    def check_param(username, password, password2, mobile, allow):
-        """校验参数，如果不满足条件，那么返回错误信息，403"""
+        # 校验参数：前后端的校验需要分开，避免恶意用户越过前端逻辑发送请求，要保证后端的安全，前后端的校验逻辑相同
+        # 如果不满足条件，那么返回错误信息
         # 判断参数是否齐全
         if not all([username, password, password2, mobile, allow]):
             return http.HttpResponseForbidden('缺少必要参数')
@@ -83,3 +73,22 @@ class RegisterView(View):
         # 判断是否勾选用户协议
         if allow != 'on':
             return http.HttpResponseForbidden('请勾选用户协议')
+        # 校验短信验证码
+        redis_conn = get_redis_connection('verify_code')
+        sms_code_redis = redis_conn.get('sms_{}'.format(mobile))
+        if sms_code_redis is None:
+            return render(request, 'register.html', {'sms_code_errmsg': '无效的短信验证码'})
+        if sms_code_redis.decode('utf-8') != sms_code_user:
+            return render(request, 'register.html', {'sms_code_errmsg': '输入短信验证码有误'})
+
+        # 保存注册数据：注册业务的核心
+        try:
+            user = User.objects.create_user(username=username, password=password, mobile=mobile)
+        except DatabaseError:
+            return render(request, 'register.html', {'register_error_msg': '注册失败'})
+        else:
+            # 实现状态保持，如果注册数据与数据库中数据冲突会报错
+            # 登录的本质就是状态保持
+            login(request, user)
+            # 返回响应结果，重定向的首页
+            return redirect(reverse('contents:index'))

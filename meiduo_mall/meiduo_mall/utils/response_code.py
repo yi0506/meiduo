@@ -27,7 +27,7 @@ class RETCODE:
 err_msg = {
     RETCODE.OK                 : u"成功",
     RETCODE.IMAGECODEERR       : u"图形验证码错误",
-    RETCODE.IMAGECODEXPIRED    : u"图形验证码以过期",
+    RETCODE.IMAGECODEXPIRED    : u"图形验证码已过期",
     RETCODE.THROTTLINGERR      : u"访问过于频繁",
     RETCODE.NECESSARYPARAMERR  : u"缺少必传参数",
     RETCODE.USERERR            : u"用户名错误",
