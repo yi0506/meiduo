@@ -44,7 +44,7 @@ class CCP(object):
         # 返回单例
         return cls.__instance
 
-    def send_template_sms(self, data, to='13793331139', tempId=1):
+    def send_template_sms(self, to, data, tempId):
         """
         发送短信验证码
         注意： 测试的短信模板编号为1
@@ -70,7 +70,7 @@ if __name__ == '__main__':
     #     result = rest.sendTemplateSMS(to, datas, tempId)
     #     print(result)
     #
-    # sendTemplateSMS('13793331139', ['123456', 5], 1)
+    # sendTemplateSMS()
 
-    result = CCP().send_template_sms(data=['12345', 5])
+    result = CCP().send_template_sms('13793331139', ['123456', 5], 1)
     print(result)
