@@ -38,7 +38,7 @@ class SMSCodeView(View):
         redis_conn.delete('img_{}'.format(uuid))
         image_code_redis = image_code_redis.decode('utf-8')  # redis接收类型为bytes类型，将bytes类型转为字符串
         # 对比图形验证码
-        if image_code_redis.decode('utf-8').lower() != image_code_user.lower():  # 转换为小写，再比较
+        if image_code_redis.lower() != image_code_user.lower():  # 转换为小写，再比较
             return http.JsonResponse({'code': RETCODE.IMAGECODEXPIRED, 'errmsg': err_msg[RETCODE.IMAGECODEXPIRED]})
         # 生成短信验证码，随机6位数字
         sms_code = ''.join(random.choices(string.digits, k=6))

@@ -34,7 +34,7 @@ let vm = new Vue({
         image_code_url: "",  // 图片验证码url
         uuid : '',  // uuid
 
-        send_sms_flag: false,
+        send_sms_flag: false,  // 是否可以发送短信验证码
     },
 
     // 页面加载完成时，该方法会被调用，即模板第一次渲染完成后，vue会先对data中的模板变量进行渲染
@@ -54,6 +54,7 @@ let vm = new Vue({
             this.check_mobile();
             this.check_image_code();
             if(this.error_mobile === true || this.error_image_code === true){
+                this.send_sms_flag = false;  // 数据有问题，可以重新发送短信验证码
                 return;
             }
             let url = '/sms_codes/' + this.mobile + '/?image_code=' + this.image_code + '&uuid=' + this.uuid;
@@ -71,6 +72,7 @@ let vm = new Vue({
                                 clearInterval(time);
                                 this.sms_code_tip = '获取短信验证码'; // 还原提示信息
                                 this.generate_image_code_url();  // 重新生成图形验证码
+                                this.send_sms_flag = false;  // 发送成功后，可重新发送短信验证码
                             } else{  // 显示倒计时
                                 num -= 1;
                                 this.sms_code_tip = num + '秒后重新发送';
@@ -81,14 +83,15 @@ let vm = new Vue({
                         if(response.data.code === '4001' || response.data.code === '4010') {
                             this.error_sms_code_message = response.data.errmsg;
                             this.error_sms_code = true;
+                            this.send_sms_flag = false;  // 图形验证码出现错误，可重新发送短信
                         }
                     }
                 })
                 .catch(error => {
                     console.log(error.response)
+                    this.send_sms_flag = false  // 出现错误，可重新发送短信
             })
         },
-
         // 生成图片验证码与url
         generate_image_code_url(){
             this.uuid = generateUUID();
