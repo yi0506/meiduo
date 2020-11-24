@@ -205,11 +205,10 @@ let vm = new Vue({
                 let re = /^\d{6}$/;
                 // 是否是6位数字的短信验证码
                 if(re.test(this.sms_code)){
+                    this.error_sms_code = false;
+                } else{
                     this.error_sms_code_message = '请填写有效的6位短信验证码';
                     this.error_sms_code = true;
-
-                } else{
-                    this.error_sms_code = false;
                 }
             }
 
