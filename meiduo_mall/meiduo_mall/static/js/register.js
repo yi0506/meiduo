@@ -1,6 +1,6 @@
 // 采用ES6语法
 // 创建Vue对象 vm
-
+// 短信验证码前端不校验对错，只校验是否是6位数字，提交表单后，由后端校验并返回结果
 let vm = new Vue({
     el: '#app',
     delimiters: ['[[', ']]'],
@@ -12,6 +12,7 @@ let vm = new Vue({
         mobile: '',
         allow: null,
         image_code: '',
+        sms_code: '',
 
         // v-show
         error_name: false,
@@ -20,15 +21,20 @@ let vm = new Vue({
         error_mobile: false,
         error_allow: false,
         error_image_code: false,
+        error_sms_code: false,
 
-        // error_message
+        // 模板变量
         error_name_message: "",
         error_mobile_message: '',
         error_image_code_message: '',
+        sms_code_tip: '获取短信验证码',  // 短息验证码提示信息
+        error_sms_code_message: '',
 
         // v-bind
         image_code_url: "",  // 图片验证码url
         uuid : '',  // uuid
+
+
     },
 
     // 页面加载完成时，该方法会被调用，即模板第一次渲染完成后，vue会先对data中的模板变量进行渲染
@@ -37,7 +43,42 @@ let vm = new Vue({
         this.generate_image_code_url();
     },
     methods: {
-        // 生成图片验证码url
+        send_sms_code(){
+
+            let url = '/sms_codes/' + this.mobile + '/?image_code=' + this.image_code + '&uuid=' + this.uuid;
+            axios.get(url,{
+                responseType: 'json',
+            })
+                .then(response =>{
+                    // 发送短信验证码成功
+                    if(response.data.code === '0'){
+                        // 展示60秒倒计时
+                        let num = 60;
+                        let time = setInterval(()=>{
+                            // 倒数计时结束，可重新发送验证码
+                            if(num === 0){
+                                clearInterval(time);
+                                this.sms_code_tip = '获取短信验证码'; // 还原提示信息
+                                this.generate_image_code_url();  // 重新生成图形验证码
+                            } else{  // 显示倒计时
+                                num -= 1;
+                                this.sms_code_tip = num + '秒后重新发送';
+                            }
+                        }, 1000)
+                    } else{
+                        // '4010'  图形验证码过期      '4001'  图形验证码错误
+                        if(response.data.code === '4001' || response.data.code === '4010') {
+                            this.error_sms_code_message = response.data.errmsg;
+                            this.error_sms_code = true;
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.log(error.response)
+            })
+        },
+
+        // 生成图片验证码与url
         generate_image_code_url(){
             this.uuid = generateUUID();
             this.image_code_url = '/image_codes/' + this.uuid + '/';
@@ -139,10 +180,7 @@ let vm = new Vue({
             }
 
         },
-        // 校验短信验证码
-        check_sms(){
 
-        },
         // 校验是否勾选协议
         check_allow(){
             // 如果没有勾选，提示勾选信息
@@ -160,7 +198,7 @@ let vm = new Vue({
             this.check_password2();
             this.check_mobile();
             this.check_image_code();
-            this.check_sms();
+
             this.check_allow();
             // 在校验之后，注册数据中，只要有错误，就禁用掉表单的提交事件
             if(this.error_name === true || this.error_password === true || this.error_password2 === true

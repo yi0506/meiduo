@@ -11,7 +11,7 @@ from verifications.libs.yuntongxun.ccp_sms import CCP
 
 
 class SMSCodeView(View):
-    """发送短信验证码"""
+    """接收图形验证码并验证，验证通过后发送短信验证码"""
 
     def get(self, request, mobile):
         """
