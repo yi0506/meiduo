@@ -50,7 +50,7 @@ class SMSCodeView(View):
         # 保存图形验证码
         redis_conn.setex('sms_{}'.format(mobile), constants.SMS_CODE_REDIS_EXPIRES, sms_code)
         # 手动输出日志，记录短信验证码
-        logger.info('短信验证码: '.format(sms_code))
+        logger.info('短信验证码:{}'.format(sms_code))
         # 发送短信验证码
         CCP().send_template_sms(to='13793331139',
                                 data=[sms_code, constants.SMS_CODE_REDIS_EXPIRES // 60],

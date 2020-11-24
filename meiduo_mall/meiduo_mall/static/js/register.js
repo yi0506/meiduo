@@ -190,7 +190,14 @@ let vm = new Vue({
                 this.error_image_code_message = '请输入4位图形验证码';
                 this.error_image_code = true;
             } else{
-                this.error_image_code = false;
+                let re = /^[0-9a-zA-Z]{4}/;
+                if(re.test(this.image_code)){
+                    this.error_image_code = false;
+                } else{
+                    this.error_image_code_message = '请输入4为有效图形验证码';
+                    this.error_image_code = true;
+                }
+
             }
 
         },
