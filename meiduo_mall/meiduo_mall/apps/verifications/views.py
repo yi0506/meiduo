@@ -4,6 +4,7 @@ from verifications.libs.captcha.captcha import captcha
 from django_redis import get_redis_connection
 from django import http
 from meiduo_mall.utils import constants
+from meiduo_mall.utils.response_code import RETCODE, err_msg
 
 
 class SMSCodeView(View):
@@ -25,11 +26,16 @@ class SMSCodeView(View):
         if not all([image_code_client, uuid]):
             return http.HttpResponseForbidden('缺少必要参数')
         # 接收图形验证码
-
+        redis_conn = get_redis_connection('verify_code')
+        image_code_redis = redis_conn.get('img_{}'.format(uuid)).decode('utf-8')  # redis接收类型为bytes类型，将bytes类型转为字符串
+        # 判断图形验证码是否过期，如果过期，返回值为None
+        if image_code_redis is None:
+            return http.JsonResponse({'code': RETCODE.IMAGECODEERR, 'errmsg': err_msg[RETCODE.IMAGECODEERR]})
         # 删除图形验证码
-
+        redis_conn.delete('img_{}'.format(uuid))
         # 对比图形验证码
-
+        if image_code_redis.lower() != image_code_client.lower():  # 转换为小写，再比较
+            return http.JsonResponse({'code': RETCODE.IMAGECODEXPIRED, 'errmsg': err_msg[RETCODE.IMAGECODEXPIRED]})
         # 生成短信验证码
 
         # 保存图形验证码
