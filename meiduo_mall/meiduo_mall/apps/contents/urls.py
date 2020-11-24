@@ -1,6 +1,8 @@
 # -*- coding: UTF-8 -*-
 from django.conf.urls import url
+
 from . import views
+
 
 urlpatterns = [
     # Django的路由是 头不写尾写

@@ -3,11 +3,12 @@ from django import http
 import re
 from django.urls import reverse
 from django.views import View
-from users.models import User  # 这里可以直接从users开始导入，是由于添加了导包路径
 from django.db import DatabaseError
 from django.contrib.auth import login
-from meiduo_mall.utils.response_code import RETCODE, err_msg
 from django_redis import get_redis_connection
+
+from meiduo_mall.utils.response_code import RETCODE, err_msg
+from users.models import User  # 这里可以直接从users开始导入，是由于添加了导包路径
 
 
 class MobileCountView(View):
