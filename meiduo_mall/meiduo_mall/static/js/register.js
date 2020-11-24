@@ -34,7 +34,7 @@ let vm = new Vue({
         image_code_url: "",  // 图片验证码url
         uuid : '',  // uuid
 
-
+        send_sms_flag: false,
     },
 
     // 页面加载完成时，该方法会被调用，即模板第一次渲染完成后，vue会先对data中的模板变量进行渲染
@@ -180,7 +180,26 @@ let vm = new Vue({
             }
 
         },
+        // 校验短信验证码
+        check_sms_code(){
+            // 如果未填写短信验证码
+            if(this.sms_code.length === 0){
+                this.error_sms_code_message = '请填写短信验证码';
+                this.error_sms_code = true;
+                // 填写了短信验证码
+            } else{
+                let re = /^\d{6}$/;
+                // 是否是6位数字的短信验证码
+                if(re.test(this.sms_code)){
+                    this.error_sms_code_message = '请填写有效的6位短信验证码';
+                    this.error_sms_code = true;
 
+                } else{
+                    this.error_sms_code = false;
+                }
+            }
+
+        },
         // 校验是否勾选协议
         check_allow(){
             // 如果没有勾选，提示勾选信息
@@ -198,7 +217,7 @@ let vm = new Vue({
             this.check_password2();
             this.check_mobile();
             this.check_image_code();
-
+            this.check_sms_code();
             this.check_allow();
             // 在校验之后，注册数据中，只要有错误，就禁用掉表单的提交事件
             if(this.error_name === true || this.error_password === true || this.error_password2 === true
