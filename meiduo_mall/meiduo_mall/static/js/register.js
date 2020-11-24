@@ -44,7 +44,18 @@ let vm = new Vue({
     },
     methods: {
         send_sms_code(){
-
+            // 发送短信验证码
+            // 避免恶意用户频繁的点击获取短信验证码
+            if(this.send_sms_flag === true){
+                return;
+            }
+            this.send_sms_flag = true;
+            // 校验数据：mobile，image_code，避免用户没有输入手机号与短信验证码，就可以发送ajax请求
+            this.check_mobile();
+            this.check_image_code();
+            if(this.error_mobile === true || this.error_image_code === true){
+                return;
+            }
             let url = '/sms_codes/' + this.mobile + '/?image_code=' + this.image_code + '&uuid=' + this.uuid;
             axios.get(url,{
                 responseType: 'json',
