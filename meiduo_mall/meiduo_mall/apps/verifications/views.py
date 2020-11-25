@@ -52,10 +52,22 @@ class SMSCodeView(View):
             return http.JsonResponse({'code': RETCODE.IMAGECODEXPIRED, 'errmsg': err_msg[RETCODE.IMAGECODEXPIRED]})
         # 生成短信验证码，随机6位数字
         sms_code = ''.join(random.choices(string.digits, k=6))
+
+        # # 保存短信验证码，过期时间5分钟
+        # redis_conn.setex('sms_{}'.format(mobile), constants.SMS_CODE_REDIS_EXPIRES, sms_code)
+        # # 保存60s内是否重复发送短信验证码的标识
+        # redis_conn.setex('send_sms_flag_{}'.format(mobile), constants.SEND_SMS_CODE_INTERVAL, 'No')
+
+        # 创建redis管道
+        pl = redis_conn.pipeline()
+        # 将命令添加进队列中
         # 保存短信验证码，过期时间5分钟
-        redis_conn.setex('sms_{}'.format(mobile), constants.SMS_CODE_REDIS_EXPIRES, sms_code)
+        pl.setex('sms_{}'.format(mobile), constants.SMS_CODE_REDIS_EXPIRES, sms_code)
         # 保存60s内是否重复发送短信验证码的标识
-        redis_conn.setex('send_sms_flag_{}'.format(mobile), constants.SEND_SMS_CODE_INTERVAL, 'No')
+        pl.setex('send_sms_flag_{}'.format(mobile), constants.SEND_SMS_CODE_INTERVAL, 'No')
+        # 执行所有命令
+        pl.execute()
+
         # 手动输出日志，记录短信验证码
         logger.info('短信验证码:{}'.format(sms_code))
         # 发送短信验证码
