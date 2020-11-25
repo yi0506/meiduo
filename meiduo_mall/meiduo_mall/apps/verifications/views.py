@@ -33,8 +33,13 @@ class SMSCodeView(View):
         # uuid也不需要二次校验，因此后面会通过uuid提取redis中的图形验证码
         if not all([image_code_user, uuid]):
             return http.HttpResponseForbidden('缺少必要参数')
-        # 接收图形验证码
+
+        # 连接Redis数据库
         redis_conn = get_redis_connection('verify_code')
+        # 判断60秒内是否频繁发送短信验证码，如果能从Redis中获取到数据，那么就是过于频繁
+        if redis_conn.get('send_sms_flag_{}'.format(mobile)):
+            return http.JsonResponse({'code': RETCODE.THROTTLINGERR, 'errmsg': err_msg[RETCODE.THROTTLINGERR]})
+        # 获取Redis数据库中图形验证码
         image_code_redis = redis_conn.get('img_{}'.format(uuid))
         # 判断图形验证码是否过期，如果过期，返回值为None
         if image_code_redis is None:
@@ -49,6 +54,8 @@ class SMSCodeView(View):
         sms_code = ''.join(random.choices(string.digits, k=6))
         # 保存短信验证码，过期时间5分钟
         redis_conn.setex('sms_{}'.format(mobile), constants.SMS_CODE_REDIS_EXPIRES, sms_code)
+        # 保存60s内是否重复发送短信验证码的标识
+        redis_conn.setex('send_sms_flag_{}'.format(mobile), constants.SEND_SMS_CODE_INTERVAL, 'No')
         # 手动输出日志，记录短信验证码
         logger.info('短信验证码:{}'.format(sms_code))
         # 发送短信验证码

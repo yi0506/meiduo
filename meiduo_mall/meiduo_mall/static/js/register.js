@@ -36,7 +36,7 @@ let vm = new Vue({
 
         send_sms_flag: false,  // 是否可以发送短信验证码
 
-        // 检查是否完成填写
+        // 检查每一项是否完成填写
         username_done: false,
         password_done: false,
         password2_done: false,
@@ -105,11 +105,20 @@ let vm = new Vue({
                             }
                         }, 1000)
                     } else{
-                        // '4010'  图形验证码过期      '4001'  图形验证码错误
-                        if(response.data.code === '4001' || response.data.code === '4010') {
+                        let show_errmsg = () => {
                             this.error_sms_code_message = response.data.errmsg;
                             this.error_sms_code = true;
                             this.send_sms_flag = false;  // 图形验证码出现错误，可重新发送短信
+                        }
+                        // '4010'  图形验证码过期
+                        if(response.data.code === '4001') {
+                            show_errmsg();
+                            // '4001'  图形验证码错误
+                        } else if(response.data.code === '4010'){
+                            show_errmsg();
+                            // '4002'  频繁发送短信验证码
+                        } else if(response.data.code === '4002'){
+                            show_errmsg();
                         }
                     }
                 })
