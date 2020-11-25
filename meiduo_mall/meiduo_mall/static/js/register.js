@@ -87,9 +87,9 @@ let vm = new Vue({
                 responseType: 'json',
             })
                 .then(response =>{
-                    // 发送短信验证码成功
+                    // 发送短信验证码成功，展示60秒倒计时
                     if(response.data.code === '0'){
-                        // 展示60秒倒计时
+
                         let num = 60;
                         let time = setInterval(()=>{
                             // 倒数计时结束，可重新发送验证码
