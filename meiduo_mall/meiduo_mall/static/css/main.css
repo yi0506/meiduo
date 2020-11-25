@@ -737,6 +737,7 @@ html,body{height:100%}
 }
 .reg_form .get_msg_code:hover{
 	color:#f80000;
+	cursor: pointer;
 }
 .reg_form .pic_code{
 	float: left;
@@ -747,7 +748,8 @@ html,body{height:100%}
 
 .reg_form li.agreement input{width:15px;height:15px;float:left;margin-top:13px;margin-left:87px;}
 .reg_form li.agreement label{width:250px;float:left;margin-left:10px;text-align:left;}
-.reg_form li.reg_sub input{width:380px;height:40px;background-color:#ff5757;font-size:18px;color:#fff;font-family:'Microsoft Yahei';cursor:pointer;}
+/*.reg_form li.reg_sub input{width:380px;height:40px;background-color:#ff5757;font-size:18px;color: #ffffff;font-family:'Microsoft Yahei';cursor:pointer;}*/
+.reg_form li.reg_sub input{width:380px;height:40px;background-color: #5e5c5c;font-size:18px;color: #ffffff;font-family:'Microsoft Yahei';}
 .reg_form li .error_tip{float:left;height:30px;line-height:30px;margin-left:87px;color:#e62e2e;}
 .reg_form li .error_tip2{float:left;height:20px;line-height:20px;margin-left:87px;color:#e62e2e;}
 

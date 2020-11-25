@@ -47,7 +47,7 @@ class SMSCodeView(View):
             return http.JsonResponse({'code': RETCODE.IMAGECODEXPIRED, 'errmsg': err_msg[RETCODE.IMAGECODEXPIRED]})
         # 生成短信验证码，随机6位数字
         sms_code = ''.join(random.choices(string.digits, k=6))
-        # 保存图形验证码
+        # 保存短信验证码，过期时间5分钟
         redis_conn.setex('sms_{}'.format(mobile), constants.SMS_CODE_REDIS_EXPIRES, sms_code)
         # 手动输出日志，记录短信验证码
         logger.info('短信验证码:{}'.format(sms_code))
@@ -71,7 +71,7 @@ class ImageCodeView(View):
         # 生成图形验证码
         text, image = captcha.generate_captcha()
 
-        # 保存图形验证码，Redis的2号库
+        # 保存图形验证码，Redis的2号库，过期时间5分钟
         redis_conn = get_redis_connection('verify_code')
         redis_conn.setex('img_{}'.format(uuid), constants.IMAGE_CODE_REDIS_EXPIRES, text)
 

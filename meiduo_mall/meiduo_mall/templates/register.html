@@ -7,6 +7,7 @@
 	<link rel="stylesheet" type="text/css" href="{{ static('css/main.css') }}">
     <script type="text/javascript" src="{{ static('js/vue-2.5.16.js') }}"></script>
     <script type="text/javascript" src="{{ static('js/axios-0.18.0.min.js') }}"></script>
+    <script type="text/javascript" src="{{ static('js/jquery-1.12.4.min.js') }}"></script>
 </head>
 <body>
     <div id="app">
@@ -54,7 +55,7 @@
 						<li>
 							<label>短信验证码:</label>
 							<input @blur='check_sms_code' type="text" v-model='sms_code' name="sms_code" id="msg_code" class="msg_input">
-							<a @click="send_sms_code" class="get_msg_code" >[[ sms_code_tip ]]</a>
+							<a @click="send_sms_code" class="get_msg_code" id="sms_code_a">[[ sms_code_tip ]]</a>
 							<span class="error_tip" v-show="error_sms_code" >[[ error_sms_code_message ]]</span>
                             {% if sms_code_errmsg %}
                                 <span class="error_tip"> {{ sms_code_errmsg }} </span>
@@ -70,7 +71,7 @@
                             {% endif %}
 						</li>
 						<li class="reg_sub">
-							<input type="submit" value="注 册">
+							<input type="submit" value="注 册" id="sub_input">
 						</li>
 					</ul>				
 				</form>

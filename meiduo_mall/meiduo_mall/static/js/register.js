@@ -35,6 +35,15 @@ let vm = new Vue({
         uuid : '',  // uuid
 
         send_sms_flag: false,  // 是否可以发送短信验证码
+
+        // 检查是否完成填写
+        username_done: false,
+        password_done: false,
+        password2_done: false,
+        mobile_done: false,
+        allow_done: false,
+        image_code_done: false,
+        sms_code_done: false,
     },
 
     // 页面加载完成时，该方法会被调用，即模板第一次渲染完成后，vue会先对data中的模板变量进行渲染
@@ -43,6 +52,22 @@ let vm = new Vue({
         this.generate_image_code_url();
     },
     methods: {
+        check_all_is_done(){
+          if(this.username_done === true && this.password_done === true && this.password2_done === true &&
+              this.mobile_done === true && this.allow_done === true && this.image_code_done === true
+              && this.sms_code_done === true){
+                // 更改注册按钮样式
+                this.activate_sub_input();
+          }
+        },
+        activate_sub_input(){
+            let sub_input = $('#sub_input');
+            sub_input.css({backgroundColor: '#ff5757', cursor: 'pointer'});
+        },
+        deactivate_sub_input(){
+            let sub_input = $('#sub_input');
+            sub_input.css({backgroundColor: '#5e5c5c', cursor: 'auto'});
+        },
         send_sms_code(){
             // 发送短信验证码
             // 避免恶意用户频繁的点击获取短信验证码
@@ -74,6 +99,7 @@ let vm = new Vue({
                                 this.generate_image_code_url();  // 重新生成图形验证码
                                 this.send_sms_flag = false;  // 发送成功后，可重新发送短信验证码
                             } else{  // 显示倒计时
+                                $('#sms_code_a').css('cursor', 'auto');
                                 num -= 1;
                                 this.sms_code_tip = num + '秒后重新发送';
                             }
@@ -109,6 +135,8 @@ let vm = new Vue({
                 // 匹配失败，展示错误信息
                 this.error_name_message = '请输入5-20个字符的用户名';
                 this.error_name = true;
+                this.username_done = false;
+                this.deactivate_sub_input();
             }
             // 校验用户名是否存在
             // 只有匹配成功，输入的用户名符合条件才进行判断
@@ -123,9 +151,14 @@ let vm = new Vue({
                             // 用户名已存在
                             this.error_name_message = '用户名已存在';
                             this.error_name = true;
+                            this.username_done = false;
+                            this.deactivate_sub_input();
                         } else{
                             // 用户名不存在
                             this.error_name = false;
+                            // 检查是否填写完成
+                            this.username_done = true;
+                            this.check_all_is_done();
                         }
 
                     })
@@ -139,16 +172,26 @@ let vm = new Vue({
             let re = /^[0-9A-Za-z]{8,20}$/;
             if (re.test(this.password)) {
                 this.error_password = false;
+                // 检查是否填写完成
+                this.password_done = true;
+                this.check_all_is_done();
             } else {
                 this.error_password = true;
+                this.password_done = false;
+                this.deactivate_sub_input();
             }
         },
         // 校验确认密码
         check_password2(){
             if(this.password !== this.password2) {
                 this.error_password2 = true;
+                this.password2_done = false;
+                this.deactivate_sub_input();
             } else {
                 this.error_password2 = false;
+                // 检查是否填写完成
+                this.password2_done = true;
+                this.check_all_is_done();
             }
         },
         // 校验手机号
@@ -159,6 +202,8 @@ let vm = new Vue({
             } else {
                 this.error_mobile_message = '您输入的手机号格式不正确';
                 this.error_mobile = true;
+                this.mobile_done = false;
+                this.deactivate_sub_input();
             }
             // 校验手机号是否存在
             // 只有匹配成功，输入的手机号符合条件才进行判断
@@ -173,9 +218,14 @@ let vm = new Vue({
                             // 手机号已存在
                             this.error_mobile_message = '手机号已存在';
                             this.error_mobile = true;
+                            this.mobile_done = false;
+                            this.deactivate_sub_input();
                         } else{
                             // 手机号不存在
                             this.error_mobile = false;
+                            // 检查是否填写完成
+                            this.mobile_done = true;
+                            this.check_all_is_done();
                         }
 
                     })
@@ -189,13 +239,20 @@ let vm = new Vue({
             if(this.image_code.length !== 4){
                 this.error_image_code_message = '请输入4位图形验证码';
                 this.error_image_code = true;
+                this.image_code_done = false;
+                this.deactivate_sub_input();
             } else{
                 let re = /^[0-9a-zA-Z]{4}/;
                 if(re.test(this.image_code)){
                     this.error_image_code = false;
+                    // 检查是否填写完成
+                    this.image_code_done = true;
+                    this.check_all_is_done();
                 } else{
                     this.error_image_code_message = '请输入4为有效图形验证码';
                     this.error_image_code = true;
+                    this.image_code_done = false;
+                    this.deactivate_sub_input();
                 }
 
             }
@@ -207,15 +264,22 @@ let vm = new Vue({
             if(this.sms_code.length === 0){
                 this.error_sms_code_message = '请填写短信验证码';
                 this.error_sms_code = true;
+                this.sms_code_done = false;
+                this.deactivate_sub_input();
                 // 填写了短信验证码
             } else{
                 let re = /^\d{6}$/;
                 // 是否是6位数字的短信验证码
                 if(re.test(this.sms_code)){
                     this.error_sms_code = false;
+                    // 检查是否填写完成
+                    this.sms_code_done = true;
+                    this.check_all_is_done();
                 } else{
                     this.error_sms_code_message = '请填写有效的6位短信验证码';
                     this.error_sms_code = true;
+                    this.sms_code_done = false;
+                    this.deactivate_sub_input();
                 }
             }
 
@@ -225,9 +289,14 @@ let vm = new Vue({
             // 如果没有勾选，提示勾选信息
             if(!this.allow) {
                 this.error_allow = true;
+                this.allow_done = false;
+                this.deactivate_sub_input();
                 // 如果勾选，不提示勾选信息
             } else {
                 this.error_allow = false;
+                // 检查是否填写完成
+                this.allow_done = true;
+                this.check_all_is_done();
             }
         },
         // 监听表单提交事件
@@ -240,11 +309,20 @@ let vm = new Vue({
             this.check_sms_code();
             this.check_allow();
             // 在校验之后，注册数据中，只要有错误，就禁用掉表单的提交事件
-            if(this.error_name === true || this.error_password === true || this.error_password2 === true
-                || this.error_mobile === true || this.error_allow === true || this.error_image_code === true) {
+            if(this.error_name === true || this.error_password === true || this.error_password2 === true ||
+                this.error_mobile === true || this.error_allow === true || this.error_image_code === true ||
+                this.error_sms_code === true) {
                 // 禁用表单的提交
-                window.event.returnValue = false;  // 阻止浏览器的默认行为（提交post请求），相当于return false;
+                // 阻止浏览器的默认行为（提交post请求），相当于return false;
+                window.event.returnValue = false;
             }
+            this.username_done = false;
+            this.password_done = false;
+            this.password2_done = false;
+            this.mobile_done = false;
+            this.allow_done = false;
+            this.image_code_done = false;
+            this.sms_code_done = false;
         },
     }
 })
