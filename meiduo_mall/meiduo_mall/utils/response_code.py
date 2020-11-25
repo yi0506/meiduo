@@ -5,6 +5,7 @@ class RETCODE:
     OK                  = "0"
     IMAGECODEERR        = "4001"
     IMAGECODEXPIRED     = '4010'
+    DATABASEERROR       = '4011'
     THROTTLINGERR       = "4002"
     NECESSARYPARAMERR   = "4003"
     USERERR             = "4004"
@@ -28,6 +29,7 @@ err_msg = {
     RETCODE.OK                 : u"成功",
     RETCODE.IMAGECODEERR       : u"图形验证码错误",
     RETCODE.IMAGECODEXPIRED    : u"图形验证码已过期",
+    RETCODE.DATABASEERROR      : u"操作失败，请重新操作",
     RETCODE.THROTTLINGERR      : u"发送短信过于频繁",
     RETCODE.NECESSARYPARAMERR  : u"缺少必传参数",
     RETCODE.USERERR            : u"用户名错误",

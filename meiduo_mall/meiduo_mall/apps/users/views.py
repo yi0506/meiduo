@@ -74,14 +74,16 @@ class RegisterView(View):
         # 判断是否勾选用户协议
         if allow != 'on':
             return http.HttpResponseForbidden('请勾选用户协议')
-        # 校验短信验证码
-        redis_conn = get_redis_connection('verify_code')
-        sms_code_redis = redis_conn.get('sms_{}'.format(mobile))
-        if sms_code_redis is None:  # 判断短信验证码是否过期
-            return render(request, 'register.html', {'sms_code_errmsg': '短信验证码已失效'})
-        if sms_code_redis.decode('utf-8') != sms_code_user:
-            return render(request, 'register.html', {'sms_code_errmsg': '输入短信验证码有误'})
-
+        try:
+            # 校验短信验证码
+            redis_conn = get_redis_connection('verify_code')
+            sms_code_redis = redis_conn.get('sms_{}'.format(mobile))
+            if sms_code_redis is None:  # 判断短信验证码是否过期
+                return render(request, 'register.html', {'sms_code_errmsg': '短信验证码已失效'})
+            if sms_code_redis.decode('utf-8') != sms_code_user:
+                return render(request, 'register.html', {'sms_code_errmsg': '输入短信验证码有误'})
+        except DatabaseError:
+            return render(request, 'register.html', {'sms_code_errmsg': err_msg[RETCODE.DATABASEERROR]})
         # 保存注册数据：注册业务的核心
         try:
             user = User.objects.create_user(username=username, password=password, mobile=mobile)
