@@ -11,6 +11,7 @@ from meiduo_mall.utils import constants
 from meiduo_mall.utils.response_code import RETCODE, err_msg
 from verifications.libs.captcha.captcha import captcha
 from verifications.libs.yuntongxun.ccp_sms import CCP
+from celery_tasks.sms.tasks import send_sms_code
 
 
 logger = logging.getLogger('django')
@@ -74,10 +75,12 @@ class SMSCodeView(View):
             return http.JsonResponse({'code': RETCODE.DATABASEERROR, 'errmsg': err_msg[RETCODE.DATABASEERROR]})
         # 手动输出日志，记录短信验证码
         logger.info('短信验证码:{}'.format(sms_code))
-        # 发送短信验证码
-        CCP().send_template_sms(to=mobile,
-                                data=[sms_code, constants.SMS_CODE_REDIS_EXPIRES // 60],
-                                tempId=constants.SEND_SMS_TEMPLATE_ID)
+        # # 发送短信验证码
+        # CCP().send_template_sms(to=mobile,
+        #                         data=[sms_code, constants.SMS_CODE_REDIS_EXPIRES // 60],
+        #                         tempId=constants.SEND_SMS_TEMPLATE_ID)
+        # 使用Celery发送短信验证码
+        send_sms_code.delay(mobile, sms_code)
         # 响应结果
         return http.JsonResponse({'code': RETCODE.OK, 'errmsg': err_msg[RETCODE.OK]})
 

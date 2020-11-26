@@ -16,6 +16,7 @@ celery_app = Celery('meiduo')
 celery_app.config_from_object('celery_tasks.config')
 
 # 注册异步任务，写任务包所在的位置，他会自动找到任务包下面的tasks.py文件，用一个列表传递所有的任务包！！！！！
+# 让celery去监视这个消息队列中有没有任务，有就去执行，没有就等待
 celery_app.autodiscover_tasks(['celery_tasks.sms'])
 
 
