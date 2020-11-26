@@ -75,7 +75,7 @@ class SMSCodeView(View):
         # 手动输出日志，记录短信验证码
         logger.info('短信验证码:{}'.format(sms_code))
         # 发送短信验证码
-        CCP().send_template_sms(to='13793331139',
+        CCP().send_template_sms(to=mobile,
                                 data=[sms_code, constants.SMS_CODE_REDIS_EXPIRES // 60],
                                 tempId=constants.SEND_SMS_TEMPLATE_ID)
         # 响应结果
