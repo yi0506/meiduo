@@ -4,11 +4,22 @@ import re
 from django.urls import reverse
 from django.views import View
 from django.db import DatabaseError
-from django.contrib.auth import login
+from django.contrib.auth import login, authenticate
 from django_redis import get_redis_connection
 
 from meiduo_mall.utils.response_code import RETCODE, err_msg
 from users.models import User  # 这里可以直接从users开始导入，是由于添加了导包路径
+
+
+class LoginView(View):
+    """用户登录"""
+    def get(self, request):
+        """提供用户登录页面"""
+        return render(request, 'login.html')
+
+    def post(self, requset):
+        """实现用户登录的逻辑"""
+        pass
 
 
 class MobileCountView(View):

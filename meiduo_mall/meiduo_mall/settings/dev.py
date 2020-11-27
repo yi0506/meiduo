@@ -180,7 +180,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
-# 指定加载静态文件的路由前缀
+# 指定加载静态文件的路由前缀，
+# 如url为 http://127.0.0.1:8000/static/../../ 类似的都会认为是在访问静态文件
 STATIC_URL = '/static/'
 
 # 指定静态文件的加载路径
