@@ -13,7 +13,7 @@ from users.models import User  # 这里可以直接从users开始导入，是由
 from meiduo_mall.utils import constants
 
 
-class UserInfoView(View):
+class UserInfoView(LoginRequiredMixin, View):
     """用户中心"""
     def get(self, request):
         """
@@ -87,8 +87,14 @@ class LoginView(View):
         else:
             # 记住登录：设置状态保持时间为1小时，默认为None，表示两周
             request.session.set_expiry(constants.REMEMBERED_EXPIRES)
-        # 登录成功跳转到首页
-        response = redirect(reverse('contents:index'))
+        # 取出next参数，返回一个字符串
+        _next = request.GET.get('next')
+        if _next:
+            # 如果next有值，重定向到next指向的页面
+            response = redirect(_next)
+        else:
+            # 如果next没有值，重定向的首页
+            response = redirect(reverse('contents:index'))
         # 为了实现在首页右上角展示用户名信息，需要将用户名缓存到cookie中
         # 如果cookie中有username字段，则显示用户名
         # 如果没有，则显示未登录状态
