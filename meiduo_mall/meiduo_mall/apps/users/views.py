@@ -9,6 +9,7 @@ from django_redis import get_redis_connection
 
 from meiduo_mall.utils.response_code import RETCODE, err_msg
 from users.models import User  # 这里可以直接从users开始导入，是由于添加了导包路径
+from meiduo_mall.utils import constants
 
 
 class LoginView(View):
@@ -17,25 +18,35 @@ class LoginView(View):
         """提供用户登录页面"""
         return render(request, 'login.html')
 
-    def post(self, requset):
+    def post(self, request):
         """实现用户登录的逻辑"""
         # 接收参数
-        username = requset.POST.get('username')
-        password = requset.POST.get('password')
-        remembered = requset.POST.get('remembered')
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        remembered = request.POST.get('remembered')
         # 校验参数
         if not all([username, password]):
             return http.HttpResponseForbidden('缺少必传参数')
-        if not re.search(r'^[a-zA-Z0-9_-]{5-20}$', username):
-            return http.HttpResponseForbidden('请正确输入用户')
+        if not re.search(r'^[a-zA-Z0-9_-]{5,20}$', username):
+            return http.HttpResponseForbidden('请输入正确的用户名或手机号')
         if not re.search(r'^[0-9A-Za-z]{8,20}$', password):
             return http.HttpResponseForbidden('密码最少8位，最长20位')
+
         # 认证用户：使用账号查询用户是否存在，如果用户存在，再校验密码是否正确
         user = authenticate(username=username, password=password)
         if user is None:
-            return render(requset, 'login.html', {'account_errmsg': '账号或密码错误'})
+            return render(request, 'login.html', {'account_errmsg': '账号或密码错误'})
+
         # 状态保持
-        login(request=requset, user=user)
+        login(request=request, user=user)
+        # 使用rememebered确定状态保持的时间（实现记住登录）
+        if remembered != 'on':
+            # 没有记住登录：状态保持在浏览器关闭后会话结束，session就销毁
+            request.session.set_expiry(0)  # 单位是秒
+        else:
+            # 记住登录：设置状态保持时间为1小时，默认为None，表示两周
+            request.session.set_expiry(constants.REMEMBERED_EXPIRES)
+
         # 响应结果，重定向到首页
         return redirect(reverse('contents:index'))
 

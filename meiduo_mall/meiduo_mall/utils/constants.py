@@ -9,3 +9,6 @@ SEND_SMS_TEMPLATE_ID = 1
 
 # 60s内是否重复发送的标记
 SEND_SMS_CODE_INTERVAL = 60
+
+# 记住登录的状态保持时间
+REMEMBERED_EXPIRES = 3600
