@@ -13,6 +13,8 @@ urlpatterns = [
     url(r'^mobiles/(?P<mobile>1[3-9]\d{9})/count/$', views.MobileCountView.as_view()),
     # 实现用户登录逻辑
     url(r'^login/$', views.LoginView.as_view(), name='login'),
+    # 实现退出登录
+    url(r'^logout/$', views.LogoutView.as_view(), name='logout')
 ]
 
 if __name__ == '__main__':

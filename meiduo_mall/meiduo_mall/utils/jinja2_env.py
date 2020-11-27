@@ -13,7 +13,7 @@ def jinja2_environment(**options):
     # 自定义jinja2模板语法，
     # 实现：
     #       {{ static('模板文件的相对路径') }} ---> src="{{ static('js/register.js') }}"
-    #       {{ url(路由的命名空间) }}         ---> reverse('namespace:name')
+    #       {{ url(路由的命名空间) }}         ---> href="{{ url('users:register') }}"
     env.globals.update({
 
         # 根据填写的相对路径，拼接静态文件的完整路径

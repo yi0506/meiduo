@@ -12,7 +12,17 @@ from users.models import User  # 这里可以直接从users开始导入，是由
 from meiduo_mall.utils import constants
 
 
-
+class LogoutView(View):
+    """用户退出登录"""
+    def get(self, request):
+        """实现用户退出登录的逻辑"""
+        # 清除状态保持信息
+        logout(request)
+        # 退出登录后，重定向到首页
+        response = redirect(reverse('contents:index'))
+        # 删除cookie中的username
+        response.delete_cookie('username')
+        return response
 
 
 class LoginView(View):
