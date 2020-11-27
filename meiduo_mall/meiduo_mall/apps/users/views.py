@@ -4,12 +4,15 @@ import re
 from django.urls import reverse
 from django.views import View
 from django.db import DatabaseError
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 from django_redis import get_redis_connection
 
 from meiduo_mall.utils.response_code import RETCODE, err_msg
 from users.models import User  # 这里可以直接从users开始导入，是由于添加了导包路径
 from meiduo_mall.utils import constants
+
+
+
 
 
 class LoginView(View):
@@ -46,9 +49,11 @@ class LoginView(View):
         else:
             # 记住登录：设置状态保持时间为1小时，默认为None，表示两周
             request.session.set_expiry(constants.REMEMBERED_EXPIRES)
-
-        # 响应结果，重定向到首页
-        return redirect(reverse('contents:index'))
+        # 返回响应结果，重定向的首页
+        response = redirect(reverse('contents:index'))
+        # 为了实现在首页右上角展示用户名信息，需要将用户名缓存到cookie中
+        response.set_cookie('username', user.username, max_age=constants.REMEMBERED_EXPIRES)
+        return response
 
 
 class MobileCountView(View):
@@ -135,4 +140,7 @@ class RegisterView(View):
             # 实现状态保持
             login(request, user)
             # 返回响应结果，重定向的首页
-            return redirect(reverse('contents:index'))
+            response =  redirect(reverse('contents:index'))
+            # 为了实现在首页右上角展示用户名信息，需要将用户名缓存到cookie中
+            response.set_cookie('username', user.username, max_age=constants.REMEMBERED_EXPIRES)
+            return response

@@ -79,7 +79,7 @@ class SMSCodeView(View):
         # CCP().send_template_sms(to=mobile,
         #                         data=[sms_code, constants.SMS_CODE_REDIS_EXPIRES // 60],
         #                         tempId=constants.SEND_SMS_TEMPLATE_ID)
-        # 使用Celery发送短信验证码
+        # 使用Celery发送短信验证码，将发送短信验证码的任务添加进消息队列中
         send_sms_code.delay(mobile, sms_code)
         # 响应结果
         return http.JsonResponse({'code': RETCODE.OK, 'errmsg': err_msg[RETCODE.OK]})
