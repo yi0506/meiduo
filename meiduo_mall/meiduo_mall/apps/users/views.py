@@ -18,7 +18,7 @@ class UserInfoView(LoginRequiredMixin, View):
     def get(self, request):
         """
         提供用户中心页面
-
+            检测用户是否登录: LoginRequiredMixin，会帮我们完成这件事
             当用户已经登录，则进入用户中心页面
             如果用户未登录，则跳转到登录页面，登录成功后直接跳转到用户中心页面
 
