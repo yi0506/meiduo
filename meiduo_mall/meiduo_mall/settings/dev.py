@@ -235,5 +235,8 @@ AUTH_USER_MODEL = 'users.User'
 # 自定义用户认证后端
 AUTHENTICATION_BACKENDS = ['meiduo_mall.utils.auth_backend.LoginAuthBackend']
 
+# 判断用户是否登录后，指定未登录用户重定向的地址
+LOGIN_URL = '/login/'
+
 if __name__ == '__main__':
     pass

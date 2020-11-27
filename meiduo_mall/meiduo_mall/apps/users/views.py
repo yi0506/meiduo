@@ -6,10 +6,38 @@ from django.views import View
 from django.db import DatabaseError
 from django.contrib.auth import login, authenticate, logout
 from django_redis import get_redis_connection
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from meiduo_mall.utils.response_code import RETCODE, err_msg
 from users.models import User  # 这里可以直接从users开始导入，是由于添加了导包路径
 from meiduo_mall.utils import constants
+
+
+class UserInfoView(View):
+    """用户中心"""
+    def get(self, request):
+        """
+        提供用户中心页面
+
+            当用户已经登录，则进入用户中心页面
+            如果用户未登录，则跳转到登录页面，登录成功后直接跳转到用户中心页面
+
+            以上功能的实现必须继承自 LoginRequiredMixin 类
+
+
+        """
+        # login_url 默认为None，需要修改为 login_url = '/login/'，并且改为全局设置，在dev.py文件中配置: LOGIN_URL = '/login/
+        # redirect_field_name = REDIRECT_FIELD_NAME = 'next' ，默认不需要修改
+
+        # 想要自动实现以下功能，必须继承 LoginRequiredMixin 类，不继承，就没有自动添加 next 参数的效果
+        # 因为 UserInfoView 继承了 LoginRequiredMixin， 所以只有访问 "用户中心" 界面时( /info/ )，才会执行以下逻辑：
+        #     1. 如果用户未登录，Django会发送 login_url 中定义的url请求，此项目中 login_url 指向 "登录页面"( /login/ )
+        #     2. 并且Django会在此次请求中自动增加一个 next=/info/ 的参数 ，最终请求变为 ---> 127.0.0.1/login/?next=/info/
+        #     3. 用户进行登录后，将请求发送给  我们定义的类视图 LoginView ，并且该请求包含一个查询字符串参数 ?next=/info/
+        # 我们需要再 LonginView 中增加以下的逻辑：
+        # 当url参数中有next ---> 127.0.0.1:8000/login/?next=/info/ 则提取出来，登录成功后跳转到 127.0.0.1:8000/info/ 指向的页面
+        # 如果url参数没有next ---> 127.0.0.1:8000/login/ 则登陆成功后，直接跳转到首页 127.0.0.1:8000/
+        return render(request, 'user_center_info.html')
 
 
 class LogoutView(View):
@@ -59,10 +87,15 @@ class LoginView(View):
         else:
             # 记住登录：设置状态保持时间为1小时，默认为None，表示两周
             request.session.set_expiry(constants.REMEMBERED_EXPIRES)
-        # 返回响应结果，重定向的首页
+        # 登录成功跳转到首页
         response = redirect(reverse('contents:index'))
         # 为了实现在首页右上角展示用户名信息，需要将用户名缓存到cookie中
+        # 如果cookie中有username字段，则显示用户名
+        # 如果没有，则显示未登录状态
+        # 该逻辑由前端Vue模板引擎渲染，获取cookie中的username
         response.set_cookie('username', user.username, max_age=constants.REMEMBERED_EXPIRES)
+
+        # 返回响应结果
         return response
 
 

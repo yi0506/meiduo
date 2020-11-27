@@ -14,7 +14,9 @@ urlpatterns = [
     # 实现用户登录逻辑
     url(r'^login/$', views.LoginView.as_view(), name='login'),
     # 实现退出登录
-    url(r'^logout/$', views.LogoutView.as_view(), name='logout')
+    url(r'^logout/$', views.LogoutView.as_view(), name='logout'),
+    # 用户中心
+    url(r'^info/$', views.UserInfoView.as_view(), name='info'),
 ]
 
 if __name__ == '__main__':
