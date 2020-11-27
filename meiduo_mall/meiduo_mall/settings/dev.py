@@ -232,5 +232,8 @@ LOGGING = {
 # 指定自定义用户模型类： 值的语法 ----> '子应用.用户模型类'
 AUTH_USER_MODEL = 'users.User'
 
+# 自定义用户认证后端
+AUTHENTICATION_BACKENDS = ['utils.auth_backend.LoginAuthBackend']
+
 if __name__ == '__main__':
     pass
