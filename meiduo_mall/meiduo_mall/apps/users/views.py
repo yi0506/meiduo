@@ -19,7 +19,25 @@ class LoginView(View):
 
     def post(self, requset):
         """实现用户登录的逻辑"""
-        pass
+        # 接收参数
+        username = requset.POST.get('username')
+        password = requset.POST.get('password')
+        remembered = requset.POST.get('remembered')
+        # 校验参数
+        if not all([username, password]):
+            return http.HttpResponseForbidden('缺少必传参数')
+        if not re.search(r'^[a-zA-Z0-9_-]{5-20}$', username):
+            return http.HttpResponseForbidden('请正确输入用户')
+        if not re.search(r'^[0-9A-Za-z]{8,20}$', password):
+            return http.HttpResponseForbidden('密码最少8位，最长20位')
+        # 认证用户：使用账号查询用户是否存在，如果用户存在，再校验密码是否正确
+        user = authenticate(username=username, password=password)
+        if user is None:
+            return render(requset, 'login.html', {'account_errmsg': '账号或密码错误'})
+        # 状态保持
+        login(request=requset, user=user)
+        # 响应结果，重定向到首页
+        return redirect(reverse('contents:index'))
 
 
 class MobileCountView(View):
