@@ -15,5 +15,10 @@ class User(AbstractUser):
         verbose_name_plural = verbose_name  # verbose_name的复数形式显示
 
     def __str__(self):
-        """在调试阶段，打印到终端时，定义每个数据对象的显示信息"""
+        """
+        输出该对象的显示信息，
+            如在终端打印时，
+            在debug模式下，变量显示的名称，
+            在admin后台站点显示的名称
+        """
         return self.username

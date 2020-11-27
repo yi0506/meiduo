@@ -15,10 +15,10 @@ def get_user_by_account(account):
     # 判断username是用户名还是手机号
     try:
         if re.search(r'^1[3-9]\d{9}$', account):
-            # username == 手机号
+            # account == 手机号
             user = User.objects.get(mobile=account)
         else:
-            # username == 用户名
+            # account == 用户名
             user = User.objects.get(username=account)
     except User.DoesNotExist:
         return None
