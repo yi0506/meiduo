@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
+from meiduo_mall.utils.models import BaseModel
+
 # Create your models here.
 
 
