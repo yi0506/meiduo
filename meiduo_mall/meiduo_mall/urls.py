@@ -25,5 +25,7 @@ urlpatterns = [
     url(r'^', include('contents.urls', namespace='contents')),
     # verifications,总路由不校验，子路由校验
     url(r'^', include('verifications.urls')),
+    # oauth认证
+    url(r'^', include('oauth.urls')),
 
 ]

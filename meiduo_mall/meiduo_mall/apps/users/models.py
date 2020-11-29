@@ -6,7 +6,7 @@ from meiduo_mall.utils.models import BaseModel
 # Create your models here.
 
 
-class User(AbstractUser):
+class User(AbstractUser, BaseModel):
     """自定义用户模型类"""
 
     mobile = models.CharField(max_length=11, unique=True, verbose_name="手机号")  # admin站点中，该字段信息显示为手机号
