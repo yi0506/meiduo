@@ -41,7 +41,13 @@ class QQAuthCallBackView(View):
             # openid未绑定美多商城用户
             return render(request, 'oauth_callback.html')
         else:
-
+            # openid已经绑定美多商城用户
+            # oauth_user.user表示从QQ登录模型类对象的外键中找到对应的用户模型类对象
+            login(request=request, user=oauth_user.user)
+            # 重定向到首页
+            response = redirect(reverse('contents:index'))
+            # 状态保持：将用户名写入到cookies中
+            response.set_cookie('username', oauth_user.user, constants.REMEMBERED_EXPIRES)
             return response
 
 
