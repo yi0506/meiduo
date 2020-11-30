@@ -38,7 +38,8 @@ class QQAuthCallBackView(View):
         try:
             oauth_user = OAuthQQUser.objects.get(openid=openid)
         except OAuthQQUser.DoesNotExist:
-
+            # openid未绑定美多商城用户
+            return render(request, 'oauth_callback.html')
         else:
 
             return response
