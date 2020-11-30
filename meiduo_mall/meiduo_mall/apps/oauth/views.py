@@ -10,6 +10,7 @@ from django.contrib.auth import login
 from meiduo_mall.utils.response_code import RETCODE, err_msg
 from oauth.models import OAuthQQUser
 from meiduo_mall.utils import constants
+from meiduo_mall.utils.encryption import encrypt_openid
 
 
 logger = logging.getLogger('django')
@@ -39,6 +40,8 @@ class QQAuthCallBackView(View):
             oauth_user = OAuthQQUser.objects.get(openid=openid)
         except OAuthQQUser.DoesNotExist:
             # openid未绑定美多商城用户
+            # 加密openid
+            openid = encrypt_openid(openid)
             context = {'access_token_openid': openid}
             return render(request, 'oauth_callback.html', context)
         else:

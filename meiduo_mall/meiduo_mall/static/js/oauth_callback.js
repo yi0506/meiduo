@@ -66,34 +66,6 @@ let vm = new Vue({
                 this.mobile_done = false;
                 this.deactivate_sub_input();
             }
-            // 校验手机号是否存在
-            // 只有匹配成功，输入的手机号符合条件才进行判断
-            if (this.error_mobile === false){
-                // url只写路径，从根路径开始写
-                let url = `/mobiles/${this.mobile}/count/`;
-                axios.get(url, {
-                    responseType: 'json',
-                })
-                    .then((response)=>{
-                        if(response.data.count === 1){
-                            // 手机号已存在
-                            this.error_mobile_message = '手机号已存在';
-                            this.error_mobile = true;
-                            this.mobile_done = false;
-                            this.deactivate_sub_input();
-                        } else{
-                            // 手机号不存在
-                            this.error_mobile = false;
-                            // 检查是否填写完成
-                            this.mobile_done = true;
-                            this.check_all_is_done();
-                        }
-
-                    })
-                    .catch(error=>{
-                        console.log(error.response);
-                    })
-            }
         },
 		// 检查密码
         check_password(){

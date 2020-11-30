@@ -12,3 +12,6 @@ SEND_SMS_CODE_INTERVAL = 60
 
 # 记住登录的状态保持时间
 REMEMBERED_EXPIRES = 3600
+
+# openid过期时间
+OPENID_EXPIRES = 600
