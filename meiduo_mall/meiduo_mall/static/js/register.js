@@ -52,6 +52,7 @@ let vm = new Vue({
         this.generate_image_code_url();
     },
     methods: {
+        // 检查表单是否填写完成
         check_all_is_done(){
           if(this.username_done === true && this.password_done === true && this.password2_done === true &&
               this.mobile_done === true && this.allow_done === true && this.image_code_done === true
@@ -60,10 +61,12 @@ let vm = new Vue({
                 this.activate_sub_input();
           }
         },
+        // 激活注册按钮
         activate_sub_input(){
             let sub_input = $('#sub_input');
             sub_input.css({backgroundColor: '#ff5757', cursor: 'pointer'});
         },
+        // 反激活注册按钮
         deactivate_sub_input(){
             let sub_input = $('#sub_input');
             sub_input.css({backgroundColor: '#5e5c5c', cursor: 'auto'});

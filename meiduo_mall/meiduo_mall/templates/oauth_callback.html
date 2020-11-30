@@ -7,6 +7,7 @@
 	<link rel="stylesheet" type="text/css" href="{{ static('css/main.css') }}">
 	<script type="text/javascript" src="{{ static('js/vue-2.5.16.js') }}"></script>
     <script type="text/javascript" src="{{ static('js/axios-0.18.0.min.js') }}"></script>
+    <script type="text/javascript" src="{{ static('js/jquery-1.12.4.min.js') }}"></script>
 </head>
 <body>
     <div id="app">
@@ -62,7 +63,7 @@
                         <input type="hidden" name="access_token_openid" value="{{ access_token_openid }}">
 
                         <li class="reg_sub">
-                            <input type="submit" value="保 存" name="">
+                            <input type="submit" value="保 存" name="" id="oauth_input">
                         </li>
                     </ul>
                 </form>
