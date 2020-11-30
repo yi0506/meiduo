@@ -176,7 +176,7 @@ class RegisterView(View):
                 return render(request, 'register.html', {'sms_code_errmsg': '短信验证码已失效'})
             if sms_code_redis.decode('utf-8') != sms_code_user:
                 return render(request, 'register.html', {'sms_code_errmsg': '输入短信验证码有误'})
-        except DatabaseError:
+        except Exception as e:
             return render(request, 'register.html', {'sms_code_errmsg': err_msg[RETCODE.DATABASEERROR]})
         # 保存注册数据：注册业务的核心
         try:
@@ -189,7 +189,7 @@ class RegisterView(View):
             # 实现状态保持
             login(request, user)
             # 返回响应结果，重定向的首页
-            response =  redirect(reverse('contents:index'))
+            response = redirect(reverse('contents:index'))
             # 为了实现在首页右上角展示用户名信息，需要将用户名缓存到cookie中
             response.set_cookie('username', user.username, max_age=constants.REMEMBERED_EXPIRES)
             return response

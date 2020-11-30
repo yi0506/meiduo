@@ -5,12 +5,10 @@ from django import http
 from django.views import View
 from django_redis import get_redis_connection
 import logging
-from django.db import DatabaseError
 
 from meiduo_mall.utils import constants
 from meiduo_mall.utils.response_code import RETCODE, err_msg
 from verifications.libs.captcha.captcha import captcha
-from verifications.libs.yuntongxun.ccp_sms import CCP
 from celery_tasks.sms.tasks import send_sms_code
 
 
@@ -49,7 +47,7 @@ class SMSCodeView(View):
             # 删除图形验证码
             redis_conn.delete('img_{}'.format(uuid))
             image_code_redis = image_code_redis.decode('utf-8')  # redis接收类型为bytes类型，将bytes类型转为字符串
-        except DatabaseError:
+        except Exception as e:
             return http.JsonResponse({'code': RETCODE.DATABASEERROR, 'errmsg': err_msg[RETCODE.DATABASEERROR]})
         # 对比图形验证码
         if image_code_redis.lower() != image_code_user.lower():  # 转换为小写，再比较
@@ -71,7 +69,7 @@ class SMSCodeView(View):
             pl.setex('send_sms_flag_{}'.format(mobile), constants.SEND_SMS_CODE_INTERVAL, 'No')
             # 执行所有命令
             pl.execute()
-        except DatabaseError:
+        except Exception as e:
             return http.JsonResponse({'code': RETCODE.DATABASEERROR, 'errmsg': err_msg[RETCODE.DATABASEERROR]})
         # 手动输出日志，记录短信验证码
         logger.info('短信验证码:{}'.format(sms_code))
@@ -100,7 +98,7 @@ class ImageCodeView(View):
             # 保存图形验证码，Redis的2号库，过期时间5分钟
             redis_conn = get_redis_connection('verify_code')
             redis_conn.setex('img_{}'.format(uuid), constants.IMAGE_CODE_REDIS_EXPIRES, text)
-        except DatabaseError:
+        except Exception as e:
             return http.HttpResponse(err_msg[RETCODE.DATABASEERROR])
         # 响应图形验证码
         return http.HttpResponse(image, content_type='image/jpg')
