@@ -18,13 +18,9 @@ class UserInfoView(LoginRequiredMixin, View):
     def get(self, request):
         """
         提供用户中心页面
-            检测用户是否登录: LoginRequiredMixin，会帮我们完成这件事
+            检测用户是否登录: LoginRequiredMixin，会帮我们完成这件事, 该功能的实现必须继承自 LoginRequiredMixin 类
             当用户已经登录，则进入用户中心页面
             如果用户未登录，则跳转到登录页面，登录成功后直接跳转到用户中心页面
-
-            以上功能的实现必须继承自 LoginRequiredMixin 类
-
-
         """
         # login_url 默认为None，需要修改为 login_url = '/login/'，并且改为全局设置，在dev.py文件中配置: LOGIN_URL = '/login/
         # redirect_field_name = REDIRECT_FIELD_NAME = 'next' ，默认不需要修改
