@@ -27,12 +27,16 @@ class UserInfoView(LoginRequiredMixin, View):
 
         # 想要自动实现以下功能，必须继承 LoginRequiredMixin 类，不继承，就没有自动添加 next 参数的效果
         # 因为 UserInfoView 继承了 LoginRequiredMixin， 所以只有访问 "用户中心" 界面时( /info/ )，才会执行以下逻辑：
-        #     1. 如果用户未登录，Django会发送 login_url 中定义的url请求，此项目中 login_url 指向 "登录页面"( /login/ )
-        #     2. 并且Django会在此次请求中自动增加一个 next=/info/ 的参数 ，最终请求变为 ---> 127.0.0.1/login/?next=/info/
-        #     3. 用户进行登录后，将请求发送给  我们定义的类视图 LoginView ，并且该请求包含一个查询字符串参数 ?next=/info/
+        #     检测用户是否登录，如果用户未登录，
+        #           1. Django会重定向发送 login_url 中定义的url请求，此项目中 login_url 指向 "登录页面"( /login/ )
+        #           2. 并且Django会在此次请求中自动增加一个 next=/info/ 的参数 ，最终请求变为 ---> 127.0.0.1/login/?next=/info/
+        #           3. 用户进行登录后，将请求发送给 /login/ 指向的视图函数(我们定义的类视图 LoginView)，并且该请求包含一个查询字符串参数 ?next=/info/
+        #      如果用户已经登录，
+        #            则直接跳转到用户中心(/info/)
+
         # 我们需要再 LonginView 中增加以下的逻辑：
-        # 当url参数中有next ---> 127.0.0.1:8000/login/?next=/info/ 则提取出来，登录成功后跳转到 127.0.0.1:8000/info/ 指向的页面
-        # 如果url参数没有next ---> 127.0.0.1:8000/login/ 则登陆成功后，直接跳转到首页 127.0.0.1:8000/
+        #       当url参数中有next ---> 127.0.0.1:8000/login/?next=/info/ 则提取出来，登录成功后跳转到 127.0.0.1:8000/info/ 指向的页面
+        #       如果url参数没有next ---> 127.0.0.1:8000/login/ 则登陆成功后，直接跳转到首页 127.0.0.1:8000/
         return render(request, 'user_center_info.html')
 
 

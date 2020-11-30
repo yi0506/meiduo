@@ -20,6 +20,8 @@ let vm = new Vue({
 		image_code_url: '',
 		sms_code_tip: '获取短信验证码',
 		sending_flag: false,
+
+
 	},
 	mounted(){
 		// 生成图形验证码

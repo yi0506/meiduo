@@ -1,11 +1,15 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.views import View
 from QQLoginTool.QQtool import OAuthQQ
 from django.conf import settings
 from django import http
 import logging
+from django.contrib.auth import login
 
 from meiduo_mall.utils.response_code import RETCODE, err_msg
+from oauth.models import OAuthQQUser
+from meiduo_mall.utils import constants
 
 
 logger = logging.getLogger('django')
@@ -26,13 +30,18 @@ class QQAuthCallBackView(View):
             # 使用authorization code获取access token
             access_token = oauth.get_access_token(code)
             # 使用access token获取open id
-            oauth.get_open_id(access_token=access_token)
+            openid = oauth.get_open_id(access_token=access_token)
         except Exception as e:
             logger.error(e)
             return http.HttpResponseServerError('oauth2.0认证失败')
         # 使用openid判断该QQ用户是否绑定过美多商城
-        # 返回响应
-        return http.HttpResponse('e')
+        try:
+            oauth_user = OAuthQQUser.objects.get(openid=openid)
+        except OAuthQQUser.DoesNotExist:
+
+        else:
+
+            return response
 
 
 class QQAuthURLView(View):
