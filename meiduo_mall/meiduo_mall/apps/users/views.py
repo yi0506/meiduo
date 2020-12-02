@@ -7,18 +7,39 @@ from django.db import DatabaseError
 from django.contrib.auth import login, authenticate, logout
 from django_redis import get_redis_connection
 from django.contrib.auth.mixins import LoginRequiredMixin
+import json
+import logging
 
 from meiduo_mall.utils.response_code import RETCODE, err_msg
 from users.models import User  # 这里可以直接从users开始导入，是由于添加了导包路径
 from meiduo_mall.utils import constants
 
 
+logger = logging.getLogger('django')
+
+
 class EmailView(View):
     """添加邮箱"""
 
     def put(self, request):
-        """获取邮箱"""
-        pass
+        """添加邮箱到数据库中"""
+        # 接收参数
+        json_str = request.body.decode()
+        json_dict = json.loads(json_str)
+        email = json_dict.get('email')
+        # 校验参数
+        if not re.match(r'^[a-z0-9][\w\.\-]*@[a-z0-9\-]+(\.[a-z]{2,5}){1,2}$', email):
+            return http.HttpResponseForbidden('参数email有误')
+        # 将邮箱保存到对应用户的数据库email字段中
+        try:
+            request.user.email = email
+            request.user.save()
+        except Exception as e:
+            logger.error(e)
+            return http.JsonResponse({'code': RETCODE.EMAILERR, 'errmsg': err_msg[RETCODE.EMAILERR]})
+        else:
+            # 响应结果
+            return http.JsonResponse({'code': RETCODE.OK, 'errmsg': err_msg[RETCODE.OK]})
 
 
 class UserInfoView(LoginRequiredMixin, View):
@@ -74,6 +95,7 @@ class LogoutView(View):
 
 class LoginView(View):
     """用户登录"""
+
     def get(self, request):
         """提供用户登录页面"""
         return render(request, 'login.html')

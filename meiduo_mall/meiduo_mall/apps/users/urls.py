@@ -18,7 +18,7 @@ urlpatterns = [
     # 用户中心
     url(r'^info/$', views.UserInfoView.as_view(), name='info'),
     # 添加邮箱
-    url(r'^email/$', views.EmailView.as_view()),
+    url(r'^emails/$', views.EmailView.as_view()),
 ]
 
 if __name__ == '__main__':
