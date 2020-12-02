@@ -10,6 +10,7 @@ class User(AbstractUser, BaseModel):
     """自定义用户模型类"""
 
     mobile = models.CharField(max_length=11, unique=True, verbose_name="手机号")  # admin站点中，该字段信息显示为手机号
+    email_active = models.BooleanField(default=False, verbose_name='邮箱验证状态')
 
     class Meta:
         db_table = 'tb_users'  # 自定义数据表名，在mysql中显示的表名
