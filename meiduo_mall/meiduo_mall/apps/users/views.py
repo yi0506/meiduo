@@ -37,7 +37,18 @@ class UserInfoView(LoginRequiredMixin, View):
         # 我们需要再 LonginView 中增加以下的逻辑：
         #       当url参数中有next ---> 127.0.0.1:8000/login/?next=/info/ 则提取出来，登录成功后跳转到 127.0.0.1:8000/info/ 指向的页面
         #       如果url参数没有next ---> 127.0.0.1:8000/login/ 则登陆成功后，直接跳转到首页 127.0.0.1:8000/
-        return render(request, 'user_center_info.html')
+
+        # 只要能够进入该视图，那么就是通过 LoginRequiredMixin 的认证，即用户已经登录过了
+        # request中自带一个user对象的属性，如果用户已登录，那么 request.user 就指代已登录用户，可以直接使用 request.user.username 取出用户数据，不需要在通过查表获取数据了，
+        # 如果用户未登录，那么该user对象为一个匿名用户，无法获取用户数据
+
+        context = {
+            'username': request.user.username,
+            'mobile': request.user.mobile,
+            'email': request.user.email,
+            'email_active': request.user.email_active,
+        }
+        return render(request, 'user_center_info.html', context)
 
 
 class LogoutView(View):
