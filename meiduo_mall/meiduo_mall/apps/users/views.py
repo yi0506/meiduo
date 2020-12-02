@@ -13,6 +13,14 @@ from users.models import User  # 这里可以直接从users开始导入，是由
 from meiduo_mall.utils import constants
 
 
+class EmailView(View):
+    """添加邮箱"""
+
+    def put(self, request):
+        """获取邮箱"""
+        pass
+
+
 class UserInfoView(LoginRequiredMixin, View):
     """用户中心"""
     def get(self, request):
