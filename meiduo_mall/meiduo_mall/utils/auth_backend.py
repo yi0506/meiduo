@@ -1,9 +1,40 @@
 # -*- coding: UTF-8 -*-
 """自定义用户认证后端"""
 from django.contrib.auth.backends import ModelBackend
+from django.contrib.auth.mixins import LoginRequiredMixin
 import re
+from django import http
 
 from users.models import User
+from meiduo_mall.utils.response_code import RETCODE, err_msg
+
+
+class LoginRequiredJsonMixin(LoginRequiredMixin):
+    """自定义判断用户是否登录的扩展类：用来返回JSON类型数据，默认只能返回HTML页面"""
+    def handle_no_permission(self):
+        """
+        直接响应json数据
+
+
+        LoginRequiredMixin源码：
+        >>> class AccessMixin
+        >>>     ...
+        >>>     def handle_no_permission(self):
+        >>>         if self.raise_exception:
+        >>>             raise PermissionDenied(self.get_permission_denied_message())
+        >>>     return redirect_to_login(self.request.get_full_path(), self.get_login_url(), self.get_redirect_field_name())
+
+
+        >>> class LoginRequiredMixin(AccessMixin):
+        >>>     def dispatch(self, request, *args, **kwargs):
+        >>>         if not request.user.is_authenticated:
+        >>>             return self.handle_no_permission()
+        >>>         return super(LoginRequiredMixin, self).dispatch(request, *args, **kwargs)
+
+        """
+        # 只需要重写handel_no_permission，不需要重写 dispatch
+        # 因为判断用户是否登录的操作，父类LoginRequiredMixin已经完成，子类只需要关心，如果用户未登录，对应怎样的操作
+        return http.JsonResponse({'code': RETCODE.SESSIONERR, 'errmsg': err_msg[RETCODE.SESSIONERR]})
 
 
 def get_user_by_account(account):
@@ -27,7 +58,7 @@ def get_user_by_account(account):
 
 
 class LoginAuthBackend(ModelBackend):
-    """用户登录认证后端"""
+    """自定义用户登录认证后端，实现手机号与用户名都可作为账号进行验证，默认只能通过用户名作为账号进行验证"""
     def authenticate(self, request, username=None, password=None, **kwargs):
         """
         重写用户认证的方法

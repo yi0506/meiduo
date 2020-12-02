@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect
-from django.urls import reverse
 from django.views import View
 from QQLoginTool.QQtool import OAuthQQ
 from django.conf import settings

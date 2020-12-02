@@ -13,16 +13,17 @@ import logging
 from meiduo_mall.utils.response_code import RETCODE, err_msg
 from users.models import User  # 这里可以直接从users开始导入，是由于添加了导包路径
 from meiduo_mall.utils import constants
+from meiduo_mall.utils.auth_backend import LoginRequiredJsonMixin
 
 
 logger = logging.getLogger('django')
 
 
-class EmailView(View):
+class EmailView(LoginRequiredJsonMixin, View):
     """添加邮箱"""
 
     def put(self, request):
-        """添加邮箱到数据库中"""
+        """添加邮箱到数据库中，能够进入到路由函数，说明用户已经通过LoginRequiredJsonMixin认证，已经登录"""
         # 接收参数
         json_str = request.body.decode()
         json_dict = json.loads(json_str)
@@ -30,7 +31,7 @@ class EmailView(View):
         # 校验参数
         if not re.match(r'^[a-z0-9][\w\.\-]*@[a-z0-9\-]+(\.[a-z]{2,5}){1,2}$', email):
             return http.HttpResponseForbidden('参数email有误')
-        # 将邮箱保存到对应用户的数据库email字段中
+        # 用户已登录，将邮箱保存到对应用户的数据库email字段中
         try:
             request.user.email = email
             request.user.save()
