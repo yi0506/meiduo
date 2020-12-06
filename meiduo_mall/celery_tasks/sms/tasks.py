@@ -4,7 +4,7 @@ from logging import getLogger
 
 from .yuntongxun.ccp_sms import CCP
 from celery_tasks.utils import constants
-from celery_tasks.run import celery_app
+from celery_tasks.main import celery_app
 
 
 logger = getLogger('django')

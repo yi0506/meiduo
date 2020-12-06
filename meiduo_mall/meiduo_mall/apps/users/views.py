@@ -39,6 +39,9 @@ class EmailView(LoginRequiredJsonMixin, View):
             logger.error(e)
             return http.JsonResponse({'code': RETCODE.EMAILERR, 'errmsg': err_msg[RETCODE.EMAILERR]})
         else:
+
+            # 发送验证邮件
+
             # 响应结果
             return http.JsonResponse({'code': RETCODE.OK, 'errmsg': err_msg[RETCODE.OK]})
 
