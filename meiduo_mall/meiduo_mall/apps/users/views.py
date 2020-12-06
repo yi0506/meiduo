@@ -13,11 +13,35 @@ import logging
 from meiduo_mall.utils.response_code import RETCODE, err_msg
 from users.models import User  # 这里可以直接从users开始导入，是由于添加了导包路径
 from meiduo_mall.utils import constants
-from meiduo_mall.utils.auth_backend import LoginRequiredJsonMixin, generate_email_verify_url
+from meiduo_mall.utils.auth_backend import LoginRequiredJsonMixin, generate_email_verify_url, check_email_verify_token
 from celery_tasks.email.tasks import send_verify_email
 
 
 logger = logging.getLogger('django')
+
+
+class VerifyUseEmail(View):
+    """验证用户邮箱"""
+    def get(self, request):
+        # 接收参数
+        token = request.GET.get('token')
+        # 校验参数
+        if not token:
+            return http.HttpResponseForbidden('缺少token')
+        # 从token中提取用户信息user_id
+        user = check_email_verify_token(token=token)
+        if user is None:
+            return http.HttpResponseBadRequest('无效的token')
+        # 将该用户的email_active字段置为True
+        try:
+            user.email_active = True
+            user.save()
+        except Exception as e:
+            logger.error(e)
+            return http.HttpResponseServerError('激活邮箱失败')
+        else:
+            # 响应结果：从定向到用户中心
+            return redirect(reverse('users:info'))
 
 
 class EmailView(LoginRequiredJsonMixin, View):
@@ -223,6 +247,7 @@ class RegisterView(View):
             if sms_code_redis.decode('utf-8') != sms_code_user:
                 return render(request, 'register.html', {'sms_code_errmsg': '输入短信验证码有误'})
         except Exception as e:
+            logger.error(e)
             return render(request, 'register.html', {'sms_code_errmsg': err_msg[RETCODE.DATABASEERROR]})
         # 保存注册数据：注册业务的核心
         try:

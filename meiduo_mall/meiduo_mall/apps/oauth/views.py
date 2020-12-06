@@ -12,7 +12,7 @@ from django.db import DatabaseError
 from meiduo_mall.utils.response_code import RETCODE, err_msg
 from oauth.models import OAuthQQUser
 from meiduo_mall.utils import constants
-from meiduo_mall.utils.encrypt_decrypt import encrypt_openid, decrypt_eponid
+from meiduo_mall.utils.auth_backend import encrypt_openid, decrypt_openid
 from users.models import User
 
 
@@ -80,7 +80,8 @@ class QQAuthCallBackView(View):
         try:
             redis_conn = get_redis_connection('verify_code')
             sms_code_server = redis_conn.get('sms_%s' % mobile)
-        except Exception:
+        except Exception as e:
+            logger.error(e)
             return http.HttpResponse(err_msg[RETCODE.DATABASEERROR])
         else:
             if sms_code_server is None:
@@ -88,7 +89,7 @@ class QQAuthCallBackView(View):
             if sms_code_client != sms_code_server.decode():
                 return render(request, 'oauth_callback.html', {'sms_code_errmsg': '输入短信验证码有误'})
         # 反序列化openid
-        openid_decrypted = decrypt_eponid(openid_encrypted)
+        openid_decrypted = decrypt_openid(openid_encrypted)
         # 判断openid是否有效：openid使用itsdangerous序列化后，只有600秒有效期
         if openid_decrypted is None:
             return render(request, 'oauth_callback.html', {'openid_errmsg': 'openid已失效'})

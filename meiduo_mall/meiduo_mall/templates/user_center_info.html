@@ -76,10 +76,10 @@
                         </div>
                         <div v-else>
                             <input v-model="email" type="email" name="email" class="email" readonly>
-                            <div v-if="email_active">
+                            <div v-if="email_active" class="email_active">
                                 已验证
                             </div>
-                            <div v-else>
+                            <div v-else class="email_inactive">
                                 待验证<input @click="save_email" :disabled="send_email_btn_disabled" type="button" :value="send_email_tip">
                             </div>
                         </div>

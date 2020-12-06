@@ -6,10 +6,30 @@ import re
 from django import http
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from django.conf import settings
+from itsdangerous import BadData
 
 from users.models import User
 from meiduo_mall.utils.response_code import RETCODE, err_msg
 from meiduo_mall.utils import constants
+
+
+def check_email_verify_token(token):
+    """反序列化token，获取user"""
+    sq = Serializer(settings.SECRET_KEY, constants.VERIFY_EMAIL_TOKEN_EXPIRES)
+    try:
+        data = sq.loads(token)
+    except BadData:
+        return None
+    else:
+        # 取出user_id 和 email
+        user_id = data.get('user_id')
+        email = data.get('email')
+        try:
+            user = User.objects.get(id=user_id, email=email)
+        except User.DoesNotExist:
+            return None
+        else:
+            return user
 
 
 def generate_email_verify_url(user):
@@ -22,6 +42,32 @@ def generate_email_verify_url(user):
     data = {'user_id': user.id, 'email': user.email}
     token = sq.dumps(data)
     return settings.EMAIL_VERIFY_URL + '?token=' + token.decode()
+
+
+def encrypt_openid(openid):
+    """对openid进行加密(序列化)"""
+    # 创建序列化器对象
+    sq = Serializer(secret_key=settings.SECRET_KEY, expires_in=constants.OPENID_EXPIRES)
+    # 待序列化的数据
+    data = {'openid': openid}
+    # 数据序列化
+    token = sq.dumps(data)
+    # 返回序列化后(加密)的数据
+    return token.decode()
+
+
+def decrypt_openid(token):
+    """对openid进行反序列化(解密)"""
+    # 创建序列化器对象
+    sq = Serializer(secret_key=settings.SECRET_KEY, expires_in=constants.OPENID_EXPIRES)
+    # 数据反序列化，得到openid
+    try:
+        data = sq.loads(token)
+    except BadData:
+        return None
+    else:
+        # 返回openid
+        return data.get('openid')
 
 
 class LoginRequiredJsonMixin(LoginRequiredMixin):

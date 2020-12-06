@@ -1001,6 +1001,14 @@ html,body{height:100%}
 	width: 200px;
 }
 
+.email_active{
+	color: #21b830;
+}
+
+.email_inactive{
+	color: #bd0c0c;
+}
+
 .error_email_tip{
 	color: #da2828;
 	text-indent: 130px;

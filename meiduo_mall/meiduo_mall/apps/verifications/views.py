@@ -48,6 +48,7 @@ class SMSCodeView(View):
             redis_conn.delete('img_{}'.format(uuid))
             image_code_redis = image_code_redis.decode('utf-8')  # redis接收类型为bytes类型，将bytes类型转为字符串
         except Exception as e:
+            logger.error(e)
             return http.JsonResponse({'code': RETCODE.DATABASEERROR, 'errmsg': err_msg[RETCODE.DATABASEERROR]})
         # 对比图形验证码
         if image_code_redis.lower() != image_code_user.lower():  # 转换为小写，再比较
@@ -70,6 +71,7 @@ class SMSCodeView(View):
             # 执行所有命令
             pl.execute()
         except Exception as e:
+            logger.error(e)
             return http.JsonResponse({'code': RETCODE.DATABASEERROR, 'errmsg': err_msg[RETCODE.DATABASEERROR]})
         # 手动输出日志，记录短信验证码
         logger.info('短信验证码:{}'.format(sms_code))
@@ -99,6 +101,7 @@ class ImageCodeView(View):
             redis_conn = get_redis_connection('verify_code')
             redis_conn.setex('img_{}'.format(uuid), constants.IMAGE_CODE_REDIS_EXPIRES, text)
         except Exception as e:
+            logger.error(e)
             return http.HttpResponse(err_msg[RETCODE.DATABASEERROR])
         # 响应图形验证码
         return http.HttpResponse(image, content_type='image/jpg')

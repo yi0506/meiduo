@@ -19,6 +19,8 @@ urlpatterns = [
     url(r'^info/$', views.UserInfoView.as_view(), name='info'),
     # 添加邮箱
     url(r'^emails/$', views.EmailView.as_view()),
+    # 验证用户邮箱
+    url(r'^emails/verification/$', views.VerifyUseEmail.as_view()),
 ]
 
 if __name__ == '__main__':
