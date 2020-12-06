@@ -4,9 +4,24 @@ from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.mixins import LoginRequiredMixin
 import re
 from django import http
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from django.conf import settings
 
 from users.models import User
 from meiduo_mall.utils.response_code import RETCODE, err_msg
+from meiduo_mall.utils import constants
+
+
+def generate_email_verify_url(user):
+    """
+    生成认证邮箱链接
+    :param user: 当前用户
+    :return http://www.meiduo.site/emails/verification/?token=eysdjflkdsfjsdlkgjasgOIUDSOGJSjdlskf
+    """
+    sq = Serializer(settings.SECRET_KEY, constants.VERIFY_EMAIL_TOKEN_EXPIRES)
+    data = {'user_id': user.id, 'email': user.email}
+    token = sq.dumps(data)
+    return settings.EMAIL_VERIFY_URL + '?token=' + token.decode()
 
 
 class LoginRequiredJsonMixin(LoginRequiredMixin):

@@ -13,7 +13,7 @@ import logging
 from meiduo_mall.utils.response_code import RETCODE, err_msg
 from users.models import User  # 这里可以直接从users开始导入，是由于添加了导包路径
 from meiduo_mall.utils import constants
-from meiduo_mall.utils.auth_backend import LoginRequiredJsonMixin
+from meiduo_mall.utils.auth_backend import LoginRequiredJsonMixin, generate_email_verify_url
 from celery_tasks.email.tasks import send_verify_email
 
 
@@ -41,7 +41,7 @@ class EmailView(LoginRequiredJsonMixin, View):
             return http.JsonResponse({'code': RETCODE.EMAILERR, 'errmsg': err_msg[RETCODE.EMAILERR]})
         else:
             # 发送验证邮件
-            verify_url = 'www.baidu.com'
+            verify_url = generate_email_verify_url(request.user)
             send_verify_email.delay(to_email=email, verify_url=verify_url)  # 一定要调用delay
             # 响应结果
             return http.JsonResponse({'code': RETCODE.OK, 'errmsg': err_msg[RETCODE.OK]})

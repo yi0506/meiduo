@@ -12,7 +12,7 @@ from django.db import DatabaseError
 from meiduo_mall.utils.response_code import RETCODE, err_msg
 from oauth.models import OAuthQQUser
 from meiduo_mall.utils import constants
-from meiduo_mall.utils.encryption import encrypt_openid, decrypt_eponid
+from meiduo_mall.utils.encrypt_decrypt import encrypt_openid, decrypt_eponid
 from users.models import User
 
 
