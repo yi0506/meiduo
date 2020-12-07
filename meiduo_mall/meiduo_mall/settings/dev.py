@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'contents',  # 首页广告模块
     'verifications',  # 验证码模块，该模块可不用注册，因为即不需要渲染模板，也不需要做模型的迁移
     'oauth',  # 第三方登录认证
+    'areas'  # 省市区三级联动
 ]
 
 MIDDLEWARE = [
