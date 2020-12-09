@@ -33,10 +33,11 @@ class User(AbstractUser, BaseModel):
 
     mobile = models.CharField(max_length=11, unique=True, verbose_name="手机号")  # admin站点中，该字段信息显示为手机号
     email_active = models.BooleanField(default=False, verbose_name='邮箱验证状态')
+    # 一对多的关系，外键定义在多的一方
     # 外键指向一个模型类对象，因此，对外键赋值，要赋值 模型类对象 或者 模型类对象_id
     # 如果赋值 模型类对象 ，Django会自动获取 该模型类对象的主键id，并将主键id添加到对应 模型类对象_id 的字段中
-    default_address = models.ForeignKey('Address', related_name='users', null=True, blank=True,
-                                        on_delete=models.SET_NULL, verbose_name='默认地址')
+    default_address = models.ForeignKey('Address', related_name='users', null=True, blank=True, on_delete=models.SET_NULL, verbose_name='默认地址')
+
     class Meta:
         db_table = 'tb_users'  # 自定义数据表名，在mysql中显示的表名
         verbose_name = "用户"  # 自定义在admin站点中显示的表名

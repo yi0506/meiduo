@@ -24,6 +24,11 @@ class AddressCreateView(LoginRequiredJsonMixin, View):
     """新增收货地址"""
     def post(self, request):
         """实现新增地址逻辑"""
+        # 判断用户地址是否超过上限：查询当前登录用户的地址数量
+        addr_count2 = Address.objects.filter(user=request.user).count()  # 直接查询
+        addr_count = request.user.addresses.count()  # 关联查询，"addresses" 为 related_name 关联字段
+        if addr_count >= constants.USER_ADDRESS_COUNTS_LIMIT:
+            return http.JsonResponse({'code': RETCODE.THROTTLINGERR, 'errmsg': err_msg[RETCODE.THROTTLINGERR]})
         # 接收参数
         json_dict = json.loads(request.body.decode())
         receiver = json_dict.get('receiver')
