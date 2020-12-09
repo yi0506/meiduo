@@ -33,7 +33,7 @@ class AreaView(View):
                     # 查询省级数据
                     # Area.objects.filter(属性名__条件表达式=值)
                     province_model_list = Area.objects.filter(parent__isnull=True)
-                except DatabaseError as e:
+                except Area.DoesNotExist as e:
                     logger.error(e)
                     return http.JsonResponse({'code': RETCODE.DBERR, 'errmsg': err_msg[RETCODE.DBERR], 'province_list': []})
                 else:
@@ -60,7 +60,7 @@ class AreaView(View):
                     # 自关联查询
                     parent_model = Area.objects.get(id=area_id)
                     sub_model_list = parent_model.subs.all()
-                except DatabaseError as e:
+                except Area.DoesNotExist as e:
                     logger.error(e)
                     return http.JsonResponse({'code': RETCODE.DBERR, 'errmsg': err_msg[RETCODE.DBERR], 'province_list': []})
                 else:
