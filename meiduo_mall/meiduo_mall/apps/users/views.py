@@ -47,11 +47,11 @@ class AddressCreateView(LoginRequiredJsonMixin, View):
                 return http.HttpResponseForbidden('参数email有误')
         # 保存用户输入的地址信息
         try:
-            Address.objects.create(
-                user=request.user,
+            address = Address.objects.create(
+                user=request.user,  # 对外键赋值 模型类对象，django会自动获取其主键id，并添加到 模型类对象_id 字段中
                 title=receiver,  # 标题默认为收货人，产品需求决定
                 receiver=receiver,
-                province_id=province_id,
+                province_id=province_id,  # 直接对外键赋值 模型类对象_id
                 city_id=city_id,
                 district_id=district_id,
                 place=place,
@@ -59,6 +59,10 @@ class AddressCreateView(LoginRequiredJsonMixin, View):
                 tel=tel,
                 email=email,
             )
+            # 如果当前登录用户没有默认收货地址，则需要指定默认地址
+            if not request.user.default_address:
+                request.user.default_address = address
+                request.user.save()
         except Exception as e:
             logger.error(e)
             return http.JsonResponse({'code': RETCODE.DBERR, 'errmsg': err_msg[RETCODE.DBERR]})
