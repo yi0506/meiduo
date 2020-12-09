@@ -67,8 +67,21 @@ class AddressCreateView(LoginRequiredJsonMixin, View):
             logger.error(e)
             return http.JsonResponse({'code': RETCODE.DBERR, 'errmsg': err_msg[RETCODE.DBERR]})
         else:
+            # 新增地址成功，将新增的地址响应给前端实现局部刷新
+            address_dict = {
+                "id": address.id,
+                "title": address.title,
+                "receiver": address.receiver,
+                "province": address.province.name,
+                "city": address.city.name,
+                "district": address.district.name,
+                "place": address.place,
+                "mobile": address.mobile,
+                "tel": address.tel,
+                "email": address.email
+            }
             # 响应新增地址结果：需要将新增的地址返回给前端渲染
-            return http.JsonResponse({'code': RETCODE.OK, 'errmsg': err_msg[RETCODE.OK]})
+            return http.JsonResponse({'code': RETCODE.OK, 'errmsg': err_msg[RETCODE.OK], 'address': address_dict})
 
 
 class AddressView(LoginRequiredMixin, View):
