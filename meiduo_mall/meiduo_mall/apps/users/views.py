@@ -64,7 +64,7 @@ class AddressCreateView(LoginRequiredJsonMixin, View):
                 tel=tel,
                 email=email,
             )
-            # 如果当前登录用户没有默认收货地址，则需要指定默认地址
+            # 如果当前登录用户没有默认收货地址，则需要指定默认地址，将当前地址设为默认地址
             if not request.user.default_address:
                 request.user.default_address = address
                 request.user.save()
@@ -92,7 +92,33 @@ class AddressCreateView(LoginRequiredJsonMixin, View):
 class AddressView(LoginRequiredMixin, View):
     """用户收货地址"""
     def get(self, request):
-        return render(request, 'user_center_site.html')
+        """查询并展示用户地址信息"""
+        # 获取当前登录用户对象
+        login_user = request.user
+        # 查询地址信息，以当前登录用户和is_deleted=False为条件查询地址信息
+        address_model_list = Address.objects.filter(user=login_user, is_deleted=False)
+        # 将用户模型列表转为字典列表，Vue.js和JsonResponse不认识模型列表，
+        # 如果使用Django或jinja2模板引擎，则可以直接使用
+        address_list = []
+        for address in address_model_list:
+            address_dict = {
+                "id": address.id,
+                "title": address.title,
+                "receiver": address.receiver,
+                "province": address.province.name,
+                "city": address.city.name,
+                "district": address.district.name,
+                "place": address.place,
+                "mobile": address.mobile,
+                "tel": address.tel,
+                "email": address.email
+            }
+            address_list.append(address_dict)
+        context = {
+            'default_address_id': login_user.default_address_id,
+            'addresses': address_list,
+        }
+        return render(request, 'user_center_site.html', context)
 
 
 class VerifyUseEmail(View):
