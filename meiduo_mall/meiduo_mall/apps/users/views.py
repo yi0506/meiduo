@@ -20,6 +20,12 @@ from celery_tasks.email.tasks import send_verify_email
 logger = logging.getLogger('django')
 
 
+class AddressCreateView(LoginRequiredJsonMixin, View):
+    """新增收货地址"""
+    def post(self, request):
+        pass
+
+
 class AddressView(LoginRequiredMixin, View):
     """用户收货地址"""
     def get(self, request):

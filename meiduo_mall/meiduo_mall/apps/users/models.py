@@ -4,7 +4,6 @@ from django.contrib.auth.models import AbstractUser
 from meiduo_mall.utils.models import BaseModel
 
 
-# Create your models here.
 class Address(BaseModel):
     """用户地址"""
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name='addresses', verbose_name='用户')
