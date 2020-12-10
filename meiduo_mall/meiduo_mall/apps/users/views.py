@@ -20,7 +20,31 @@ from celery_tasks.email.tasks import send_verify_email
 logger = logging.getLogger('django')
 
 
-class DefaultAddressView(View):
+class UpdateTitleAddressView(LoginRequiredJsonMixin, View):
+    """更新地址标题"""
+    def put(self, request, address_id):
+        """更新地址标题逻辑"""
+        # 接收参数：地址标题
+        json_dict = json.loads(request.body.decode())
+        title = json_dict.get('title')
+        # 校验参数
+        if not title:
+            return http.HttpResponseForbidden('缺少title参数')
+        try:
+            # 查询要更新标题的地址
+            address = Address.objects.get(id=address_id)
+            # 设置新的地址标题
+            address.title = title
+            address.save()
+        except Exception as e:
+            logger.error(e)
+            return http.JsonResponse({'code': RETCODE.DBERR, 'errmsg': err_msg[RETCODE.DBERR]})
+        else:
+            # 响应更新标题结果
+            return http.JsonResponse({'code': RETCODE.OK, 'errmsg': err_msg[RETCODE.OK]})
+
+
+class DefaultAddressView(LoginRequiredJsonMixin, View):
     """设置默认地址"""
     def put(self, request, address_id):
         """实现默认设置地址逻辑"""
@@ -38,7 +62,7 @@ class DefaultAddressView(View):
             return http.JsonResponse({'code': RETCODE.OK, 'errmsg': err_msg[RETCODE.OK]})
 
 
-class UpdateDeleteAddressView(LoginRequiredMixin, View):
+class UpdateDeleteAddressView(LoginRequiredJsonMixin, View):
     """更新和删除地址"""
     def put(self, request, address_id):
         """更新地址"""
@@ -183,7 +207,7 @@ class AddressCreateView(LoginRequiredJsonMixin, View):
 class AddressView(LoginRequiredMixin, View):
     """用户收货地址"""
     def get(self, request):
-        """查询并展示用户地址信息"""
+        """查询并展示用户地址信息页面"""
         # 获取当前登录用户对象
         login_user = request.user
         # 查询地址信息，以当前登录用户和is_deleted=False为条件查询地址信息
