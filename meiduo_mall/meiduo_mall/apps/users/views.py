@@ -20,6 +20,47 @@ from celery_tasks.email.tasks import send_verify_email
 logger = logging.getLogger('django')
 
 
+class ChangePasswordView(LoginRequiredMixin, View):
+    """修改密码"""
+
+    def get(self, request):
+        """展示修改密码界面"""
+        return render(request, 'user_center_pass.html')
+
+    def post(self, request):
+        """实现修改密码逻辑"""
+        # 接收参数
+        old_password = request.POST.get('old_password')
+        new_password = request.POST.get('new_password')
+        new_password2 = request.POST.get('new_password2')
+        # 校验参数
+        if not all([old_password, new_password, new_password2]):
+            return http.HttpResponseForbidden('缺少必传参数')
+        try:
+            if request.user.check_password(old_password) is False:
+                return render(request, 'user_center_pass.html', {'origin_password_errmsg': '原始密码错误'})
+        except Exception as e:
+            logger.error(e)
+            return render(request, 'user_center_pass.html', {'origin_password_errmsg': '修改密码失败'})
+        if not re.match(r'^[0-9A-Za-z]{8,20}$', new_password):
+            return http.HttpResponseForbidden('密码最少8位，最长20位')
+        if new_password != new_password2:
+            return http.HttpResponseForbidden('两次输入的密码不一致')
+        # 修改密码
+        try:
+            request.user.set_password(new_password)
+            request.user.save()
+        except Exception as e:
+            logger.error(e)
+            return render(request, 'user_center_pass.html', {'change_password_errmsg': '修改密码失败'})
+        # 清理状态保持信息
+        logout(request)
+        response = redirect(reverse('users:login'))
+        response.delete_cookie('username')
+        # # 响应密码修改结果：重定向到登录界面
+        return response
+
+
 class UpdateTitleAddressView(LoginRequiredJsonMixin, View):
     """更新地址标题"""
     def put(self, request, address_id):
@@ -358,12 +399,10 @@ class LoginView(View):
             return http.HttpResponseForbidden('请输入正确的用户名或手机号')
         if not re.search(r'^[0-9A-Za-z]{8,20}$', password):
             return http.HttpResponseForbidden('密码最少8位，最长20位')
-
         # 认证用户：使用账号查询用户是否存在，如果用户存在，再校验密码是否正确
         user = authenticate(username=username, password=password)
         if user is None:
             return render(request, 'login.html', {'account_errmsg': '账号或密码错误'})
-
         # 状态保持
         login(request=request, user=user)
         # 使用rememebered确定状态保持的时间（实现记住登录）

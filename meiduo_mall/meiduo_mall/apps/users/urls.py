@@ -31,7 +31,8 @@ urlpatterns = [
     url(r'^addresses/(?P<address_id>\d+)/default/$', views.DefaultAddressView.as_view()),
     # 设置地址标题
     url(r'^addresses/(?P<address_id>\d+)/title/$', views.UpdateTitleAddressView.as_view()),
-
+    # 修改密码
+    url(r'^password/$', views.ChangePasswordView.as_view(), name='password'),
 ]
 
 if __name__ == '__main__':
