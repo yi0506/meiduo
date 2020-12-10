@@ -259,7 +259,7 @@ EMAIL_HOST_PASSWORD = 'HSUEFCCFKSTYPHLY'  # 邮箱授权时获得的密码，非
 EMAIL_FROM = '美多商城<meiduo_yi@163.com>'  # 发件人抬头
 
 # 邮箱验证链接
-EMAIL_VERIFY_URL = 'http://www.meiduo.site/emails/verification/'
+EMAIL_VERIFY_URL = 'http://www.meiduo.site:8000/emails/verification/'
 
 if __name__ == '__main__':
     pass
