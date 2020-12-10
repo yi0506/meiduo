@@ -20,6 +20,24 @@ from celery_tasks.email.tasks import send_verify_email
 logger = logging.getLogger('django')
 
 
+class DefaultAddressView(View):
+    """设置默认地址"""
+    def put(self, request, address_id):
+        """实现默认设置地址逻辑"""
+
+        try:
+            # 查询出要将哪个地址作为默认地址
+            address = Address.objects.get(id=address_id)
+            # 将指定地址设置为默认地址
+            request.user.default_address = address
+            request.user.save()
+        except Exception as e:
+            logger.error(e)
+            return http.JsonResponse({'code': RETCODE.DBERR, 'errmsg': err_msg[RETCODE.DBERR]})
+        else:
+            return http.JsonResponse({'code': RETCODE.OK, 'errmsg': err_msg[RETCODE.OK]})
+
+
 class UpdateDeleteAddressView(LoginRequiredMixin, View):
     """更新和删除地址"""
     def put(self, request, address_id):
