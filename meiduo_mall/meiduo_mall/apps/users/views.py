@@ -181,7 +181,7 @@ class AddressCreateView(LoginRequiredJsonMixin, View):
     def post(self, request):
         """实现新增地址逻辑"""
         # 判断用户地址是否超过上限：查询当前登录用户的地址数量
-        addr_count2 = Address.objects.filter(user=request.user).count()  # 直接查询
+        # addr_count = Address.objects.filter(user=request.user).count()  # 直接查询
         addr_count = request.user.addresses.count()  # 关联查询，"addresses" 为 related_name 关联字段
         if addr_count >= constants.USER_ADDRESS_COUNTS_LIMIT:
             return http.JsonResponse({'code': RETCODE.THROTTLINGERR, 'errmsg': err_msg[RETCODE.THROTTLINGERR]})
@@ -220,7 +220,7 @@ class AddressCreateView(LoginRequiredJsonMixin, View):
                 tel=tel,
                 email=email,
             )
-            # 如果当前登录用户没有默认收货地址，则需要指定默认地址，将当前地址设为默认地址
+            # 如果当前登录用户没有默认收货地址，则需要指定默认地址，将当前新建的地址作为默认地址
             if not request.user.default_address:
                 request.user.default_address = address
                 request.user.save()
