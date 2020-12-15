@@ -12,7 +12,7 @@ from celery import Celery
 # 所以celery进程在读取django进程的settings的环境变量时，找不到
 # 解决方法：为celery配置一下django环境变量
 import os
-if not os.getenv('DJANGO_SETTINGS_MODULE'):
+if os.getenv('DJANGO_SETTINGS_MODULE') is None:
     os.environ['DJANGO_SETTINGS_MODULE'] = 'meiduo_mall.settings.dev'
 # 创建Celery实例（生产者）
 celery_app = Celery('meiduo')
