@@ -22,19 +22,29 @@ class IndexView(View):
             # 只有11个频道组
             if group_id not in categories:
                 categories[group_id] = {
-                    'channels': [],
-                    'sub_cats': [],
+                    'channels': [],  # 所有的频道 channel，一级类别
+                    'sub_cats': [],  # 二级、三级类别
                 }
-            # 查询当前频道对应的一级类别
-            cat = channel.category
+            # 查询当前频道对应的一级类别，通过channel，承上启下，向上查GoodsChannelGroup，向下查GoodsCategory
+            cat_1 = channel.category
             # 将cat添加到channels，直接通过关联查询（通过group_id一查多，查所有的channel，效率不高）
             categories[group_id]['channels'].append({
-                'id': cat.id,
-                'name': cat.name,
+                'id': cat_1.id,
+                'name': cat_1.name,
                 'url': channel.url
-
             })
-        return render(request, 'index.html')
+            # 查询二级和三级类别
+            for cat_2 in cat_1.subs.all():  # 该一级类别下所有的二级类别
+                cat_2.sub_cats = []  # # 动态添加一个sub_cats属性，存放该二级类别下的所有三级类别，GoodsCategory模型类本身没有该sub_cats属性，因此数据库中也没有该字段
+                for cat_3 in cat_2.subs.all():  # 该二级类别下所有的三级类别
+                    cat_2.sub_cats.append(cat_3)
+                # 将二级类别添加到一级类别的sub_cats中
+                categories[group_id]['sub_cats'].append(cat_2)
+        # 构造上下文
+        context = {
+            'categories': categories
+        }
+        return render(request, 'index.html', context)
 
 
 class FaviconView(View):
