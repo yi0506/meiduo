@@ -16,11 +16,9 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 import os
 import sys
 
-from meiduo_mall.utils.db_ip import get_db_ip
-
 
 # 获取数据库计算机的ip地址
-MEIDUO_DB_IP = get_db_ip()
+MEIDUO_DB_IP = "192.168.192.133"
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
