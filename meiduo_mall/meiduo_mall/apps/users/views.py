@@ -271,7 +271,8 @@ class AddressView(LoginRequiredMixin, View):
             }
             address_list.append(address_dict)
         context = {
-            'default_address_id': login_user.default_address_id,
+            # 'default_address_id': login_user.default_address_id,  # 没有默认地址时为 None
+            'default_address_id': login_user.default_address_id or '-1',  # 没有默认地址时为 '-1'，收货地址id从1开始
             'addresses': address_list,
         }
         return render(request, 'user_center_site.html', context)

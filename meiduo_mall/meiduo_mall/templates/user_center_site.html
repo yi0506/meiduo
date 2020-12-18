@@ -120,6 +120,7 @@
                         <h3>[[ address.title ]]</h3>
                         <a @click="show_edit_title(index)" class="edit_title" href="javascript:;"></a>
                     </div>
+{#                    <em v-if="address.id==default_address_id">默认地址</em>#}
                     <em v-if="address.id===default_address_id">默认地址</em>
                     <span @click="delete_address(index)">×</span>
                 </div>
@@ -229,6 +230,7 @@
 	</div>
 	<script type="text/javascript">
 		let addresses = {{ addresses | safe }};
+		{#let default_address_id = "{{ default_address_id }}";#}
 		let default_address_id = {{ default_address_id }};
     </script>
 	<script type="text/javascript" src="{{ static('js/common.js') }}"></script>
