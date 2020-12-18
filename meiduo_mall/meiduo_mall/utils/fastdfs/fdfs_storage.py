@@ -5,10 +5,13 @@ from django.conf import settings
 
 class FastDFSStorage(Storage):
     """自定义存储类"""
-    # def __init__(self, option=None):
-    #     """初始化设置"""
-    #     if not option:
-    #         option = settings.CUSTOM_STORAGE_OPTIONS
+    def __init__(self, fdfs_base_url=None):
+        """初始化设置"""
+        # if not fdfs_base_url:
+        #     self.fdfs_base_url = settings.FDFS_BASE_URL
+        # else:
+        #     self.fdfs_base_url = fdfs_base_url
+        self.fdfs_base_url = fdfs_base_url or settings.FDFS_BASE_URL
 
     def _open(self, name, mode='rb'):
         """
@@ -36,7 +39,7 @@ class FastDFSStorage(Storage):
         :return 文件的全路径
                 http://192.168.192.133:8888/group1/M00/00/01/CtM3BVrMexWAfodJAAAhg8MeEWU8364862
         """
-        return 'http://192.168.192.133:8888/' + name
+        return self.fdfs_base_url + name
 
 
 if __name__ == '__main__':
