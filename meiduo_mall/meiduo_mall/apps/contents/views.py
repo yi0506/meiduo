@@ -3,7 +3,8 @@ from django.views import View
 from django.contrib.staticfiles.storage import staticfiles_storage
 from collections import OrderedDict
 
-from goods.models import GoodsCategory, GoodsChannel, GoodsChannelGroup
+from goods.models import GoodsChannel
+from contents.models import Content, ContentCategory
 
 
 class IndexView(View):
@@ -40,9 +41,17 @@ class IndexView(View):
                     cat_2.sub_cats.append(cat_3)
                 # 将二级类别添加到一级类别的sub_cats中
                 categories[group_id]['sub_cats'].append(cat_2)
+        # 查询首页广告数据
+        # 查询所有广告类别
+        contents = OrderedDict()
+        content_categories = ContentCategory.objects.all()
+        for content_category in content_categories:
+            # 使用广告类别查询处该类别对应的所有广告内容
+            contents[content_category.key] = content_category.content_set.filter(status=True).order_by('sequence')  # 查询出未下架的广告并排序
         # 构造上下文
         context = {
-            'categories': categories
+            'categories': categories,
+            'contents': contents
         }
         return render(request, 'index.html', context)
 
