@@ -4,6 +4,32 @@ from collections import OrderedDict
 from goods.models import GoodsChannel
 
 
+def get_breadcrumb(category):
+    """
+    获取面包屑导航
+    :param category: 类别对象：一级、二级、三级类别
+    :return 一级类别 ---> 一级，
+            二级类别 ---> 一级 + 二级，
+            三级类别 ---> 一级 + 二级 + 三级
+    """
+    breadcrumb = {
+        'cat1': '',  # 一级
+        'cat2': '',  # 二级
+        'cat3': ''  # 三级
+    }
+    # 判断category是几级类别
+    if category.parent is None:  # category为一级类别
+        breadcrumb['cat1'] = category
+    elif category.subs.count() == 0:  # category为三级类别
+        breadcrumb['cat1'] = category.parent.parent
+        breadcrumb['cat2'] = category.parent
+        breadcrumb['cat3'] = category
+    else:  # category为二级类别
+        breadcrumb['cat1'] = category.parent
+        breadcrumb['cat2'] = category
+    return breadcrumb
+
+
 def get_categories():
     """获取商品分类三级数据"""
     # 准备商品分类字典，有序字典
