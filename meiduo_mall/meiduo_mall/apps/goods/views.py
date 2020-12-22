@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views import View
 from django import http
-from django.core.paginator import Paginator  # 分页器
+from django.core.paginator import Paginator, EmptyPage  # Paginator为分页器
 
 from goods.models import GoodsCategory, GoodsChannel
 from meiduo_mall.utils.method_package import get_categories, get_breadcrumb
@@ -36,12 +36,19 @@ class ListView(View):
         except GoodsChannel.DoesNotExist:
             return http.HttpResponseForbidden('一级类别数据错误')
         # 分页查询和排序：category查询sku，一查多
-        skus = category.sku_set.filter(is_launched=True).order_by(sort_field)
+        try:
+            skus = category.sku_set.filter(is_launched=True).order_by(sort_field)
+        except GoodsCategory.DoesNotExist:
+            return http.HttpResponseForbidden('查询条件错误')
         # 创建分页器
         # Paginator('要分页的记录', '每页记录的条数')
         paginator = Paginator(skus, constants.RECORDS_NUM_PER_PAGE)  # 把skus进行分页，每页5条记录
         # 获取用户要看的那一个记录
-        page_skus = paginator.page(page_num)  # 获取到page_num页中的5条记录
+        try:
+            page_skus = paginator.page(page_num)  # 获取到page_num页中的5条记录
+        # 如果用户输入的page_num是否超过总页数，捕获异常
+        except EmptyPage:
+            return http.HttpResponseNotFound('Empty Page')
         # 获取总页数，前端分页插件使用
         total_page = paginator.num_pages
         # 构造上下文
