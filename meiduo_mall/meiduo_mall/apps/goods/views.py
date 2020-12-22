@@ -50,13 +50,13 @@ class ListView(View):
         except EmptyPage:
             return http.HttpResponseNotFound('Empty Page')
         # 获取总页数，前端分页插件使用
-        total_page = paginator.num_pages
+        total_pages = paginator.num_pages
         # 构造上下文
         context = {
             'categories': categories,
             'breadcrumb': breadcrumb,
             'page_skus': page_skus,
-            'total_page': total_page,
+            'total_pages': total_pages,
             'page_num': page_num,
             'sort': sort,
             'category_id': category_id,
