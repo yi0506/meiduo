@@ -55,6 +55,11 @@ class ListView(View):
         context = {
             'categories': categories,
             'breadcrumb': breadcrumb,
+            'page_skus': page_skus,
+            'total_page': total_page,
+            'page_num': page_num,
+            'sort': sort,
+            'category_id': category_id,
         }
         return render(request, 'list.html', context)
 
