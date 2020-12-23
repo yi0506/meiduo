@@ -34,10 +34,9 @@ class FastDFSStorage(Storage):
 
     def url(self, name):
         """
-        返回文件的全路径
+        重写url方法，返回文件的全路径
         :param name: 文件的相对路径
-        :return 文件的全路径
-                http://192.168.192.133:8888/group1/M00/00/01/CtM3BVrMexWAfodJAAAhg8MeEWU8364862
+        :return 文件的全路径  ----> http://192.168.192.133:8888/group1/M00/00/01/CtM3BVrMexWAfodJAAAhg8MeEWU8364862
         """
         return self.fdfs_base_url + name
 

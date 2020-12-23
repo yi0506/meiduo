@@ -3,9 +3,30 @@ from django.views import View
 from django import http
 from django.core.paginator import Paginator, EmptyPage  # Paginator为分页器
 
-from goods.models import GoodsCategory, GoodsChannel
+from goods.models import GoodsCategory, GoodsChannel, SKU
 from meiduo_mall.utils.method_package import get_categories, get_breadcrumb
 from meiduo_mall.utils import constants
+from meiduo_mall.utils.response_code import RETCODE, err_msg
+
+
+class HotGoodsView(View):
+    """热销排行视图"""
+    def get(self, request, category_id):
+        """查询列表页热销排行数据"""
+        try:
+            skus = SKU.objects.filter(category_id=category_id, is_launched=True).order_by('-sales')[:2]
+        except SKU.DoesNotExist:
+            return http.HttpResponseForbidden('参数category_id错误')
+        hot_skus = []
+        for sku in skus:
+            sku_dict = {
+                'id': sku.id,
+                'name': sku.name,
+                'price': sku.price,
+                'default_image_url': sku.default_image.url
+            }
+            hot_skus.append(sku_dict)
+        return http.JsonResponse({'code': RETCODE.OK, 'errmsg': err_msg[RETCODE.OK], 'hot_skus': hot_skus})
 
 
 class ListView(View):
