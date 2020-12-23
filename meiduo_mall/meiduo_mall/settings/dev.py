@@ -18,7 +18,7 @@ import sys
 
 
 # 获取数据库计算机的ip地址
-MEIDUO_DB_IP = "192.168.192.133"
+MEIDUO_DATABASE_IP = "192.168.192.133"
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'oauth',  # 第三方登录认证
     'areas',  # 省市区三级联动
     'goods',  # 商品模块
+    'haystack',  # 全文检索
 ]
 
 MIDDLEWARE = [
@@ -107,7 +108,7 @@ WSGI_APPLICATION = 'meiduo_mall.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',  # 数据库引擎
-        'HOST': MEIDUO_DB_IP,  # 数据库主机
+        'HOST': MEIDUO_DATABASE_IP,  # 数据库主机
         'PORT': 3306,  # 数据库端口
         'USER': 'yi0506',  # 数据库用户名
         'PASSWORD': '211314',  # 数据库用户密码
@@ -121,7 +122,7 @@ CACHES = {
     # 默认存储数据库
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://{}:6379/0".format(MEIDUO_DB_IP),
+        "LOCATION": "redis://{}:6379/0".format(MEIDUO_DATABASE_IP),
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
             "PASSWORD": "211314",
@@ -130,7 +131,7 @@ CACHES = {
     # session数据库
     "session": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://{}:6379/1".format(MEIDUO_DB_IP),
+        "LOCATION": "redis://{}:6379/1".format(MEIDUO_DATABASE_IP),
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
             "PASSWORD": "211314",
@@ -139,7 +140,7 @@ CACHES = {
     # 验证码
     "verify_code": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://{}:6379/2".format(MEIDUO_DB_IP),
+        "LOCATION": "redis://{}:6379/2".format(MEIDUO_DATABASE_IP),
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
             "PASSWORD": "211314",
@@ -264,7 +265,19 @@ EMAIL_VERIFY_URL = 'http://www.meiduo.site:8000/emails/verification/'
 DEFAULT_FILE_STORAGE = 'meiduo_mall.utils.fastdfs.fdfs_storage.FastDFSStorage'
 
 # FastDFS相关参数
-FDFS_BASE_URL = 'http://{}:8888/'.format(MEIDUO_DB_IP)
+FDFS_BASE_URL = 'http://{}:8888/'.format(MEIDUO_DATABASE_IP)
+
+# Haystack
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+        'URL': 'http://{}:9200/'.format(MEIDUO_DATABASE_IP), # Elasticsearch服务器ip地址，端口号固定为9200
+        'INDEX_NAME': 'meiduo_mall', # Elasticsearch建立的索引库的名称
+    },
+}
+
+# 当添加、修改、删除数据时，自动生成索引
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
 
 if __name__ == '__main__':

@@ -18,7 +18,6 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-
     # users，总路由不校验，子路由校验
     url(r"^", include('users.urls', namespace='users')),
     # contents,总路由不校验，子路由校验
@@ -31,5 +30,7 @@ urlpatterns = [
     url(r'^', include('areas.urls')),
     # goods
     url(r'^', include('goods.urls', namespace='goods')),
+    # haystack
+    url(r'^search/', include('haystack.urls')),
 
 ]
