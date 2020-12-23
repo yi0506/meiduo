@@ -56,51 +56,21 @@
     <div class="main_wrap clearfix">
         <div class=" clearfix">
             <ul class="goods_type_list clearfix">
-                <li>
-                    <a href="detail.html"><img src="{{ static('images/goods/goods003.jpg') }}"></a>
-                    <h4><a href="detail.html">360手机 N6 Pro 全网通 6GB+128GB 极夜黑</a></h4>
-                    <div class="operate">
-                        <span class="price">￥1666.80</span>
-                        <span class="unit">台</span>
-                        <a href="#" class="add_goods" title="加入购物车"></a>
-                    </div>
-                </li>
-                <li>
-                    <a href="detail.html"><img src="{{ static('images/goods/goods005.jpg') }}"></a>
-                    <h4><a href="detail.html">360手机 N6 Pro 全网通 6GB+128GB 极夜黑</a></h4>
-                    <div class="operate">
-                        <span class="price">￥1000.00</span>
-                        <span class="unit">台</span>
-                        <a href="#" class="add_goods" title="加入购物车"></a>
-                    </div>
-                </li>
-                <li>
-                    <a href="detail.html"><img src="{{ static('images/goods/goods002.jpg') }}"></a>
-                    <h4><a href="detail.html">360手机 N6 Pro 全网通 6GB+128GB 极夜黑</a></h4>
-                    <div class="operate">
-                        <span class="price">￥2888.80</span>
-                        <span class="unit">台</span>
-                        <a href="#" class="add_goods" title="加入购物车"></a>
-                    </div>
-                </li>
-                <li>
-                    <a href="detail.html"><img src="{{ static('images/goods/goods003.jpg') }}"></a>
-                    <h4><a href="detail.html">360手机 N6 Pro 全网通 6GB+128GB 极夜黑</a></h4>
-                    <div class="operate">
-                        <span class="price">￥1666.80</span>
-                        <span class="unit">台</span>
-                        <a href="#" class="add_goods" title="加入购物车"></a>
-                    </div>
-                </li>
-                <li>
-                    <a href="detail.html"><img src="{{ static('images/goods/goods005.jpg') }}"></a>
-                    <h4><a href="detail.html">360手机 N6 Pro 全网通 6GB+128GB 极夜黑</a></h4>
-                    <div class="operate">
-                        <span class="price">￥1000.00</span>
-                        <span class="unit">台</span>
-                        <a href="#" class="add_goods" title="加入购物车"></a>
-                    </div>
-                </li>
+                {% for result in page %}
+                    <li>
+                        {# object取得才是sku对象 #}
+                        <a href="/detail/{{ result.object.id }}/"><img src="{{ result.object.default_image.url }}"></a>
+                        <h4><a href="/detail/{{ result.object.id }}/">{{ result.object.name }}</a></h4>
+                        <div class="operate">
+                            <span class="price">￥{{ result.object.price }}</span>
+                            <span class="unit">台</span>
+                            <span>{{ result.object.comments }}评价</span>
+                            <a href="#" class="add_goods" title="加入购物车"></a>
+                        </div>
+                    </li>
+                {% else %}
+                    <p>没有找到您要查询的商品。</p>
+                {% endfor %}
             </ul>
             <div class="pagenation">
                 <div id="pagination" class="page"></div>
@@ -127,10 +97,11 @@
     <script type="text/javascript">
         $(function () {
             $('#pagination').pagination({
-                currentPage: 1,
-                totalPage: 3,
+                currentPage: {{ page.number }},
+                totalPage: {{ paginator.num_pages }},
                 callback:function (current) {
                     {#location.href = '/search/?q=iphone&page=' + current;#}
+                    location.href = '/search/?q={{ query }}&page=' + current;
                 }
             })
         });
