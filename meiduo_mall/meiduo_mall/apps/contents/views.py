@@ -3,9 +3,7 @@ from django.views import View
 from django.contrib.staticfiles.storage import staticfiles_storage
 from collections import OrderedDict
 
-from goods.models import GoodsChannel
-from contents.models import Content, ContentCategory
-
+from contents.models import ContentCategory
 from meiduo_mall.utils.method_package import get_categories
 
 
