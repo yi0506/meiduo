@@ -266,6 +266,7 @@ DEFAULT_FILE_STORAGE = 'meiduo_mall.utils.fastdfs.fdfs_storage.FastDFSStorage'
 
 # FastDFS相关参数
 FDFS_BASE_URL = 'http://{}:8888/'.format(MEIDUO_DATABASE_IP)
+# FDFS_BASE_URL = 'http://image.meiduo.site:8888/'
 
 # Haystack
 HAYSTACK_CONNECTIONS = {
