@@ -117,10 +117,6 @@ class ListView(View):
         categories = get_categories()
         # 查询面包屑导航： 一级 -> 二级 ->三级
         breadcrumb = get_breadcrumb(category)
-        try:
-            breadcrumb['cat1'].url = GoodsChannel.objects.get(id=breadcrumb['cat1'].id).url
-        except GoodsChannel.DoesNotExist:
-            return http.HttpResponseForbidden('一级类别数据错误')
         # 分页查询和排序：category查询sku，一查多
         try:
             skus = category.sku_set.filter(is_launched=True).order_by(sort_field)

@@ -1,5 +1,6 @@
 # -*- coding: UTF-8 -*-
 from collections import OrderedDict
+from django import http
 
 from goods.models import GoodsChannel
 
@@ -27,6 +28,10 @@ def get_breadcrumb(category):
     else:  # category为二级类别
         breadcrumb['cat1'] = category.parent
         breadcrumb['cat2'] = category
+    try:
+        breadcrumb['cat1'].url = GoodsChannel.objects.get(id=breadcrumb['cat1'].id).url
+    except GoodsChannel.DoesNotExist:
+        return http.HttpResponseForbidden('一级类别数据错误')
     return breadcrumb
 
 
