@@ -9,6 +9,13 @@ from meiduo_mall.utils import constants
 from meiduo_mall.utils.response_code import RETCODE, err_msg
 
 
+class DetailVisitView(View):
+    """统计商品访问量"""
+    def post(self, request, category_id):
+        """处理统计商品访问量的逻辑"""
+        pass
+
+
 class DetailView(View):
     """商品详情页"""
 
@@ -57,7 +64,6 @@ class DetailView(View):
                 key[index] = option.id
                 option.sku_id = spec_sku_map.get(tuple(key))
             spec.spec_options = spec_options
-
         # 构造上下文
         context = {
             'categories': categories,
