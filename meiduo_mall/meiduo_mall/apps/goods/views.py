@@ -9,6 +9,14 @@ from meiduo_mall.utils import constants
 from meiduo_mall.utils.response_code import RETCODE, err_msg
 
 
+class DetailView(View):
+    """商品详情页"""
+
+    def get(self, request, sku_id):
+        """提供商品详情页"""
+        return render(request, 'detail.html')
+
+
 class HotGoodsView(View):
     """热销排行视图"""
     def get(self, request, category_id):
