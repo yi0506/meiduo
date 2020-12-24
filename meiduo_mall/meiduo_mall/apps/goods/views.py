@@ -1,24 +1,61 @@
 from django.shortcuts import render
 from django.views import View
 from django import http
-from django.core.paginator import Paginator, EmptyPage  # Paginator为分页器
+from django.core.paginator import Paginator, EmptyPage  # Paginator为分页器，EmptyPage为分页器的异常
+from django.utils import timezone  # 处理时间的工具
+from datetime import datetime
+from logging import getLogger
 
-from goods.models import GoodsCategory, GoodsChannel, SKU
+from goods.models import GoodsCategory, SKU, GoodsVisitCount
 from meiduo_mall.utils.method_package import get_categories, get_breadcrumb
 from meiduo_mall.utils import constants
 from meiduo_mall.utils.response_code import RETCODE, err_msg
+
+
+logger = getLogger('django')
 
 
 class DetailVisitView(View):
     """统计商品访问量"""
     def post(self, request, category_id):
         """处理统计商品访问量的逻辑"""
-        pass
+        # 接收、校验参数
+        try:
+            category = GoodsCategory.objects.get(id=category_id)
+        except GoodsCategory.DoesNotExist:
+            return http.HttpResponseForbidden('category_id不存在')
+        # 获取当天的日期
+        t = timezone.localtime()
+        # 获取当天的时间字符串
+        # today_str = "%d-%02d-%02d" % (t.year, t.month, t.day)
+        today_str = "{:d}-{:0>2d}-{:0>2d}".format(t.year, t.month, t.day)
+        # 将时间字符串转为时间对象datetime，为了与DateField字段类型匹配
+        today_date = datetime.strptime(today_str, '%Y-%m-%d')
+        # 统计指定分类商品的访问量
+        # GoodsVisitCount.objects.filter(data='当天日期', category_id=category.id)
+        # 判断当天中指定的分类商品对应的记录是否存在
+        try:
+            # 如果查询到记录，直接获取到记录对应的对象
+            counts_obj = GoodsVisitCount.objects.get(date=today_date, category=category)
+        except GoodsVisitCount.DoesNotExist:
+            # 如果查询不到记录，则新建一条记录对应的对象
+            counts_obj = GoodsVisitCount()
+        try:
+            # 更新该条记录
+            counts_obj.category = category
+            counts_obj.count += 1  # count默认为0
+            counts_obj.date = today_date
+            counts_obj.save()
+        except Exception as e:
+            logger.error(e)
+            return http.HttpResponseServerError('统计失败')
+        else:
+            # 响应结果
+            return http.JsonResponse({'code': RETCODE.OK, 'errmsg': err_msg[RETCODE.OK]})
 
 
 class DetailView(View):
     """商品详情页"""
-
     def get(self, request, sku_id):
         """提供商品详情页"""
         # 接收、校验参数

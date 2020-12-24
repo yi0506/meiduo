@@ -175,7 +175,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+# TIME_ZONE = 'UTC'  # 与北京时间差8小时
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
