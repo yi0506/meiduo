@@ -1,5 +1,5 @@
 # -*- coding: UTF-8 -*-
-"""自定义用户认证后端"""
+"""自定义用户认证后端与相关功能函数"""
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.mixins import LoginRequiredMixin
 import re

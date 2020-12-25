@@ -25,5 +25,9 @@ USER_ADDRESS_COUNTS_LIMIT = 20
 # 省市区联动数据缓存过期时间
 PROVINCE_CITY_DISTRICT_EXPIRES = 3600
 
-# 每页显示记录的条数
+# 商品列表页每页显示记录的条数
 RECORDS_NUM_PER_PAGE = 5
+
+# 个人中心显示浏览记录的条数
+USER_CENTER_HISTORY_COUNT = 5
+

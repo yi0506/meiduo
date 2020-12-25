@@ -1,4 +1,5 @@
 # -*- coding: UTF-8 -*-
+"""自定义模型类的基类"""
 from django.db import models
 
 

@@ -1,4 +1,5 @@
 # -*- coding: UTF-8 -*-
+"""类视图代码封装复用"""
 from collections import OrderedDict
 from django import http
 

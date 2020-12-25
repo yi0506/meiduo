@@ -15,9 +15,40 @@ from users.models import User, Address  # 这里可以直接从users开始导入
 from meiduo_mall.utils import constants
 from meiduo_mall.utils.auth_backend import LoginRequiredJsonMixin, generate_email_verify_url, check_email_verify_token
 from celery_tasks.email.tasks import send_verify_email
+from goods.models import SKU
 
 
 logger = logging.getLogger('django')
+
+
+class UserBrowseHistory(LoginRequiredJsonMixin, View):
+    """用户浏览记录"""
+
+    def post(self, request):
+        """保存用户浏览记录"""
+        # 接收参数
+        json_dict = json.loads(request.body.decode())
+        sku_id = json_dict.get('sku_id')
+        # 校验参数
+        try:
+            SKU.objects.get(id=sku_id)
+        except SKU.DoesNotExist:
+            return http.HttpResponseForbidden('sku不存在')
+        # 保存sku_id到Redis
+        redis_conn = get_redis_connection('history')
+        # 建立管道对象
+        pl = redis_conn.pipeline()
+        user_id = request.user.id
+        # 先去重
+        pl.lrem('history_%s' % user_id, 0, sku_id)
+        # 再保存：最近浏览的商品在最前面
+        pl.lpush('history_%s' % user_id, sku_id)
+        # 最后截取
+        pl.ltrim('history_%s' % user_id, 0, constants.USER_CENTER_HISTORY_COUNT)
+        # 执行管道
+        pl.execute()
+        # 响应结果
+        return http.JsonResponse({'code': RETCODE.OK, 'errmsg': err_msg[RETCODE.OK]})
 
 
 class ChangePasswordView(LoginRequiredMixin, View):
