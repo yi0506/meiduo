@@ -40,15 +40,33 @@ class UserBrowseHistory(LoginRequiredJsonMixin, View):
         pl = redis_conn.pipeline()
         user_id = request.user.id
         # 先去重
-        pl.lrem('history_%s' % user_id, 0, sku_id)
+        pl.lrem('history_{}'.format(user_id), 0, sku_id)
         # 再保存：最近浏览的商品在最前面
-        pl.lpush('history_%s' % user_id, sku_id)
+        pl.lpush('history_{}'.format(user_id), sku_id)
         # 最后截取
-        pl.ltrim('history_%s' % user_id, 0, constants.USER_CENTER_HISTORY_COUNT)
+        pl.ltrim('history_{}'.format(user_id), 0, constants.USER_CENTER_HISTORY_COUNT)
         # 执行管道
         pl.execute()
         # 响应结果
         return http.JsonResponse({'code': RETCODE.OK, 'errmsg': err_msg[RETCODE.OK]})
+
+    def get(self, request):
+        """获取用户浏览记录"""
+        # 获取Redis存储的sku_id列表信息
+        redis_conn = get_redis_connection('history')
+        sku_ids = redis_conn.lrange('history_{}'.format(request.user.id), 0, -1)
+        # 根据sku_ids列表数据，查询出商品sku信息
+        skus = []
+        for sku_id in sku_ids:
+            sku = SKU.objects.get(id=sku_id)
+            skus.append({
+                'id': sku.id,
+                'name': sku.name,
+                'default_image_url': sku.default_image.url,
+                'price': sku.price
+            })
+
+        return http.JsonResponse({'code': RETCODE.OK, 'errmsg': [RETCODE.OK], 'skus': skus})
 
 
 class ChangePasswordView(LoginRequiredMixin, View):

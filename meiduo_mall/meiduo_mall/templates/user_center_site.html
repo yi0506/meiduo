@@ -60,50 +60,6 @@
 				<li><a href="{{ url('users:password') }}">· 修改密码</a></li>
 			</ul>
 		</div>
-{#		<div class="right_content clearfix" v-cloak>#}
-{#			<div class="site_top_con">#}
-{#				<a @click="show_add_site" href="javascript:;">新增收货地址</a>#}
-{#				<span>你已创建了<b>2</b>个收货地址，最多可创建<b>20</b>个</span>#}
-{#			</div>#}
-{#			<div class="site_con">#}
-{#				<div class="site_title">#}
-{#					<h3>传智播客 北京</h3>#}
-{#					<a href="javascript:;" class="edit_icon"></a>#}
-{#					<em>默认地址</em>						#}
-{#					<span class="del_site">×</span>#}
-{#				</div>#}
-{#				<ul class="site_list">#}
-{#					<li><span>收货人：</span><b>传智播客</b></li>#}
-{#					<li><span>所在地区：</span><b>北京市昌平区</b></li>#}
-{#					<li><span>地址：</span><b>建材城西路</b></li>#}
-{#					<li><span>手机：</span><b>188****0001</b></li>#}
-{#					<li><span>固定电话：</span><b>78912345</b></li>#}
-{#					<li><span>电子邮箱：</span><b>hmmeiduo@163.com</b></li>#}
-{#				</ul>#}
-{#				<div class="down_btn">#}
-{#					<a href="javascript:;" class="edit_icon">编辑</a>#}
-{#				</div>#}
-{#			</div>#}
-{#			<div class="site_con">#}
-{#				<div class="site_title">#}
-{#					<h3>传智播客 北京</h3>#}
-{#					<a href="javascript:;" class="edit_icon"></a>#}
-{#					<span class="del_site">×</span>#}
-{#				</div>#}
-{#				<ul class="site_list">#}
-{#					<li><span>收货人：</span><b>传智播客</b></li>#}
-{#					<li><span>所在地区：</span><b>北京市昌平区</b></li>#}
-{#					<li><span>地址：</span><b>建材城西路</b></li>#}
-{#					<li><span>手机：</span><b>188****0001</b></li>#}
-{#					<li><span>固定电话：</span><b>78912345</b></li>#}
-{#					<li><span>电子邮箱：</span><b>hmmeiduo@163.com</b></li>#}
-{#				</ul>#}
-{#				<div class="down_btn">#}
-{#					<a href="javascript:;" class="set_default">设为默认</a>#}
-{#					<a href="javascript:;" class="edit_icon">编辑</a>#}
-{#				</div>#}
-{#			</div>			#}
-{#		</div>#}
         <div class="right_content clearfix" v-cloak>
             <div class="site_top_con">
                 <a @click="show_add_site" href="javascript:;">新增收货地址</a>
@@ -165,30 +121,6 @@
                     <input v-model="form_address.receiver" @blur="check_receiver" type="text" class="receiver">
                     <span v-show="error_receiver" class="receiver_error">请填写收件人</span>
                 </div>
-{#                <div class="form_group">#}
-{#                    <label>*所在地区：</label>#}
-{#                    <select v-model="form_address.province_id">#}
-{#                        <option value="0">请选择</option>#}
-{#                        <option value="1">北京</option>#}
-{#                        <option value="2">上海</option>#}
-{#                        <option value="3">广州</option>#}
-{#                        <option value="4">深圳</option>#}
-{#                    </select>#}
-{#                    <select v-model="form_address.city_id">#}
-{#                        <option value="0">请选择</option>#}
-{#                        <option value="1">北京</option>#}
-{#                        <option value="2">上海</option>#}
-{#                        <option value="3">广州</option>#}
-{#                        <option value="4">深圳</option>#}
-{#                    </select>#}
-{#                    <select v-model="form_address.district_id">#}
-{#                        <option value="0">请选择</option>#}
-{#                        <option value="1">东城区</option>#}
-{#                        <option value="2">西城区</option>#}
-{#                        <option value="3">昌平区</option>#}
-{#                        <option value="4">海淀区</option>#}
-{#                    </select>#}
-{#                </div>#}
                 <div class="form_group">
                     <label>*所在地区：</label>
                     <select v-model="form_address.province_id">
