@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     'areas',  # 省市区三级联动
     'goods',  # 商品模块
     'haystack',  # 全文检索
+    'carts',  # 购物车
 ]
 
 MIDDLEWARE = [
@@ -155,7 +156,15 @@ CACHES = {
             "PASSWORD": "211314",
         }
     },
-
+    # 购物车
+    "carts": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://{}:6379/4".format(MEIDUO_DATABASE_IP),
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "PASSWORD": "211314",
+        }
+    },
 }
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "session"

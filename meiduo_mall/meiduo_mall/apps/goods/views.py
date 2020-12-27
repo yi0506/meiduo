@@ -68,14 +68,15 @@ class DetailView(View):
         categories = get_categories()
         # 查询面包屑导航
         breadcrumb = get_breadcrumb(sku.category)
-        # 构建当前商品的规格键
+        # 获取当前sku对应商品所有的规格（屏幕尺寸、颜色、内存）
         sku_specs = sku.specs.order_by('spec_id')
+        # 记录当前sku对应商品的所有规格的id值
         sku_key = []
         for spec in sku_specs:
             sku_key.append(spec.option.id)
-        # 获取当前商品的所有SKU
+        # 获取当前这一类商品的所有SKU
         skus = sku.spu.sku_set.all()
-        # 构建不同规格参数（选项）的sku字典
+        # 构建不同规格参数（选项）的sku字典  spec_sku_map ---> {(1, 4, 7): 1, (1, 3, 7): 2}
         spec_sku_map = {}
         for s in skus:
             # 获取sku的规格参数
