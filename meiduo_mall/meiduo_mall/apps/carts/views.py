@@ -30,8 +30,12 @@ class CartView(View):
         if selected is not None:
             if not isinstance(selected, bool):
                 return http.HttpResponseForbidden('参数selected错误')
-
         # 判断用户是否登录
-        # 如果用户已登录，操作Redis购物车
-        # 如果用户未登录，操作cookie购物车
+        user = request.user
+        if user.is_authenticated is True:
+            # 如果用户已登录，操作Redis购物车
+            pass
+        else:
+            # 如果用户未登录，操作cookie购物车
+            pass
         # 响应结果
