@@ -335,7 +335,7 @@ class VerifyUseEmail(View):
         # 校验参数
         if not token:
             return http.HttpResponseForbidden('缺少token')
-        # 从token中提取用户信息user_id
+        # 从token中提取当前用户
         user = check_email_verify_token(token=token)
         if user is None:
             return http.HttpResponseBadRequest('无效的token')

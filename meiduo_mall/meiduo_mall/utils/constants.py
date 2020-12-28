@@ -31,3 +31,7 @@ RECORDS_NUM_PER_PAGE = 5
 # 个人中心显示浏览记录的条数
 USER_CENTER_HISTORY_COUNT = 4
 
+# 未登录用户购物车数据保存时间
+ANONYMOUS_USER_CART_EXPIRES = 1200
+
+

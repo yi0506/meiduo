@@ -4,16 +4,31 @@ import json
 from django import http
 from django_redis import get_redis_connection
 from logging import getLogger
+import base64
+import pickle
 
 from goods.models import SKU
 from meiduo_mall.utils.response_code import RETCODE, err_msg
+from meiduo_mall.utils import constants
 
 
 logger = getLogger('django')
 
 
-class CartView(View):
+class CartsView(View):
     """购物车管理"""
+    def get(self, request):
+        """查询购物车"""
+        # 判断用户是否登录
+        user = request.user
+        if user.is_authenticated:
+            # 用户已登录，查询Redis数据库
+            pass
+        else:
+            # 用户未登录，查询cookies数据库
+            pass
+        return render(request, 'carts.html')
+
     def post(self, request):
         """保存购物车"""
         # 接收、校验参数
@@ -38,7 +53,7 @@ class CartView(View):
                 return http.HttpResponseForbidden('参数selected错误')
         # 判断用户是否登录
         user = request.user
-        if user.is_authenticated():
+        if user.is_authenticated:
             # 如果用户已登录，操作Redis购物车
             redis_conn = get_redis_connection('carts')
             pl = redis_conn.pipeline()
@@ -57,5 +72,29 @@ class CartView(View):
             return http.JsonResponse({'code': RETCODE.OK, 'errmsg': err_msg[RETCODE.OK]})
         else:
             # 如果用户未登录，操作cookie购物车
-            pass
+            # 获取cookies中的购物车数据，判断是否有购物车数据
+            cart_str = request.COOKIES.get('carts')
+            if cart_str:
+                # 如果有，提取原来的购物车数据
+                cart_str_bytes = cart_str.encode()
+                cart_dict_bytes = base64.b64decode(cart_str_bytes)
+                cart_dict = pickle.loads(cart_dict_bytes)
+                # 判断当前要添加的商品是否在购物车cart_dict中
+                if sku_id in cart_dict:
+                    # 如果有，更新当前商品的数量，做增量计算
+                    origin_count = cart_dict[sku_id]['count']
+                    count += origin_count
+            else:
+                # 如果没有，创建新的购物车数据
+                cart_dict = {}
+            # 更新购物车数据
+            cart_dict[sku_id] = {'count': count, 'selected': selected}
+            # 购物车数据加密序列化
+            cart_dict_bytes = pickle.dumps(cart_dict)
+            cart_bytes_str = base64.b64encode(cart_dict_bytes)
+            cart_str = cart_bytes_str.decode()
+            # 将新的购物车数据写入到cookies中
+            response = http.JsonResponse({'code': RETCODE.OK, 'errmsg': err_msg[RETCODE.OK]})
+            response.set_cookie('carts', cart_str, max_age=constants.ANONYMOUS_USER_CART_EXPIRES)
         # 响应结果
+        return response
