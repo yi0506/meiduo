@@ -23,14 +23,47 @@ class CartsView(View):
         user = request.user
         if user.is_authenticated:
             # 用户已登录，查询Redis数据库
-            pass
+            redis_conn = get_redis_connection('carts')
+            # 查询hash数据，返回dict类型数据：{b'3': b'1'}
+            redis_cart = redis_conn.hgetall('carts_{}'.format(user.id))
+            # 查询set数据，返回set类型数据：{b'3'}
+            redis_selected = redis_conn.smembers('selected_{}'.format(user.id))
+            # 将redis_cart和redis_selected数据合并，数据结构和未登录用户购物车结构一致
+            cart_dict = {}
+            for sku_id, count in redis_cart:
+                cart_dict[sku_id] = {
+                    'count': int(count),
+                    'selected': sku_id in redis_cart,
+                }
         else:
             # 用户未登录，查询cookies数据库
             pass
         return render(request, 'carts.html')
 
     def post(self, request):
-        """保存购物车"""
+        """
+        保存购物车
+
+        登录用户购物车数据，保存在Redis中：
+                carts_user_id: {sku_id1: count, sku_id3: count, sku_id5: count, ...}
+                selected_user_id: [sku_id1, sku_id3, ...]
+
+        未登录用户购物车数据，以字符串保存在cookie中：
+                {
+                    "sku_id1":{
+                        "count":"1",
+                        "selected":"True"
+                    },
+                    "sku_id3":{
+                        "count":"3",
+                        "selected":"True"
+                    },
+                    "sku_id5":{
+                        "count":"3",
+                        "selected":"False"
+                    }
+                }
+        """
         # 接收、校验参数
         json_dict = json.loads(request.body.decode())
         sku_id = json_dict.get('sku_id')
