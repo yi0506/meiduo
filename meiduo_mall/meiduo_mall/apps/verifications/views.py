@@ -55,7 +55,6 @@ class SMSCodeView(View):
             return http.JsonResponse({'code': RETCODE.IMAGECODEXPIRED, 'errmsg': err_msg[RETCODE.IMAGECODEXPIRED]})
         # 生成短信验证码，随机6位数字
         sms_code = ''.join(random.choices(string.digits, k=6))
-
         # # 保存短信验证码，过期时间5分钟
         # redis_conn.setex('sms_{}'.format(mobile), constants.SMS_CODE_REDIS_EXPIRES, sms_code)
         # # 保存60s内是否重复发送短信验证码的标识

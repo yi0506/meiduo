@@ -14,7 +14,7 @@ from celery import Celery
 import os
 if os.getenv('DJANGO_SETTINGS_MODULE') is None:
     os.environ['DJANGO_SETTINGS_MODULE'] = 'meiduo_mall.settings.dev'
-# 创建Celery实例（生产者）
+# 创建Celery实例
 celery_app = Celery('meiduo')
 # 加载配置
 celery_app.config_from_object('celery_tasks.config')
