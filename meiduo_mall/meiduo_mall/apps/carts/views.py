@@ -29,16 +29,42 @@ class CartsView(View):
             # 查询set数据，返回set类型数据：{b'3'}
             redis_selected = redis_conn.smembers('selected_{}'.format(user.id))
             # 将redis_cart和redis_selected数据合并，数据结构和未登录用户购物车结构一致
-            cart_dict = {}
-            for sku_id, count in redis_cart:
-                cart_dict[sku_id] = {
+            cart_dict = {}  # 如果查询不到数据，for循环不会执行，cart_dict为空数据
+            for sku_id, count in redis_cart.items():
+                cart_dict[int(sku_id)] = {
                     'count': int(count),
-                    'selected': sku_id in redis_cart,
+                    'selected': sku_id in redis_selected,
                 }
         else:
-            # 用户未登录，查询cookies数据库
-            pass
-        return render(request, 'carts.html')
+            # 用户未登录，查询cookies数据库，判断是否有购物车数据
+            cart_str = request.COOKIES.get('carts')
+            if cart_str:
+                # 如果有，提取原来的购物车数据
+                cart_str_bytes = cart_str.encode()
+                cart_dict_bytes = base64.b64decode(cart_str_bytes)
+                cart_dict = pickle.loads(cart_dict_bytes)
+            else:
+                # 如果没有，创建新的购物车数据
+                cart_dict = {}
+        # 查询购物车中所有的sku
+        skus = SKU.objects.filter(id__in=cart_dict.keys())
+        cart_skus = []
+        # 获取并构造购物车中所有商品的信息
+        for sku in skus:
+            cart_skus.append({
+                'id': sku.id,
+                'name': sku.name,
+                'count': cart_dict.get(sku.id).get('count'),
+                'selected': str(cart_dict.get(sku.id).get('selected')),  # 将True，转'True'，方便json解析
+                'default_image_url': sku.default_image.url,
+                'price': str(sku.price),  # 从Decimal('10.2')中取出'10.2'，方便json解析，通过ORM获取的浮点数是一个Decimal对象
+                'amount': str(sku.price * cart_dict.get(sku.id).get('count')),
+            })
+        context = {
+            'cart_skus': cart_skus,
+        }
+        # 响应购物车数据
+        return render(request, 'carts.html', context)
 
     def post(self, request):
         """
@@ -115,7 +141,7 @@ class CartsView(View):
                 # 判断当前要添加的商品是否在购物车cart_dict中
                 if sku_id in cart_dict:
                     # 如果有，更新当前商品的数量，做增量计算
-                    origin_count = cart_dict[sku_id]['count']
+                    origin_count = cart_dict.get(sku_id).get('count')
                     count += origin_count
             else:
                 # 如果没有，创建新的购物车数据
