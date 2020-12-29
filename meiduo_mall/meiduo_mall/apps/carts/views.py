@@ -17,6 +17,58 @@ logger = getLogger('django')
 
 class CartsView(View):
     """购物车管理"""
+    def put(self, request):
+        """修改购物车"""
+        # 接收参数
+        json_dict = json.loads(request.body.decode())
+        sku_id = json_dict.get('sku_id')
+        count = json_dict.get('count')
+        selected = json_dict.get('selected', True)
+        # 判断参数是否齐全
+        if not all([sku_id, count]):
+            return http.HttpResponseForbidden('缺少必传参数')
+        # 判断sku_id是否存在
+        try:
+            sku = SKU.objects.get(id=sku_id)
+        except SKU.DoesNotExist:
+            return http.HttpResponseForbidden('商品sku_id不存在')
+        # 判断count是否为整数
+        if not isinstance(count, int):
+            return http.HttpResponseForbidden('参数count错误')
+        # 判断selected是否为bool类型
+        if selected is not True:
+            if not isinstance(selected, bool):
+                return http.HttpResponseForbidden('参数selected错误')
+        # 判断用户是否登录
+        user = request.user
+        if user.is_authenticated:
+            # 用户已登录，修改redis购物车
+            redis_conn = get_redis_connection('carts')
+            pl = redis_conn.pipeline()
+            # 由于后端收到的商品数量是最终结果，因此直接覆盖写入
+            pl.hset('carts_%s' % user.id, sku_id, count)
+            # 修改勾选状态
+            if selected:
+                pl.sadd('selected_%s' % user.id, sku_id)
+            else:
+                pl.srem('selected_%s' % user.id, sku_id)
+            # 执行
+            pl.execute()
+            # 创建数据对象
+            cart_sku = {
+                'id': sku_id,
+                'count': count,
+                'selected': selected,
+                'name': sku.name,
+                'default_image_url': sku.default_image.url,
+                'price': sku.price,
+                'amount': sku.price * count,
+            }
+            return http.JsonResponse({'code': RETCODE.OK, 'errmsg': err_msg[RETCODE.OK], 'cart_sku': cart_sku})
+        else:
+            # 用户未登录，修改cookie购物车
+            pass
+
     def get(self, request):
         """查询购物车"""
         # 判断用户是否登录
