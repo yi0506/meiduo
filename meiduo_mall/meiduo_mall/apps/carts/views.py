@@ -39,6 +39,16 @@ class CartsView(View):
         if selected is not True:
             if not isinstance(selected, bool):
                 return http.HttpResponseForbidden('参数selected错误')
+        # 创建数据对象
+        cart_sku = {
+            'id': sku_id,
+            'count': count,
+            'selected': selected,
+            'name': sku.name,
+            'default_image_url': sku.default_image.url,
+            'price': sku.price,
+            'amount': sku.price * count,
+        }
         # 判断用户是否登录
         user = request.user
         if user.is_authenticated:
@@ -54,20 +64,28 @@ class CartsView(View):
                 pl.srem('selected_%s' % user.id, sku_id)
             # 执行
             pl.execute()
-            # 创建数据对象
-            cart_sku = {
-                'id': sku_id,
-                'count': count,
-                'selected': selected,
-                'name': sku.name,
-                'default_image_url': sku.default_image.url,
-                'price': sku.price,
-                'amount': sku.price * count,
-            }
             return http.JsonResponse({'code': RETCODE.OK, 'errmsg': err_msg[RETCODE.OK], 'cart_sku': cart_sku})
         else:
-            # 用户未登录，修改cookie购物车
-            pass
+            # 用户未登录，获取cookies中的购物车数据，判断是否有购物车数据
+            cart_str = request.COOKIES.get('carts')
+            if cart_str:
+                # 如果有，提取原来的购物车数据
+                cart_str_bytes = cart_str.encode()
+                cart_dict_bytes = base64.b64decode(cart_str_bytes)
+                cart_dict = pickle.loads(cart_dict_bytes)
+            else:
+                # 如果没有，创建新的购物车数据
+                cart_dict = {}
+            # 修改购物车数据，后端收到的是最终的商品数量，覆盖写入
+            cart_dict[sku_id] = {'count': count, 'selected': selected}
+            # 购物车数据加密序列化
+            cart_dict_bytes = pickle.dumps(cart_dict)
+            cart_bytes_str = base64.b64encode(cart_dict_bytes)
+            cart_str = cart_bytes_str.decode()
+            # 响应结果
+            response = http.JsonResponse({'code': RETCODE.OK, 'errmsg': err_msg[RETCODE.OK], 'cart_sku': cart_sku})
+            response.set_cookie('carts', cart_str, max_age=constants.ANONYMOUS_USER_CART_EXPIRES)
+            return response
 
     def get(self, request):
         """查询购物车"""
