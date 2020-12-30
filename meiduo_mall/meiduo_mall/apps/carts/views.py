@@ -51,8 +51,8 @@ class CartsSelectAllView(View):
                 # 购物车中有数据，才有全选按钮，因此不需要else
                 cart = pickle.loads(base64.b64decode(cart.encode()))
                 for sku_id in cart:
-                    # 前端传的selected是多少，就设为多少，完成全选和取消全选
-                    cart[sku_id]['selected'] = selected
+                    # 完成全选和取消全选
+                    cart[sku_id]['selected'] = selected  # True / False
                 cookie_cart = base64.b64encode(pickle.dumps(cart)).decode()
                 response.set_cookie('carts', cookie_cart, max_age=constants.ANONYMOUS_USER_CART_EXPIRES)
             # 响应结果

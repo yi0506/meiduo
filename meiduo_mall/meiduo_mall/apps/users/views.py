@@ -16,6 +16,7 @@ from meiduo_mall.utils import constants
 from meiduo_mall.utils.auth_backend import LoginRequiredJsonMixin, generate_email_verify_url, check_email_verify_token
 from celery_tasks.email.tasks import send_verify_email
 from goods.models import SKU
+from meiduo_mall.utils.method_package import merge_cart_cookies_and_redis
 
 
 logger = logging.getLogger('django')
@@ -475,7 +476,8 @@ class LoginView(View):
         # 如果没有，则显示未登录状态
         # 该逻辑由前端Vue模板引擎渲染，获取cookie中的username
         response.set_cookie('username', user.username, max_age=constants.REMEMBERED_EXPIRES)
-
+        # 用户登录成功，合并cookie购物车到redis购物车
+        response = merge_cart_cookies_and_redis(request=request, user=user, response=response)
         # 返回响应结果
         return response
 

@@ -2,8 +2,49 @@
 """类视图代码封装复用"""
 from collections import OrderedDict
 from django import http
+import pickle
+import base64
+from django_redis import get_redis_connection
 
 from goods.models import GoodsChannel
+
+
+def merge_cart_cookies_and_redis(request, user, response):
+    """用户登录成功，合并购物车"""
+    # 获取cookies中的购物车数据
+    cart_str = request.COOKIES.get('carts')
+    # 判断是否存在购物车数据
+    if cart_str:
+        # 存在购物车数据，合并数据
+        # 将cart_str转成bytes,再将bytes转成base64的bytes,最后将bytes转字典
+        cart_dict = pickle.loads(base64.b64decode(cart_str.encode()))
+        # 准备新的数据容器：保存新的sku_id、selected、unselected
+        new_cart_dict = {}
+        new_selected_add = []
+        new_selected_rem = []
+        # 遍历出cookies中的购物车数据
+        for sku_id, cookie_dict in cart_dict.items():
+            new_cart_dict[str(sku_id)] = cookie_dict['count']
+            if cookie_dict['selected']:
+                new_selected_add.append(sku_id)
+            else:
+                new_selected_rem.append(sku_id)
+        # 根据新的数据结果，合并到redis
+        redis_conn = get_redis_connection('carts')
+        pl = redis_conn.pipeline()
+        if new_selected_add:
+            pl.sadd('selected_{}'.format(user.id), *new_selected_add)
+        if new_selected_rem:
+            pl.srem('selected_{}'.format(user.id), *new_selected_rem)
+        pl.hmset('carts_{}'.format(user.id), new_cart_dict)
+        pl.execute()
+        # 删除cookies
+        response.delete_cookie('carts')
+    # 不存在购物车数据，不需要合并
+    # 返回响应
+    return response
+
+
 
 
 def get_breadcrumb(category):

@@ -14,6 +14,7 @@ from oauth.models import OAuthQQUser
 from meiduo_mall.utils import constants
 from meiduo_mall.utils.auth_backend import encrypt_openid, decrypt_openid
 from users.models import User
+from meiduo_mall.utils.method_package import merge_cart_cookies_and_redis
 
 
 logger = logging.getLogger('django')
@@ -56,6 +57,8 @@ class QQAuthCallBackView(View):
             response = redirect(_next)
             # 状态保持：将用户名写入到cookies中
             response.set_cookie('username', oauth_user.user, constants.REMEMBERED_EXPIRES)
+            # 用户登录成功，合并cookie购物车到redis购物车
+            response = merge_cart_cookies_and_redis(request=request, user=user, response=response)
             return response
 
     def post(self, request):
@@ -93,7 +96,6 @@ class QQAuthCallBackView(View):
         # 判断openid是否有效：openid使用itsdangerous序列化后，只有600秒有效期
         if openid_decrypted is None:
             return render(request, 'oauth_callback.html', {'openid_errmsg': 'openid已失效'})
-
         # 主体业务逻辑：绑定用户与openid
         # 使用手机号查询对应的用户是否存在
         try:
@@ -120,6 +122,8 @@ class QQAuthCallBackView(View):
         response = redirect(_next)
         # cookie写入用户名
         response.set_cookie('username', oauth_qq_user.user.username)
+        # 用户登录成功，合并cookie购物车到redis购物车
+        response = merge_cart_cookies_and_redis(request=request, user=user, response=response)
         # 响应结果
         return response
 
