@@ -17,6 +17,30 @@ logger = getLogger('django')
 
 class CartsView(View):
     """购物车管理"""
+    def delete(self, request):
+        """删除购物车"""
+        # 接收参数
+        json_dict = json.loads(request.body.decode())
+        sku_id = json_dict.get('sku_id')
+        # 判断sku_id是否存在
+        try:
+            SKU.objects.get(id=sku_id)
+        except SKU.DoesNotExist:
+            return http.HttpResponseForbidden('商品不存在')
+        # 判断用户是否登录
+        user = request.user
+        if user is not None and user.is_authenticated:
+            # 用户已登录，删除redis购物车
+            redis_conn = get_redis_connection('carts')
+            pl = redis_conn.pipeline()
+            pl.hdel('carts_{}'.format(user.id), sku_id)
+            pl.srem('selected_{}'.format(user.id), sku_id)
+            pl.execute()
+            return http.JsonResponse({'code': RETCODE.OK, 'errmsg': err_msg[RETCODE.OK]})
+        else:
+            # 用户未登录，删除cookie购物车
+            pass
+
     def put(self, request):
         """修改购物车"""
         # 接收参数
@@ -66,8 +90,9 @@ class CartsView(View):
             pl.execute()
             return http.JsonResponse({'code': RETCODE.OK, 'errmsg': err_msg[RETCODE.OK], 'cart_sku': cart_sku})
         else:
-            # 用户未登录，获取cookies中的购物车数据，判断是否有购物车数据
+            # 用户未登录，修改cookies中的购物车数据
             cart_str = request.COOKIES.get('carts')
+            # 判断是否有购物车数据
             if cart_str:
                 # 如果有，提取原来的购物车数据
                 cart_str_bytes = cart_str.encode()
