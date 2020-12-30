@@ -39,7 +39,23 @@ class CartsView(View):
             return http.JsonResponse({'code': RETCODE.OK, 'errmsg': err_msg[RETCODE.OK]})
         else:
             # 用户未登录，删除cookie购物车
-            pass
+            cart_str = request.COOKIES.get('carts')
+            # 判断是否存在购物车数据
+            if cart_str:
+                # 将cart_str转成bytes,再将bytes转成base64的bytes,最后将bytes转字典
+                cart_dict = pickle.loads(base64.b64decode(cart_str.encode()))
+            else:
+                cart_dict = {}
+            # 创建响应对象
+            response = http.JsonResponse({'code': RETCODE.OK, 'errmsg': err_msg[RETCODE.OK]})
+            if sku_id in cart_dict:
+                # 如果存在该商品，删除sku_id对应的商品
+                del cart_dict[sku_id]
+                # 将字典转成bytes,再将bytes转成base64的bytes,最后将bytes转字符串
+                cookie_cart_str = base64.b64encode(pickle.dumps(cart_dict)).decode()
+                # 响应结果并将购物车数据写入到cookie
+                response.set_cookie('carts', cookie_cart_str, max_age=constants.ANONYMOUS_USER_CART_EXPIRES)
+            return response
 
     def put(self, request):
         """修改购物车"""
