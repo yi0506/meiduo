@@ -29,7 +29,7 @@ class CartsSelectAllView(View):
         # 判断用户是否登录
         user = request.user
         if user is not None and user.is_authenticated:
-            # 用户已登录，操作redis购物车
+            # 用户已登录，全选redis购物车
             redis_conn = get_redis_connection('carts')
             # redis_cart: sku_id: count --> {b'3': b'1', b'5': b'2'}
             redis_cart = redis_conn.hgetall('carts_{}'.format(user.id))
@@ -43,7 +43,19 @@ class CartsSelectAllView(View):
             # 响应结果
             return http.JsonResponse({'code': RETCODE.OK, 'errmsg': err_msg[RETCODE.OK]})
         else:
-            # 用户未登录，操作cookie购物车
+            # 用户未登录，全选cookie购物车
+            cart = request.COOKIES.get('carts')
+            # 构造响应对象
+            response = http.JsonResponse({'code': RETCODE.OK, 'errmsg': '全选购物车成功'})
+            if cart:
+                # 购物车中有数据，才有全选按钮，因此不需要else
+                cart = pickle.loads(base64.b64decode(cart.encode()))
+                for sku_id in cart:
+                    # 前端传的selected是多少，就设为多少，完成全选和取消全选
+                    cart[sku_id]['selected'] = selected
+                cookie_cart = base64.b64encode(pickle.dumps(cart)).decode()
+                response.set_cookie('carts', cookie_cart, max_age=constants.ANONYMOUS_USER_CART_EXPIRES)
+            # 响应结果
             return http.JsonResponse({'code': RETCODE.OK, 'errmsg': err_msg[RETCODE.OK]})
 
 
