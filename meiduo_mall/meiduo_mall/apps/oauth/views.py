@@ -58,7 +58,7 @@ class QQAuthCallBackView(View):
             # 状态保持：将用户名写入到cookies中
             response.set_cookie('username', oauth_user.user, constants.REMEMBERED_EXPIRES)
             # 用户登录成功，合并cookie购物车到redis购物车
-            response = merge_cart_cookies_and_redis(request=request, user=user, response=response)
+            response = merge_cart_cookies_and_redis(request=request, user=oauth_user.user, response=response)
             return response
 
     def post(self, request):
@@ -123,7 +123,7 @@ class QQAuthCallBackView(View):
         # cookie写入用户名
         response.set_cookie('username', oauth_qq_user.user.username)
         # 用户登录成功，合并cookie购物车到redis购物车
-        response = merge_cart_cookies_and_redis(request=request, user=user, response=response)
+        response = merge_cart_cookies_and_redis(request=request, user=oauth_qq_user.user, response=response)
         # 响应结果
         return response
 

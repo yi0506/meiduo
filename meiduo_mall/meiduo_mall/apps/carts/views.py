@@ -51,7 +51,7 @@ class CartsSimpleView(View):
                 'default_image_url': sku.default_image.url
             })
         # 响应json列表数据
-        return http.JsonResponse({'code':RETCODE.OK, 'errmsg':'OK', 'cart_skus':cart_skus})
+        return http.JsonResponse({'code': RETCODE.OK, 'errmsg': err_msg[RETCODE.OK], 'cart_skus': cart_skus})
 
 
 class CartsSelectAllView(View):
