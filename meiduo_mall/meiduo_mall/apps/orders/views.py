@@ -4,13 +4,60 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from logging import getLogger
 from django_redis import get_redis_connection
 from decimal import Decimal
+import json
+from django import http
+from django.utils import timezone
 
 from users.models import Address
 from goods.models import SKU
 from meiduo_mall.utils import constants
+from meiduo_mall.utils.auth_backend import LoginRequiredJsonMixin
+from .models import OrderInfo
+from meiduo_mall.utils.response_code import RETCODE, err_msg
 
 
 logger = getLogger('django')
+
+
+class OrderCommitView(LoginRequiredJsonMixin, View):
+    """提交订单"""
+    def post(self, request):
+        """保存订单基本信息和订单商品信息"""
+        # 接收参数
+        json_dict = json.loads(request.body.decode())
+        address_id = json_dict.get('address_id')
+        pay_method = json_dict.get('pay_method')
+        # 校验参数
+        if not all([address_id, pay_method]):
+            return http.HttpResponseForbidden('缺少必传参数')
+        # 判断address_id是否合法
+        try:
+            address = Address.objects.get(id=address_id)
+        except Exception:
+            return http.HttpResponseForbidden('参数address_id错误')
+        # 判断pay_method是否合法
+        if pay_method not in [OrderInfo.PAY_METHODS_ENUM['CASH'], OrderInfo.PAY_METHODS_ENUM['ALIPAY']]:
+            return http.HttpResponseForbidden('参数pay_method错误')
+        # 获取登录用户
+        user = request.user
+        # 获取订单编号：时间 + user_id == '2020123113041200000001'
+        order_id = timezone.localtime().strftime('%Y%m%d%H%M%S') + '{:0>9d}'.format(user.id)
+        # 保存订单基本信息(一)
+        OrderInfo.objects.create(
+            order_id=order_id,
+            user=user,
+            address=address,
+            total_count=0,  # 仅用来初始化，后面根据订单中的商品进行更新
+            total_amount=Decimal('0.00'),  # 仅用来初始化，后面根据订单中的商品进行更新
+            freight=Decimal(constants.ORDERS_FREIGHT_COST),
+            pay_method=pay_method,
+            # 如果支付方式为支付宝，支付状态为未付款，如果支付方式是货到付款，支付状态为未发货
+            status=OrderInfo.ORDER_STATUS_ENUM['UNPAID'] if pay_method == OrderInfo.PAY_METHODS_ENUM['ALIPAY'] else OrderInfo.ORDER_STATUS_ENUM['UNSEND']
+        )
+        # 保存订单商品信息(多)
+        pass
+        # 返回响应
+        return http.JsonResponse({'code': RETCODE.OK, 'errmsg': err_msg[RETCODE.OK], 'order_id': order_id})
 
 
 class OrderSettlementView(LoginRequiredMixin, View):
