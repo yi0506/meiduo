@@ -11,6 +11,8 @@ urlpatterns = [
     url(r'^orders/commit/$', views.OrderCommitView.as_view()),
     # 提交订单成功页面
     url(r'^orders/success/$', views.OrderSuccessView.as_view()),
+    # 展示个人订单中心
+    url(r'^orders/info/(?P<page_num>\d+)/$', views.UserOrderInfoView.as_view(), name='info'),
 ]
 
 
