@@ -23,6 +23,8 @@ class RETCODE:
     OPENIDERR           = "5005"
     PARAMERR            = "5006"
     STOCKERR            = "5007"
+    DUPLICATEORDERERR   = '5008'
+    ORDEROPERATEERR     = '5009'
 
 
 err_msg = {
@@ -47,4 +49,6 @@ err_msg = {
     RETCODE.OPENIDERR          : u"无效的openid",
     RETCODE.PARAMERR           : u"参数错误",
     RETCODE.STOCKERR           : u"库存不足",
+    RETCODE.DUPLICATEORDERERR  : u"订单重复提交",
+    RETCODE.ORDEROPERATEERR    : u"订单操作失败",
 }
