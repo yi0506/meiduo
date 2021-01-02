@@ -1289,7 +1289,7 @@ html,body{height:100%}
 .judge_item{overflow:hidden;margin-bottom:10px}
 .judge_item label{float:left;width:120px;line-height:42px;color:#999}
 .stars{width:85px;height:16px;float:left;margin-top:11px}
-.stars .star_off, .star_light{float:left;width:17px;height:16px;background:url(../images/stars.png) no-repeat;}
+.stars .star_off, .star_light{float:left;width:17px;height:16px;background:url(../images/stars.png) no-repeat; cursor: pointer;}
 .stars .star_light{background-position:left -16px;}
 
 .judge_item .score{float:left;line-height:42px;font-size:12px;margin-left:10px;color:#666;}

@@ -61,6 +61,7 @@ let vm = new Vue({
                     .then(response => {
                         if (response.data.code == '0') {
                             // 删除评价后的商品
+                            alert('评价成功');
                             this.skus.splice(index, 1);
                         } else if (response.data.code == '4101') {
                             location.href = '/login/?next=/orders/comment/';
