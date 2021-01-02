@@ -28,8 +28,7 @@ let vm = new Vue({
             this.skus[index].display_score = this.skus[index].final_score * 20;
             let $stars = $('.stars a');
             if(score === 5){
-                $stars.eq(score-1).addClass('star_light');
-                $stars.eq(score-1).prevAll().addClass('star_light');
+                $stars.addClass('star_light');
             } else{
                 $stars.eq(score).prevAll().addClass('star_light');
                 $stars.eq(score).removeClass('star_light');
