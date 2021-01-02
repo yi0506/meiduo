@@ -306,10 +306,15 @@ HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 HAYSTACK_SEARCH_RESULTS_PER_PAGE = 5
 
 # 支付宝
+# 买家账号uooxli3240@sandbox.com
+# 登录密码111111
+# 支付密码111111
+# 用户名称uooxli3240
 ALIPAY_APPID = '2021000116686226'
 ALIPAY_DEBUG = True
 ALIPAY_URL = 'https://openapi.alipaydev.com/gateway.do'
 ALIPAY_RETURN_URL = 'http://www.meiduo.site:8000/payment/status/'
+
 
 if __name__ == '__main__':
     pass
