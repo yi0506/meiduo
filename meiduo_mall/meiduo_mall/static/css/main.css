@@ -1339,13 +1339,15 @@ html,body{height:100%}
 	width:780px;
 }
 
-.stars_one,.stars_two,.stars_three,.stars_four,.stars_five{
+.stars_one,.stars_two,.stars_three,.stars_four,.stars_five, .stars_zero{
 	width:85px;
 	height:17px;
 	background:url(../images/stars.png) left -80px no-repeat;
 	margin-bottom:10px;
 }
-
+.stars_zero{
+	background-position:left 0px;
+}
 .stars_one{
 	background-position:left -16px;
 }
