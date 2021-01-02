@@ -50,35 +50,35 @@
 			</ul>
 		</div>
 	</div>
-	<div class="judge_con">
-        <div class="judge_goods fl">     
+	<div class="judge_con" v-for="(sku, index) in skus" v-cloak>
+        <div class="judge_goods fl">
             <ul>
                 <li>
-                    <a href="#"><img src="{{ static('images/goods/goods001.jpg') }}"></a>
-                    <h4><a href="#">华为 HUAWEI P10 Plus 6GB+64GB 钻雕金 移动联通电信4G手机 双卡双待</a></h4>
-                    <div class="price">￥2999.80</div>
+                    <a :href="[[ sku.url ]]"><img :src="[[ sku.default_image_url ]]"></a>
+                    <h4><a :href="[[ sku.url ]]">[[ sku.name ]]</a></h4>
+                    <div class="price">[[ sku.price ]]</div>
                 </li>
-            </ul> 
+            </ul>
         </div>
         <div class="judge_goods_input fr">
             <div class="judge_item">
                 <label>商品满意度</label>
                 <div class="stars fl">
-                    <a href="javascript:;" class="star_off"></a>
-                    <a href="javascript:;" class="star_off"></a>
-                    <a href="javascript:;" class="star_off"></a>
-                    <a href="javascript:;" class="star_off"></a>
-                    <a href="javascript:;" class="star_off"></a>   
+                    <a v-bind:class="star_status" @click="on_stars_click(index, 1)"></a>
+                    <a v-bind:class="star_status" @click="on_stars_click(index, 2)"></a>
+                    <a v-bind:class="star_status" @click="on_stars_click(index, 3)"></a>
+                    <a v-bind:class="star_status" @click="on_stars_click(index, 4)"></a>
+                    <a v-bind:class="star_status" @click="on_stars_click(index, 5)"></a>
                 </div>
-                <div class="score">0分</div>
+                <div class="score">[[ sku.display_score ]]分</div>
             </div>
             <div class="judge_item">
                 <label>发表评价</label>
-                <textarea class="judge_area"></textarea>
+                <textarea class="judge_area" v-model="sku.comment"></textarea>
             </div>
             <div class="judge_item">
-                <input type="input" value="提 交" class="judge_sub">
-                <input type="checkbox" class="no_name"> 匿名评价
+                <input type="input" value="提 交" class="judge_sub" @click="save_comment(index)">
+                <input type="checkbox" class="no_name" @change="on_anonymous(index)"> 匿名评价
             </div>
         </div>
     </div>
@@ -97,7 +97,7 @@
 	</div>
 	</div>
 	<script type="text/javascript">
-    	let skus = [];
+    	let skus = {{ uncomment_goods_list | safe }};
     </script>
     <script type="text/javascript" src="{{ static('js/common.js') }}"></script>
 	<script type="text/javascript" src="{{ static('js/goods_judge.js') }}"></script>

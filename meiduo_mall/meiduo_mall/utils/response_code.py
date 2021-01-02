@@ -25,6 +25,7 @@ class RETCODE:
     STOCKERR            = "5007"
     DUPLICATEORDERERR   = '5008'
     ORDEROPERATEERR     = '5009'
+    COMMITMENTERR       = '5010'
 
 
 err_msg = {
@@ -51,4 +52,5 @@ err_msg = {
     RETCODE.STOCKERR           : u"库存不足",
     RETCODE.DUPLICATEORDERERR  : u"订单重复提交",
     RETCODE.ORDEROPERATEERR    : u"订单操作失败",
+    RETCODE.COMMITMENTERR      : u"评价失败",
 }

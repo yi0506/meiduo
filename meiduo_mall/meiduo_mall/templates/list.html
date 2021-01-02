@@ -125,9 +125,6 @@
 				<a href="{{ url('goods:list', kwargs={'category_id': category_id, "page_num": 1}) }}?sort=default" {% if sort=='default' %} class="active" {% endif %} >默认</a>
 				<a href="{{ url('goods:list', args=(category_id, 1)) }}?sort=price" {% if sort=='price' %} class="active" {% endif %} >价格</a>
 				<a href="{{ url('goods:list', args=(category_id, 1)) }}?sort=hot" {% if sort=='hot' %} class="active" {% endif %} >人气</a>
-                {#  <a href="/list/115/1/?sort=default" class="active">默认</a>   #}
-                {#	<a href="/list/115/1/?sort=price"></a>  #}
-                {#	<a href="/list/115/1/?sort=hot"></a>    #}
 			</div>
 			<ul class="goods_type_list clearfix">
                 {% for sku in page_skus %}

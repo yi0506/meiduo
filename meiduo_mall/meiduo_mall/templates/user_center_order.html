@@ -85,7 +85,7 @@
                     <td width="15%">{{ order.total_amount }}元<br>含运费：{{ order.freight }}元</td>
                     <td width="15%">{{ order.pay_method_name }}</td>
                     <td width="15%">
-                        <a @click="oper_btn_click('{{ order.order_id }}', {{ order.status }})" class="oper_btn">{{ order.status_name }}</a>
+                        <a @click="oper_btn_click('{{ order.order_id }}', {{ order.status }})" class="oper_btn" href="javascript:;">{{ order.status_name }}</a>
                     </td>
                 </tr>
             </tbody>

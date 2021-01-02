@@ -9,12 +9,19 @@ let vm = new Vue({
         // 渲染评价界面
         this.render_comments();
     },
+    computed: {
+        star_status(){
+          return {
+              star_off: true,
+          }
+        },
+    },
     methods: {
         // 渲染评价界面
         render_comments(){
             this.skus = JSON.parse(JSON.stringify(skus));
             for(let i=0;i<this.skus.length;i++){
-                this.skus[i].url = '/goods/' + this.skus[i].sku_id + '.html';
+                this.skus[i].url = '/detail/' + this.skus[i].sku_id + '/';
                 Vue.set(this.skus[i], 'score', 0); // 记录随鼠标变动的星星数
                 Vue.set(this.skus[i], 'display_score', 0); // 展示变动的分数值
                 this.skus[i].final_score = 0; // 记录用户确定的星星数
@@ -22,19 +29,24 @@ let vm = new Vue({
                 Vue.set(this.skus[i], 'is_anonymous', false);
             }
         },
-        // 鼠标在评分星星上滑动
-        on_stars_mouseover(index, score){
-            this.skus[index].score = score;
-            this.skus[index].display_score = score * 20;
-        },
-        // 鼠标从评分星星上离开
-        on_stars_mouseout(index) {
-            this.skus[index].score = this.skus[index].final_score;
-            this.skus[index].display_score = this.skus[index].final_score * 20;
-        },
+        // // 鼠标在评分星星上滑动
+        // on_stars_mouseover(index, score){
+        //     this.skus[index].score = score;
+        //     this.skus[index].display_score = score * 20;
+        // },
+        // // 鼠标从评分星星上离开
+        // on_stars_mouseleave(index) {
+        //     this.skus[index].score = this.skus[index].final_score;
+        //     this.skus[index].display_score = this.skus[index].final_score * 20;
+        // },
         // 点击评分星星
         on_stars_click(index, score) {
             this.skus[index].final_score = score;
+            this.skus[index].display_score = this.skus[index].final_score * 20;
+        },
+        // 点击匿名评价
+        on_anonymous(index){
+          this.skus[index].is_anonymous = true;
         },
         // 保存评价信息
         save_comment(index){

@@ -21,6 +21,113 @@ from meiduo_mall.utils.response_code import RETCODE, err_msg
 logger = getLogger('django')
 
 
+class GoodsCommentView(View):
+    """订单商品评价信息"""
+    def get(self, request, sku_id):
+        # 获取被评价的订单商品信息
+        order_goods_list = OrderGoods.objects.filter(sku_id=sku_id, is_commented=True).order_by('-create_time')[:constants.COMMENTS_LIST_LIMIT]
+        # 序列化
+        comment_list = []
+        for order_goods in order_goods_list:
+            username = order_goods.order.user.username
+            comment_list.append({
+                'username': username[0] + '***' + username[-1] if order_goods.is_anonymous else username,
+                'comment': order_goods.comment,
+                'score': order_goods.score,
+            })
+        return http.JsonResponse({'code': RETCODE.OK, 'errmsg': err_msg[RETCODE.OK], 'comment_list': comment_list})
+
+
+class OrderCommentView(LoginRequiredMixin, View):
+    """订单商品评价"""
+    def get(self, request):
+        """展示商品评价页面"""
+        # 接收参数
+        order_id = request.GET.get('order_id')
+        # 校验参数
+        try:
+            OrderInfo.objects.get(order_id=order_id, user=request.user)
+        except OrderInfo.DoesNotExist:
+            return http.HttpResponseNotFound('订单不存在')
+        # 查询订单中未被评价的商品信息
+        try:
+            uncomment_goods = OrderGoods.objects.filter(order_id=order_id, is_commented=False)
+        except Exception as e:
+            logger.error(e)
+            return http.HttpResponseServerError('订单商品信息出错')
+        # 构造待评价商品数据
+        uncomment_goods_list = []
+        for goods in uncomment_goods:
+            uncomment_goods_list.append({
+                'order_id': goods.order.order_id,
+                'sku_id': goods.sku.id,
+                'name': goods.sku.name,
+                'price': str(goods.price),
+                'default_image_url': goods.sku.default_image.url,
+                'comment': goods.comment,
+                'score': goods.score,
+                'is_anonymous': str(goods.is_anonymous),
+            })
+        # 渲染模板
+        context = {
+            'uncomment_goods_list': uncomment_goods_list
+        }
+        return render(request, 'goods_judge.html', context)
+
+    def post(self, request):
+        """评价订单商品"""
+        # 接收参数
+        json_dict = json.loads(request.body.decode())
+        order_id = json_dict.get('order_id')
+        sku_id = json_dict.get('sku_id')
+        score = json_dict.get('score')
+        comment = json_dict.get('comment')
+        is_anonymous = json_dict.get('is_anonymous')
+        # 校验参数
+        if not all([order_id, sku_id, score, comment]):
+            return http.HttpResponseForbidden('缺少必传参数')
+        try:
+            OrderInfo.objects.filter(order_id=order_id, user=request.user, status=OrderInfo.ORDER_STATUS_ENUM['UNCOMMENT'])
+        except OrderInfo.DoesNotExist:
+            return http.HttpResponseForbidden('参数order_id错误')
+        try:
+            sku = SKU.objects.get(id=sku_id)
+        except SKU.DoesNotExist:
+            return http.HttpResponseForbidden('参数sku_id错误')
+        if is_anonymous:
+            if not isinstance(is_anonymous, bool):
+                return http.HttpResponseForbidden('参数is_anonymous错误')
+        # 以下操作数据库的操作，开启作为一次事务
+        with transaction.atomic():
+            # 在数据库操作前，创建保存点（数据库最初的状态）
+            save_id = transaction.savepoint()
+            try:
+                # 保存订单商品评价数据
+                OrderGoods.objects.filter(order_id=order_id, sku_id=sku_id, is_commented=False).update(
+                    comment=comment,
+                    score=score,
+                    is_anonymous=is_anonymous,
+                    is_commented=True
+                )
+                # 累计评论数据
+                sku.comments += 1
+                sku.save()
+                sku.spu.comments += 1
+                sku.spu.save()
+                # 如果所有订单商品都已评价，则修改订单状态为已完成
+                if OrderGoods.objects.filter(order_id=order_id, is_commented=False).count() == 0:
+                    OrderInfo.objects.filter(order_id=order_id).update(status=OrderInfo.ORDER_STATUS_ENUM['FINISHED'])
+            # 对于未知的数据库错误，暴力回滚
+            except Exception as e:
+                logger.error(e)
+                transaction.savepoint_rollback(save_id)
+                return http.JsonResponse({'code': RETCODE.COMMITMENTERR, 'errmsg': err_msg[RETCODE.COMMITMENTERR]})
+            else:
+                # 提交事务
+                transaction.savepoint_commit(save_id)
+        return http.JsonResponse({'code': RETCODE.OK, 'errmsg': err_msg[RETCODE.OK]})
+
+
 class UserOrderInfoView(LoginRequiredMixin, View):
     """我的订单"""
 
@@ -105,7 +212,6 @@ class OrderCommitView(LoginRequiredJsonMixin, View):
             user = request.user
             # 获取订单编号：时间 + user_id == '2020123113041200000001'
             order_id = timezone.localtime().strftime('%Y%m%d%H%M%S') + '{:0>9d}'.format(user.id)
-            # 对于未知错误，暴力回滚
             try:
                 # 保存订单基本信息(一)
                 order = OrderInfo.objects.create(
@@ -177,6 +283,7 @@ class OrderCommitView(LoginRequiredJsonMixin, View):
                 # 添加邮费和保存订单信息
                 order.total_amount += order.freight
                 order.save()
+            # 对于未知的数据库错误，暴力回滚
             except Exception as e:
                 logger.error(e)
                 transaction.savepoint_rollback(save_id)
@@ -184,17 +291,18 @@ class OrderCommitView(LoginRequiredJsonMixin, View):
             else:
                 # 提交事务
                 transaction.savepoint_commit(save_id)
-                # 清除购物车中已结算的商品
-                pl = redis_conn.pipeline()
-                pl.hdel('carts_%s' % user.id, *redis_selected)
-                pl.srem('selected_%s' % user.id, *redis_selected)
-                try:
-                    pl.execute()
-                except Exception as e:
-                    logger.error(e)
-                    return http.JsonResponse({'code': RETCODE.DUPLICATEORDERERR, 'errmsg': err_msg[RETCODE.DUPLICATEORDERERR]})
-        # 返回响应
-        return http.JsonResponse({'code': RETCODE.OK, 'errmsg': err_msg[RETCODE.OK], 'order_id': order_id})
+        # 清除购物车中已结算的商品
+        pl = redis_conn.pipeline()
+        pl.hdel('carts_%s' % user.id, *redis_selected)
+        pl.srem('selected_%s' % user.id, *redis_selected)
+        try:
+            pl.execute()
+        except Exception as e:
+            logger.error(e)
+            return http.JsonResponse({'code': RETCODE.DUPLICATEORDERERR, 'errmsg': err_msg[RETCODE.DUPLICATEORDERERR]})
+        else:
+            # 返回响应
+            return http.JsonResponse({'code': RETCODE.OK, 'errmsg': err_msg[RETCODE.OK], 'order_id': order_id})
 
 
 class OrderSettlementView(LoginRequiredMixin, View):

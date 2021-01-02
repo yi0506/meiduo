@@ -40,6 +40,10 @@ ORDERS_FREIGHT_COST = 10.00
 # 每页展示订单数量
 ORDERS_LIST_LIMIT = 5
 
+# 展示的评价数量
+COMMENTS_LIST_LIMIT = 30
+
+
 
 
 
