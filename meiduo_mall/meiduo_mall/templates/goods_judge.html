@@ -64,11 +64,11 @@
             <div class="judge_item">
                 <label>商品满意度</label>
                 <div class="stars fl">
-                    <a v-bind:class="star_status" @click="on_stars_click(index, 1)"></a>
-                    <a v-bind:class="star_status" @click="on_stars_click(index, 2)"></a>
-                    <a v-bind:class="star_status" @click="on_stars_click(index, 3)"></a>
-                    <a v-bind:class="star_status" @click="on_stars_click(index, 4)"></a>
-                    <a v-bind:class="star_status" @click="on_stars_click(index, 5)"></a>
+                    <a :class="star_status" @click="on_stars_click(index, 1)"></a>
+                    <a :class="star_status" @click="on_stars_click(index, 2)"></a>
+                    <a :class="star_status" @click="on_stars_click(index, 3)"></a>
+                    <a :class="star_status" @click="on_stars_click(index, 4)"></a>
+                    <a :class="star_status" @click="on_stars_click(index, 5)"></a>
                 </div>
                 <div class="score">[[ sku.display_score ]]分</div>
             </div>
