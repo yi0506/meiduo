@@ -7,6 +7,7 @@
 	<link rel="stylesheet" type="text/css" href="{{ static('css/main.css') }}">
 	<script type="text/javascript" src="{{ static('js/vue-2.5.16.js') }}"></script>
     <script type="text/javascript" src="{{ static('js/axios-0.18.0.min.js') }}"></script>
+    <script type="text/javascript" src="{{ static('js/jquery-1.12.4.min.js') }}"></script>
 </head>
 <body>
 	<div id="app" v-cloak>
@@ -64,11 +65,11 @@
             <div class="judge_item">
                 <label>商品满意度</label>
                 <div class="stars fl">
-                    <a :class="star_status" @click="on_stars_click(index, 1)"></a>
-                    <a :class="star_status" @click="on_stars_click(index, 2)"></a>
-                    <a :class="star_status" @click="on_stars_click(index, 3)"></a>
-                    <a :class="star_status" @click="on_stars_click(index, 4)"></a>
-                    <a :class="star_status" @click="on_stars_click(index, 5)"></a>
+                    <a class="star_off" @click="on_stars_click(index, 1)"></a>
+                    <a class="star_off" @click="on_stars_click(index, 2)"></a>
+                    <a class="star_off" @click="on_stars_click(index, 3)"></a>
+                    <a class="star_off" @click="on_stars_click(index, 4)"></a>
+                    <a class="star_off" @click="on_stars_click(index, 5)"></a>
                 </div>
                 <div class="score">[[ sku.display_score ]]分</div>
             </div>

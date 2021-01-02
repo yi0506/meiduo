@@ -3,18 +3,11 @@ let vm = new Vue({
     delimiters: ['[[', ']]'],
     data: {
         username: getCookie('username'),
-        skus: []
+        skus: [],
     },
     mounted: function(){
         // 渲染评价界面
         this.render_comments();
-    },
-    computed: {
-        star_status(){
-          return {
-              star_off: true,
-          }
-        },
     },
     methods: {
         // 渲染评价界面
@@ -29,20 +22,19 @@ let vm = new Vue({
                 Vue.set(this.skus[i], 'is_anonymous', false);
             }
         },
-        // // 鼠标在评分星星上滑动
-        // on_stars_mouseover(index, score){
-        //     this.skus[index].score = score;
-        //     this.skus[index].display_score = score * 20;
-        // },
-        // // 鼠标从评分星星上离开
-        // on_stars_mouseleave(index) {
-        //     this.skus[index].score = this.skus[index].final_score;
-        //     this.skus[index].display_score = this.skus[index].final_score * 20;
-        // },
         // 点击评分星星
         on_stars_click(index, score) {
             this.skus[index].final_score = score;
             this.skus[index].display_score = this.skus[index].final_score * 20;
+            let $stars = $('.stars a');
+            if(score === 5){
+                $stars.eq(score-1).addClass('star_light');
+                $stars.eq(score-1).prevAll().addClass('star_light');
+            } else{
+                $stars.eq(score).prevAll().addClass('star_light');
+                $stars.eq(score).removeClass('star_light');
+                $stars.eq(score).nextAll().removeClass('star_light');
+            }
         },
         // 点击匿名评价
         on_anonymous(index){
