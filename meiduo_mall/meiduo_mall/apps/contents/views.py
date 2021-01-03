@@ -14,9 +14,7 @@ class IndexView(View):
         """提供首页广告页面"""
         # 查询商品分类三级数据
         categories = get_categories()
-
         # 查询首页广告数据
-        # 查询所有广告类别
         contents = OrderedDict()
         content_categories = ContentCategory.objects.all()
         for content_category in content_categories:
