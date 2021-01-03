@@ -19,6 +19,7 @@ import sys
 
 # 获取数据库计算机的ip地址
 MEIDUO_DATABASE_IP = "192.168.192.133"
+MEIDUO_DATABASE_SLAVE_IP = "192.168.192.129"
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -120,7 +121,7 @@ DATABASES = {
     },
     'slave': {  # 读（从机）
         'ENGINE': 'django.db.backends.mysql',
-        'HOST': '192.168.192.129',
+        'HOST': MEIDUO_DATABASE_SLAVE_IP,
         'PORT': 3306,
         'USER': 'root',  # 应该是从机的mysql账户（从机中不存在slave账户），而不是主机中的slave账户，
         'PASSWORD': '211314',
