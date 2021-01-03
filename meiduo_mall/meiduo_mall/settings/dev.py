@@ -110,14 +110,22 @@ WSGI_APPLICATION = 'meiduo_mall.wsgi.application'
 
 # 配置MySQL数据库
 DATABASES = {
-    'default': {
+    'default': {  # 写（主机）
         'ENGINE': 'django.db.backends.mysql',  # 数据库引擎
         'HOST': MEIDUO_DATABASE_IP,  # 数据库主机
         'PORT': 3306,  # 数据库端口
         'USER': 'yi0506',  # 数据库用户名
         'PASSWORD': '211314',  # 数据库用户密码
         'NAME': 'meiduo'  # 数据库名字
-    }
+    },
+    'slave': {  # 读（从机）
+        'ENGINE': 'django.db.backends.mysql',
+        'HOST': '192.168.192.129',
+        'PORT': 3306,
+        'USER': 'root',  # 应该是从机的mysql账户（从机中不存在slave账户），而不是主机中的slave账户，
+        'PASSWORD': '211314',
+        'NAME': 'meiduo'
+    },
 }
 
 
@@ -323,8 +331,12 @@ CRONJOBS = [
     # '>> ' + os.path.join(os.path.dirname(BASE_DIR), 'logs/crontab.log') : 日志文件的位置
     ('*/1 * * * *', 'contents.crons.generate_static_index_html', '>> ' + os.path.join(os.path.dirname(BASE_DIR), 'logs/crontab.log'))
 ]
+
 # 指定中文与编码格式，简体中文，编码格式与写入文件时的格式要一直
 CRONTAB_COMMAND_PREFIX = 'LANG_ALL=zh_cn.UTF-8'
+
+# MySQL读写分离路由
+DATABASE_ROUTERS = ['meiduo_mall.utils.db_router.MasterSlaveDBRouter']
 
 
 if __name__ == '__main__':
