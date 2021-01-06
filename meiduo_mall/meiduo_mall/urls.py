@@ -19,7 +19,7 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     # users，总路由不校验，子路由校验
-    url(r"^", include('users.urls', namespace='users')),
+    url(r'', include('users.urls', namespace='users')),
     # contents,总路由不校验，子路由校验
     url(r'^', include('contents.urls', namespace='contents')),
     # verifications,总路由不校验，子路由校验
@@ -33,10 +33,10 @@ urlpatterns = [
     # haystack
     url(r'^search/', include('haystack.urls')),
     # carts
-    url(r'', include('carts.urls', namespace='carts')),
+    url(r'^', include('carts.urls', namespace='carts')),
     # orders
-    url(r'', include('orders.urls', namespace='orders')),
+    url(r'^', include('orders.urls', namespace='orders')),
     # payment
-    url(r'', include('payment.urls', namespace='payment')),
+    url(r'^', include('payment.urls', namespace='payment')),
 
 ]
