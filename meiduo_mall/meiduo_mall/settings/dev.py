@@ -23,7 +23,7 @@ MEIDUO_DATABASE_SLAVE_IP = "192.168.192.129"
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-# BASE_DIR：dev.py所在路径的上一层目录的上一层目录下  ---->   xxxx/meiduo/meiduo_mall/meiduo_mall
+# BASE_DIR：dev.py所在路径目录的上一层目录  ---->   .../meiduo/meiduo_mall/meiduo_mall
 # BASE_DIR与导包路径无关，导包路径需要参考manage.py的位置
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
