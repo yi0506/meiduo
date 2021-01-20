@@ -72,9 +72,11 @@ INSTALLED_APPS = [
     'payment',  # 支付
     'django_crontab',  # 定时任务
     'meiduo_admin',  # 后台管理
+    'corsheaders',  # 跨院访问模块
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # 允许跨域访问
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -339,7 +341,21 @@ CRONJOBS = [
 CRONTAB_COMMAND_PREFIX = 'LANG_ALL=zh_cn.UTF-8'
 
 # MySQL读写分离路由
-DATABASE_ROUTERS = ['meiduo_mall.utils.db_router.MasterSlaveDBRouter']
+# DATABASE_ROUTERS = ['meiduo_mall.utils.db_router.MasterSlaveDBRouter']
+
+
+# 跨域访问的白名单
+CORS_ORIGIN_WHITELIST = (
+    '127.0.0.1:8080',
+    '127.0.0.1:8000',
+    'localhost:8080',
+    'localhost:8000',
+    'www.meiduo.site:8080',
+    'www.meiduo.site:8000',
+)
+
+# 允许跨域携带cookie
+CORS_ALLOW_CREDENTIALS = True
 
 
 if __name__ == '__main__':
