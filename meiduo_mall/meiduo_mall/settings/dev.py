@@ -41,7 +41,8 @@ SECRET_KEY = '3r0yqsgm_fcmzi-x+_l7&9qc$3%=xarou96ft08m@k82*bk21o'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['www.meiduo.site',
+ALLOWED_HOSTS = [
+                 'www.meiduo.site',
                  '127.0.0.1',
                  'localhost',
                  '172.24.178.15',
@@ -70,6 +71,7 @@ INSTALLED_APPS = [
     'orders',  # 订单
     'payment',  # 支付
     'django_crontab',  # 定时任务
+    'meiduo_admin',  # 后台管理
 ]
 
 MIDDLEWARE = [

@@ -45,8 +45,6 @@ def merge_cart_cookies_and_redis(request, user, response):
     return response
 
 
-
-
 def get_breadcrumb(category):
     """
     获取面包屑导航
