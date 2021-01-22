@@ -16,6 +16,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 import os
 import sys
 
+import datetime
 
 # 获取数据库计算机的ip地址
 MEIDUO_DATABASE_IP = "192.168.192.133"
@@ -343,7 +344,6 @@ CRONTAB_COMMAND_PREFIX = 'LANG_ALL=zh_cn.UTF-8'
 # MySQL读写分离路由
 # DATABASE_ROUTERS = ['meiduo_mall.utils.db_router.MasterSlaveDBRouter']
 
-
 # 跨域访问的白名单
 CORS_ORIGIN_WHITELIST = (
     '127.0.0.1:8080',
@@ -353,10 +353,22 @@ CORS_ORIGIN_WHITELIST = (
     'www.meiduo.site:8080',
     'www.meiduo.site:8000',
 )
-
 # 允许跨域携带cookie
 CORS_ALLOW_CREDENTIALS = True
 
+# REST_FRAMEWORK 配置信息
+REST_FRAMEWORK = {
+    # 认证方式
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
+}
+JWT_AUTH = {
+    # JWT token 有效期
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),
+}
 
 if __name__ == '__main__':
     pass
