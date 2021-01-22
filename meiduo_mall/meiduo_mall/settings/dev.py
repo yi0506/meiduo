@@ -43,11 +43,12 @@ SECRET_KEY = '3r0yqsgm_fcmzi-x+_l7&9qc$3%=xarou96ft08m@k82*bk21o'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-                 'www.meiduo.site',
-                 '127.0.0.1',
-                 'localhost',
-                 '172.24.178.15',
-                 '172.28.28.187',
+                'www.meiduo.site',
+                '127.0.0.1',
+                'localhost',
+                '172.24.178.15',
+                '172.28.28.187',
+                '192.168.192.133',
                  ]
 
 
