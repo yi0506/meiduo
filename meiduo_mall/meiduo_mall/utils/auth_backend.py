@@ -129,12 +129,24 @@ class LoginAuthBackend(ModelBackend):
         :param kwargs: 额外参数
         :return: user
         """
-        # 查询用户,校验密码
-        user = get_user_by_account(username)
-        if user is not None and user.check_password(password) is True:
-            return user
+        if request is None:
+            # 通过后台登录
+            try:
+                # 查询是否存在该超级管理员用户
+                user = User.objects.get(is_superuser=True, username=username)
+            except User.DoesNotExist:
+                return None
+            else:
+                if user.check_password(password):
+                    return user
         else:
-            return None
+            # 通过前台登录
+            # 查询用户,校验密码
+            user = get_user_by_account(username)
+            if user is not None and user.check_password(password) is True:
+                return user
+            else:
+                return None
 
 
 if __name__ == '__main__':
