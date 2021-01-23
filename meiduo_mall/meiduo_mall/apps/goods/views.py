@@ -31,8 +31,7 @@ class DetailVisitView(View):
         today_str = "{:d}-{:0>2d}-{:0>2d}".format(t.year, t.month, t.day)
         # 将时间字符串转为时间对象datetime，为了与DateField字段类型匹配
         today_date = datetime.strptime(today_str, '%Y-%m-%d')
-        # 统计指定分类商品的访问量
-        # GoodsVisitCount.objects.filter(data='当天日期', category_id=category.id)
+        # 统计指定分类商品的访问量  ---> GoodsVisitCount.objects.filter(data='当天日期', category_id=category.id)
         # 判断当天中指定的分类商品对应的记录是否存在
         try:
             # 如果查询到记录，直接获取到记录对应的对象
