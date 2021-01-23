@@ -12,6 +12,8 @@ urlpatterns = [
     url(r'^statistical/day_increment/$', statistical.UserDayIncrementView.as_view()),
     # 日活用户总数
     url(r'^statistical/day_active/$', statistical.UserDayActiveView.as_view()),
+    # 日下单用户
+    url(r'^statistical/day_orders/$', statistical.UserDayOrdersView.as_view()),
 
 ]
 
