@@ -24,7 +24,7 @@ class DetailVisitView(View):
             category = GoodsCategory.objects.get(id=category_id)
         except GoodsCategory.DoesNotExist:
             return http.HttpResponseForbidden('category_id不存在')
-        # 获取当天的日期
+        # 获取当天的服务器系统日期
         t = timezone.localtime()
         # 获取当天的时间字符串
         # today_str = "%d-%02d-%02d" % (t.year, t.month, t.day)
