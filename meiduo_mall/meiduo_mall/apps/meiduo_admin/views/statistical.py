@@ -62,7 +62,8 @@ class UserDayOrdersView(UserStatisticsView):
     """日下单用户"""
 
     def get_user_count(self, *args, **kwargs):
-        return User.objects.filter(orderinfo__create_time__gte=self.meiduo_now_date).count()
+        """获取当天下单用户总量"""
+        return len(set(User.objects.filter(orderinfo__create_time__gte=self.meiduo_now_date)))
 
 
 if __name__ == '__main__':
