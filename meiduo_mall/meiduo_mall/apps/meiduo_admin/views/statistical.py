@@ -104,12 +104,32 @@ class UserMonthPerDayView(BaseUserStatisticsView):
 
 class GoodsDayVisitView(BaseUserStatisticsView):
     """日商品访问量"""
+    def build_statistics(self, data):
+        return Response(data)
 
     def get_user_data(self, *args, **kwargs):
         """获取当天所有商品的访问量"""
         goods = GoodsVisitCount.objects.filter(date__gte=self.meiduo_now_date)
-        goods_seq = GoodsDayVisitSerializer(goods, many=True)
-        return goods_seq.data
+        goods_seq = GoodsDayVisitSerializer(goods, many=True).data
+        # 对数据进行去重合并
+        goods_categorys_list = []
+        goods_visit_list = []
+        for idx, good in enumerate(goods_seq):
+            category = good['category']
+            count = good['count']
+            if category not in goods_categorys_list:
+                # 如果该分类未被添加进列表中，则记录该条数据
+                goods_categorys_list.append(category)
+                goods_visit_list.append({
+                    'category': category,
+                    'count': count,
+                })
+            else:
+                # 如果该分类已经被添加进列表中，则更新原始数据
+                for i in goods_visit_list:
+                    if i['category'] == category:
+                        i['count'] += goods_seq[idx]['count']
+        return goods_visit_list
 
 
 if __name__ == '__main__':
