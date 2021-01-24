@@ -43,7 +43,5 @@ ORDERS_LIST_LIMIT = 5
 # 展示的评价数量
 COMMENTS_LIST_LIMIT = 30
 
-
-
-
-
+# 后台每页显示的用户数量
+ADMIN_USER_LIST_LIMIT = 2

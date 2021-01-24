@@ -15,6 +15,16 @@ class UserView(ListAPIView):
     # 使用分页器
     pagination_class = UserPaginator
 
+    # def get_queryset(self):
+    #     """重写get_queryset方法，根据前端是否传递keyword值返回不同查询结果"""
+    #     # 获取前端传递的keyword值
+    #     keyword = self.request.query_params.get('keyword')
+    #     # 如果keyword是空字符，则说明要获取所有用户数据
+    #     if keyword is '' or keyword is None:
+    #         return User.objects.all()
+    #     else:
+    #         return User.objects.filter(username=keyword)
+
 
 if __name__ == '__main__':
     pass
