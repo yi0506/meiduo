@@ -374,7 +374,7 @@ JWT_AUTH = {
     # JWT token 有效期
     'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),
     # 指定JWT返回结果
-    'JWT_RESPONSE_PAYLOAD_HANDLER': 'meiduo_admin.utils.jwt_response_payload_handler',
+    'JWT_RESPONSE_PAYLOAD_HANDLER': 'meiduo_mall.utils.jwt_response_payload.jwt_response_payload_handler',
 }
 
 if __name__ == '__main__':
