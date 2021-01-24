@@ -286,7 +286,7 @@ LOGIN_URL = '/login/'
 # QQ登录配置信息
 QQ_CLIENT_ID = '101518219'
 QQ_CLIENT_SECRET = '418d84ebdc7241efb79536886ae95224'
-QQ_REDIRECT_URI = 'http://www.meiduo.site:8000/oauth_callback'
+QQ_REDIRECT_URI = 'http://127.0.0.1:8000/oauth_callback'
 
 # 邮件SMTP服务器配置信息
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # 指定邮件后端
@@ -297,7 +297,7 @@ EMAIL_HOST_PASSWORD = 'HSUEFCCFKSTYPHLY'  # 邮箱授权时获得的密码，非
 EMAIL_FROM = '美多商城<meiduo_yi@163.com>'  # 发件人抬头
 
 # 邮箱验证链接
-EMAIL_VERIFY_URL = 'http://www.meiduo.site:8000/emails/verification/'
+EMAIL_VERIFY_URL = 'http://127.0.0.1:8000/emails/verification/'
 
 # 指定自定义的Django文件存储类
 DEFAULT_FILE_STORAGE = 'meiduo_mall.utils.fastdfs.fdfs_storage.FastDFSStorage'
@@ -329,7 +329,7 @@ HAYSTACK_SEARCH_RESULTS_PER_PAGE = 5
 ALIPAY_APPID = '2021000116686226'
 ALIPAY_DEBUG = True
 ALIPAY_URL = 'https://openapi.alipaydev.com/gateway.do'
-ALIPAY_RETURN_URL = 'http://www.meiduo.site:8000/payment/status/'
+ALIPAY_RETURN_URL = 'http://127.0.0.1:8000/payment/status/'
 
 # 定时器任务
 CRONJOBS = [
@@ -351,8 +351,6 @@ CORS_ORIGIN_WHITELIST = (
     '127.0.0.1:8000',
     'localhost:8080',
     'localhost:8000',
-    'www.meiduo.site:8080',
-    'www.meiduo.site:8000',
 )
 # 允许跨域携带cookie
 CORS_ALLOW_CREDENTIALS = True

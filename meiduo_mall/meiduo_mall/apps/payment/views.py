@@ -12,8 +12,8 @@ from .models import Payment
 
 
 # 读取秘钥
-app_private_key_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "keys/app_private_key.pem")
-alipay_public_key_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "keys/alipay_public_key.pem")
+app_private_key_path = os.path.join(settings.BASE_DIR, "Libs/keys/app_private_key.pem")
+alipay_public_key_path = os.path.join(settings.BASE_DIR, "Libs/keys/alipay_public_key.pem")
 with open(app_private_key_path, encoding='utf-8') as f:
     app_private_key_string = f.read()
 with open(alipay_public_key_path, encoding='utf-8') as f:

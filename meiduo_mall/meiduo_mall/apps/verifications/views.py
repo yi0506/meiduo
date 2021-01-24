@@ -1,4 +1,3 @@
-from django.views import View
 import random
 import string
 from django import http
@@ -8,7 +7,7 @@ import logging
 
 from meiduo_mall.utils import constants
 from meiduo_mall.utils.response_code import RETCODE, err_msg
-from verifications.libs.captcha.captcha import captcha
+from meiduo_mall.Libs.captcha.captcha import captcha
 from celery_tasks.sms.tasks import send_sms_code
 
 
