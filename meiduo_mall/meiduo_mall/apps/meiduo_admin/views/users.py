@@ -23,7 +23,7 @@ class UserView(ListAPIView):
         if keyword is '':
             return User.objects.all()
         else:
-            return User.objects.filter(username=keyword)
+            return User.objects.filter(username__contains=keyword)
 
 
 if __name__ == '__main__':
