@@ -6,7 +6,7 @@ from collections import OrderedDict
 from meiduo_mall.utils import constants
 
 
-class UserPaginator(PageNumberPagination):
+class MeiduoAdminPaginator(PageNumberPagination):
     """自定义分页器"""
     page_size_query_param = 'pagesize'
     max_page_size = constants.ADMIN_USER_LIST_LIMIT

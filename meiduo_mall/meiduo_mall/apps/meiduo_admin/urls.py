@@ -1,7 +1,10 @@
 # -*- coding: UTF-8 -*-
 from django.conf.urls import url
 from rest_framework_jwt.views import obtain_jwt_token
-from .views import statistical, users
+from rest_framework.routers import DefaultRouter
+
+from .views import statistical, users, specifications
+
 
 urlpatterns = [
     # 登录
@@ -21,6 +24,14 @@ urlpatterns = [
     # 查询用户
     url(r'^users/$', users.UserView.as_view()),
 ]
+
+# 商品规格路由
+specs_router = DefaultRouter()
+# specs路由注册
+specs_router.register('goods/specs', specifications.SpecsView, base_name='specs')
+# specs路由合并
+urlpatterns += specs_router.urls
+
 
 if __name__ == '__main__':
     pass

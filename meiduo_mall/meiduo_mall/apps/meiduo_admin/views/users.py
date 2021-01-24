@@ -3,7 +3,7 @@ from rest_framework.generics import ListCreateAPIView
 from rest_framework.permissions import IsAdminUser
 
 from meiduo_admin.serializers.users import UserSerializer
-from meiduo_mall.utils.DRF_paginator import UserPaginator
+from meiduo_mall.utils.DRF_paginator import MeiduoAdminPaginator
 from users.models import User
 
 
@@ -12,7 +12,7 @@ class UserView(ListCreateAPIView):
     # 指定序列化器
     serializer_class = UserSerializer
     # 使用分页器
-    pagination_class = UserPaginator
+    pagination_class = MeiduoAdminPaginator
     # 指定权限
     permission_classes = [IsAdminUser]
 
