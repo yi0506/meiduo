@@ -1,5 +1,6 @@
 # -*- coding: UTF-8 -*-
 from rest_framework.generics import ListCreateAPIView
+from rest_framework.permissions import IsAdminUser
 
 from meiduo_admin.serializers.users import UserSerializer
 from meiduo_mall.utils.DRF_paginator import UserPaginator
@@ -12,6 +13,8 @@ class UserView(ListCreateAPIView):
     serializer_class = UserSerializer
     # 使用分页器
     pagination_class = UserPaginator
+    # 指定权限
+    permission_classes = [IsAdminUser]
 
     def get_queryset(self):
         """重写get_queryset方法，根据前端是否传递keyword值返回不同查询结果，得到查询集"""
