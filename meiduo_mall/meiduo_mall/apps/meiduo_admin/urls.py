@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 from django.conf.urls import url
 from rest_framework_jwt.views import obtain_jwt_token
-from .views import statistical
+from .views import statistical, users
 
 urlpatterns = [
     # 登录
@@ -18,7 +18,8 @@ urlpatterns = [
     url(r'^statistical/month_increment/$', statistical.UserMonthPerDayView.as_view()),
     # 日商品的访问量
     url(r'^statistical/goods_day_views/$', statistical.GoodsDayVisitView.as_view()),
-
+    # 查询用户
+    url(r'^users/$', users.UserView.as_view()),
 ]
 
 if __name__ == '__main__':
