@@ -129,6 +129,7 @@ class LoginAuthBackend(ModelBackend):
         :param kwargs: 额外参数
         :return: user
         """
+        # 判断用户为前台登录还是后台登录
         if request is None:
             # 通过后台登录
             try:
