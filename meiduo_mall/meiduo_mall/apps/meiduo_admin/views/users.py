@@ -1,12 +1,12 @@
 # -*- coding: UTF-8 -*-
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListCreateAPIView
 
 from meiduo_admin.serializers.users import UserSerializer
 from meiduo_mall.utils.DRF_paginator import UserPaginator
 from users.models import User
 
 
-class UserView(ListAPIView):
+class UserView(ListCreateAPIView):
     """获取用户数据"""
     # 指定序列化器
     serializer_class = UserSerializer

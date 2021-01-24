@@ -9,7 +9,18 @@ class UserSerializer(ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'mobile', 'email')
+        fields = ('id', 'username', 'mobile', 'email', 'password')
+        extra_kwargs = {
+            'password': {
+                'write_only': True,
+                'max_length': 20,
+                'min_length': 8,
+            },
+            'username': {
+                'max_length': 20,
+                'min_length': 5,
+            }
+        }
 
 
 if __name__ == '__main__':
