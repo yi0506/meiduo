@@ -27,5 +27,30 @@ class MeiduoAdminSPUPaginator(MeiduoAdminPaginator):
     max_page_size = constants.ADMIN_SPU_LIST_LIMIT
 
 
+class MeiduoAdminSKUPaginator(MeiduoAdminPaginator):
+    """自定义分页器"""
+    max_page_size = constants.ADMIN_SKU_LIST_LIMIT
+
+
+class MeiduoAdminOptionsPaginator(MeiduoAdminPaginator):
+    """自定义分页器"""
+    max_page_size = constants.ADMIN_OPTIONS_LIST_LIMIT
+
+
+class MeiduoAdminChannelsPaginator(MeiduoAdminPaginator):
+    """自定义分页器"""
+    max_page_size = constants.ADMIN_CHANNEL_LIST_LIMIT
+
+
+class MeiduoAdminBrandsPaginator(MeiduoAdminPaginator):
+    """自定义分页器"""
+    max_page_size = constants.ADMIN_BRAND_LIST_LIMIT
+
+
+class MeiduoAdminImagesPaginator(MeiduoAdminPaginator):
+    """自定义分页器"""
+    max_page_size = constants.ADMIN_IMAGE_LIST_LIMIT
+
+
 if __name__ == '__main__':
     pass

@@ -3,8 +3,7 @@ from django.conf.urls import url
 from rest_framework_jwt.views import obtain_jwt_token
 from rest_framework.routers import DefaultRouter
 
-from .views import statistical, users, specifications
-
+from .views import statistical, users, specifications, images
 
 urlpatterns = [
     # 登录
@@ -27,14 +26,18 @@ urlpatterns = [
     url(r'^goods/simple/$', specifications.SpecsView.as_view({'get': 'simple'})),
 ]
 
-# 商品规格路由
+# 商品规格管理路由
 specs_router = DefaultRouter()
 # specs路由注册
 specs_router.register('goods/specs', specifications.SpecsView, base_name='specs')
 # specs路由合并
 urlpatterns += specs_router.urls
-print(specs_router.urls)
 
+
+# 图片管理路由
+images_router = DefaultRouter()
+images_router.register('skus/images', images.ImagesView, base_name='images')
+urlpatterns += images_router.urls
 
 if __name__ == '__main__':
     pass
