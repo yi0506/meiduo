@@ -363,6 +363,10 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
+    # 认证权限
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAdminUser',
+    ),
     # 自定义异常捕获
     'EXCEPTION_HANDLER': 'meiduo_mall.utils.rest_framework_exceptions.custom_exception_handler'
 }

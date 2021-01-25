@@ -48,3 +48,19 @@ ADMIN_USER_LIST_LIMIT = 2
 
 # 后台SPU每页显示数量
 ADMIN_SPU_LIST_LIMIT = 5
+
+# 后台图片每页显示数量
+ADMIN_IMAGE_LIST_LIMIT = 5
+
+# 后台sku每页显示数量
+ADMIN_SKU_LIST_LIMIT = 5
+
+# 后台规格选项每页显示数量
+ADMIN_OPTIONS_LIST_LIMIT = 5
+
+# 后台频道每页显示数量
+ADMIN_CHANNEL_LIST_LIMIT = 5
+
+# 后台品牌每页显示数量
+ADMIN_BRAND_LIST_LIMIT = 1
+

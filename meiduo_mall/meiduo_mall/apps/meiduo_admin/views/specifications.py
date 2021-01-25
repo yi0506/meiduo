@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAdminUser
 
 from goods.models import SPUSpecification, SPU
 from meiduo_admin.serializers.specifications import SpecsSerializer, SPUSerializer
-from meiduo_mall.utils.DRF_paginator import MeiduoAdminPaginator, MeiduoAdminSPUPaginator
+from meiduo_mall.utils.DRF_paginator import MeiduoAdminSPUPaginator
 
 
 class SpecsView(ModelViewSet):
