@@ -23,6 +23,8 @@ urlpatterns = [
     url(r'^statistical/goods_day_views/$', statistical.GoodsDayVisitView.as_view()),
     # 查询用户
     url(r'^users/$', users.UserView.as_view()),
+    # 获取SPU商品
+    url(r'^goods/simple/$', specifications.SpecsView.as_view({'get': 'simple'})),
 ]
 
 # 商品规格路由
@@ -31,6 +33,7 @@ specs_router = DefaultRouter()
 specs_router.register('goods/specs', specifications.SpecsView, base_name='specs')
 # specs路由合并
 urlpatterns += specs_router.urls
+print(specs_router.urls)
 
 
 if __name__ == '__main__':

@@ -2,7 +2,7 @@
 from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
 
-from goods.models import SPUSpecification
+from goods.models import SPUSpecification, SPU
 
 
 class SpecsSerializer(ModelSerializer):
@@ -14,6 +14,14 @@ class SpecsSerializer(ModelSerializer):
     class Meta:
         model = SPUSpecification
         fields = '__all__'
+
+
+class SPUSerializer(ModelSerializer):
+    """SPU序列化器"""
+
+    class Meta:
+        model = SPU
+        fields = ('id', 'name')
 
 
 if __name__ == '__main__':

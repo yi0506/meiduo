@@ -23,5 +23,10 @@ class MeiduoAdminPaginator(PageNumberPagination):
         })
 
 
+class MeiduoAdminSPUPaginator(MeiduoAdminPaginator):
+    """自定义分页器"""
+    max_page_size = constants.ADMIN_SPU_LIST_LIMIT
+
+
 if __name__ == '__main__':
     pass

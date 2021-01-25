@@ -45,3 +45,6 @@ COMMENTS_LIST_LIMIT = 30
 
 # 后台每页显示的用户数量
 ADMIN_USER_LIST_LIMIT = 2
+
+# 后台SPU每页显示数量
+ADMIN_SPU_LIST_LIMIT = 5
