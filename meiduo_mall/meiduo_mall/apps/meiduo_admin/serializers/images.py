@@ -1,7 +1,9 @@
 # -*- coding: UTF-8 -*-
 from rest_framework import serializers
 from goods.models import SKUImage, SKU
+
 from meiduo_mall.utils.fastdfs.fdfs_meiduo import FDFS_Client_Meiduo
+from celery_tasks.static_file.tasks import generate_static_sku_detail_html
 
 
 class ImagesSerializer(serializers.ModelSerializer):
@@ -24,6 +26,8 @@ class ImagesSerializer(serializers.ModelSerializer):
             return serializers.ValidationError({'error': '图片上传失败'})
         # 保存图片数据到数据库
         sku_img = SKUImage.objects.create(sku=validated_data['sku'], image=res)
+        # 异步执行页面静态化
+        generate_static_sku_detail_html.delay(sku_img.sku.id)
         # 返回创建的对象
         return sku_img
 
@@ -41,6 +45,8 @@ class ImagesSerializer(serializers.ModelSerializer):
         # 更新图片数据到数据库
         instance.image = res
         instance.save()
+        # 异步执行页面静态化
+        generate_static_sku_detail_html.delay(instance.sku.id)
         # 返回创建的对象
         return instance
 

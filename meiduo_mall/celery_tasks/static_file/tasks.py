@@ -62,6 +62,6 @@ def generate_static_sku_detail_html(sku_id):
         'specs': goods_specs,
     }
     response = render(None, 'detail.html', context)
-    file_path = os.path.join(settings.STATICFILES_DIRS[0], 'html/detail/' + str(sku_id) + '.html')
-    with open(file_path, 'wb', encoding='utf-8') as f:
+    file_path = os.path.join(settings.STATICFILES_DIRS[0], 'html/detail/' + str(sku.id) + '.html')
+    with open(file_path, 'wb') as f:
         f.write(response.content)
