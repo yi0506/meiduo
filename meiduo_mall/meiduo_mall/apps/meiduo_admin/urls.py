@@ -24,6 +24,8 @@ urlpatterns = [
     url(r'^users/$', users.UserView.as_view()),
     # 获取SPU商品
     url(r'^goods/simple/$', specifications.SpecsView.as_view({'get': 'simple'})),
+    # 获取sku商品
+    url(r'^skus/simple/$', images.ImagesView.as_view({'get': 'simple'})),
 ]
 
 # 商品规格管理路由
