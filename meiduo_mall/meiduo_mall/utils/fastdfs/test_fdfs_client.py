@@ -6,7 +6,7 @@ def upload_image():
     client = Fdfs_client('client.conf')
     # 3. 调用FastDFS客户端上传文件方法
     ret = client.upload_by_filename('test.png')
-    print(ret)
+    print(ret['Remote file_id'].replace('\\', '/'))
 
 
 if __name__ == '__main__':
