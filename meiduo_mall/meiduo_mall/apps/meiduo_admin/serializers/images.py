@@ -6,7 +6,6 @@ from goods.models import SKUImage, SKU
 
 class ImagesSerializer(serializers.ModelSerializer):
     """SKUImages序列化器"""
-    sku_id = serializers.IntegerField()
 
     class Meta:
         model = SKUImage
