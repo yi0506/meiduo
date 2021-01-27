@@ -43,7 +43,7 @@ class SKUSerializer(serializers.ModelSerializer):
             save_point = transaction.savepoint()
             try:
                 # 保存sku表
-                sku = SKU.objects.create(**validated_data)
+                sku = SKU.objects.create(default_image='group1/M00/00/02/CtM3BVrRdQSAHxqbAAQ3kdJbqeQ1136308', **validated_data)
                 # 保存sku_specifications表
                 for sku_spec in sku_specs:
                     SKUSpecification.objects.create(spec_id=sku_spec['spec_id'], option_id=sku_spec['option_id'], sku=sku)
