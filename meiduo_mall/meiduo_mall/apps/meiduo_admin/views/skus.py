@@ -3,9 +3,9 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from goods.models import SKU, GoodsCategory
+from goods.models import SKU, GoodsCategory, SPU
 from meiduo_mall.utils.DRF_paginator import MeiduoAdminSKUPaginator
-from meiduo_admin.serializers.skus import SKUSerializer, GoodsCategorySerializer
+from meiduo_admin.serializers.skus import SKUSerializer, GoodsCategorySerializer, SPUSpecificationsSerializer
 
 
 class SKUView(ModelViewSet):
@@ -23,3 +23,12 @@ class SKUView(ModelViewSet):
         categories_3_serial = GoodsCategorySerializer(categories_3, many=True)
         return Response(categories_3_serial.data)
 
+    def specs(self, request, pk):
+        """获取spu商品的规格"""
+        # 查询spu商品
+        spu = SPU.objects.get(id=pk)
+        # 查询spu商品关联的所有规格
+        specs = spu.specs.all()
+        # 序列化返回
+        specs_serial = SPUSpecificationsSerializer(specs, many=True)
+        return Response(specs_serial.data)
