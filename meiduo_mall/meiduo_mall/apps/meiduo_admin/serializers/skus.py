@@ -4,6 +4,7 @@ from django.db import transaction
 from logging import getLogger
 
 from goods.models import SKU, GoodsCategory, SPUSpecification, SpecificationOption, SKUSpecification
+from celery_tasks.static_file.tasks import generate_static_sku_detail_html
 
 
 logger = getLogger('django')
@@ -54,6 +55,8 @@ class SKUSerializer(serializers.ModelSerializer):
             else:
                 # 提交事务
                 transaction.savepoint_commit(save_point)
+                # 生成详情页静态页面
+                generate_static_sku_detail_html.delay(sku.id)
                 return sku
 
     def update(self, sku, validated_data):
@@ -78,6 +81,8 @@ class SKUSerializer(serializers.ModelSerializer):
             else:
                 # 提交事务
                 transaction.savepoint_commit(save_point)
+                # 生成详情页静态页面
+                generate_static_sku_detail_html.delay(sku.id)
                 return sku
 
 
