@@ -56,6 +56,30 @@ class SKUSerializer(serializers.ModelSerializer):
                 transaction.savepoint_commit(save_point)
                 return sku
 
+    def update(self, sku, validated_data):
+        """完成sku表的更新"""
+        # sku的所有规格信息
+        sku_specs = self.context['request'].data.get('specs')
+        # 开启事务
+        with transaction.atomic():
+            # 设置保存点
+            save_point = transaction.savepoint()
+            try:
+                # 保存sku表
+                SKU.objects.filter(id=sku.id).update(**validated_data)
+                # 保存sku_specifications表
+                for sku_spec in sku_specs:
+                    SKUSpecification.objects.filter(sku=sku).update(**sku_spec)
+            except Exception as e:
+                # 回滚
+                transaction.savepoint_rollback(save_point)
+                logger.error(e)
+                raise serializers.ValidationError('sku保存失败')
+            else:
+                # 提交事务
+                transaction.savepoint_commit(save_point)
+                return sku
+
 
 class GoodsCategorySerializer(serializers.ModelSerializer):
     """商品分类序列化器"""
