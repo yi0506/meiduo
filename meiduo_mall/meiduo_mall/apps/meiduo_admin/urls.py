@@ -49,8 +49,9 @@ urlpatterns += skus_router.urls
 
 # orders管理路由
 orders_router = DefaultRouter()
-orders_router.register('orders', orders.OrdersView, base_name='orders管理路由')
+orders_router.register('orders', orders.OrdersView, base_name='orders')
 urlpatterns += orders_router.urls
+print(orders_router.urls)
 
 
 if __name__ == '__main__':
