@@ -21,7 +21,7 @@ class UserView(ListCreateAPIView):
         # 获取前端传递的keyword值
         keyword = self.request.query_params.get('keyword')
         # 如果keyword是空字符，则说明要获取所有用户数据
-        if keyword is '':
+        if keyword is '' or keyword is None:
             return User.objects.all()
         else:
             return User.objects.filter(username__contains=keyword)
