@@ -31,7 +31,9 @@ urlpatterns = [
     # 获取权限类型
     url(r'^permission/content_types/$', permissions.PermissionView.as_view({'get': 'content_type'})),
     # 获取所有权限
-    url(r'^permission/simple/$', groups.GroupView.as_view({'get': 'simple'}))
+    url(r'^permission/simple/$', groups.GroupView.as_view({'get': 'simple'})),
+    # 获取所有用户分组
+    url(r'^permission/groups/simple/$', admins.AdminView.as_view({'get': 'simple'}))
 ]
 
 # 商品规格管理路由
