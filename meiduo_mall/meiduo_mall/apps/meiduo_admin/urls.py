@@ -40,6 +40,8 @@ urlpatterns = [
     url(r'^goods/channel/categories/$', spus.SPUView.as_view({'get': 'category_1'})),
     # 获取二三级分类数据
     url(r'^goods/channel/categories/(?P<pk>\d+)/$', spus.SPUView.as_view({'get': 'category_23'})),
+    # 获取商品规格
+    url(r'^goods/specs/simple/$', options.OptionView.as_view({'get': 'simple'})),
 ]
 
 # 商品规格管理路由
@@ -83,6 +85,11 @@ urlpatterns += admin_router.urls
 spu_router = DefaultRouter()
 spu_router.register('goods', spus.SPUView, base_name='spus')
 urlpatterns += spu_router.urls
+
+# 规格选项管理路由
+option_router = DefaultRouter()
+option_router.register('specs/options', options.OptionView, base_name='options')
+urlpatterns += option_router.urls
 
 
 if __name__ == '__main__':

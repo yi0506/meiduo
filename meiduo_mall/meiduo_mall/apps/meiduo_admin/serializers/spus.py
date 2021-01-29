@@ -32,7 +32,3 @@ class SPUSerializer(serializers.ModelSerializer):
     class Meta:
         model = SPU
         fields = "__all__"
-
-    # def create(self, validated_data):
-    #     pass
-
