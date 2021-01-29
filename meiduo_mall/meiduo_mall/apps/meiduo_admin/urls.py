@@ -27,7 +27,9 @@ urlpatterns = [
     # 获取sku商品
     url(r'^skus/simple/$', images.ImagesView.as_view({'get': 'simple'})),
     # 获取spu商品规格及规格选项
-    url(r'^goods/(?P<pk>\d+)/specs/$', skus.SKUView.as_view({'get': 'specs'}))
+    url(r'^goods/(?P<pk>\d+)/specs/$', skus.SKUView.as_view({'get': 'specs'})),
+    # 获取权限类型
+    url(r'^permission/content_types/$', permissions.PermissionView.as_view({'get': 'content_type'}))
 ]
 
 # 商品规格管理路由
