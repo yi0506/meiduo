@@ -57,5 +57,10 @@ class MeiduoAdminOrdersPaginator(MeiduoAdminPaginator):
     max_page_size = constants.ADMIN_BRAND_ORDER_LIMIT
 
 
+class MeiduoAdminPermissionPaginator(MeiduoAdminPaginator):
+    """自定义分页器"""
+    max_page_size = constants.ADMIN_BRAND_ORDER_LIMIT
+
+
 if __name__ == '__main__':
     pass

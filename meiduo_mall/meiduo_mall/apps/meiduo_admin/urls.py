@@ -3,7 +3,7 @@ from django.conf.urls import url
 from rest_framework_jwt.views import obtain_jwt_token
 from rest_framework.routers import DefaultRouter
 
-from .views import statistical, users, specifications, images, skus, orders
+from .views import statistical, users, specifications, images, skus, orders, permissions
 
 urlpatterns = [
     # 登录
@@ -51,7 +51,11 @@ urlpatterns += skus_router.urls
 orders_router = DefaultRouter()
 orders_router.register('orders', orders.OrdersView, base_name='orders')
 urlpatterns += orders_router.urls
-print(orders_router.urls)
+
+# 权限管理路由
+perms_router = DefaultRouter()
+perms_router.register('permission/perms', permissions.PermissionView, base_name='perms')
+urlpatterns += perms_router.urls
 
 
 if __name__ == '__main__':
