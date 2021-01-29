@@ -3,7 +3,7 @@ from django.conf.urls import url
 from rest_framework_jwt.views import obtain_jwt_token
 from rest_framework.routers import DefaultRouter
 
-from .views import statistical, users, specifications, images, skus, orders, permissions, groups, admins
+from .views import statistical, users, specifications, images, skus, orders, permissions, groups, admins, spus, options, brands, channels
 
 urlpatterns = [
     # 登录
@@ -33,7 +33,13 @@ urlpatterns = [
     # 获取所有权限
     url(r'^permission/simple/$', groups.GroupView.as_view({'get': 'simple'})),
     # 获取所有用户分组
-    url(r'^permission/groups/simple/$', admins.AdminView.as_view({'get': 'simple'}))
+    url(r'^permission/groups/simple/$', admins.AdminView.as_view({'get': 'simple'})),
+    # 获取品牌数据
+    url(r'^goods/brands/simple/$', spus.SPUView.as_view({'get': 'simple'})),
+    # 获取一级分类数据
+    url(r'^goods/channel/categories/$', spus.SPUView.as_view({'get': 'category_1'})),
+    # 获取二三级分类数据
+    url(r'^goods/channel/categories/(?P<pk>\d+)/$', spus.SPUView.as_view({'get': 'category_23'})),
 ]
 
 # 商品规格管理路由
@@ -72,6 +78,11 @@ urlpatterns += groups_router.urls
 admin_router = DefaultRouter()
 admin_router.register('permission/admins', admins.AdminView, base_name='admins')
 urlpatterns += admin_router.urls
+
+# SPU管理路由
+spu_router = DefaultRouter()
+spu_router.register('goods', spus.SPUView, base_name='spus')
+urlpatterns += spu_router.urls
 
 
 if __name__ == '__main__':
