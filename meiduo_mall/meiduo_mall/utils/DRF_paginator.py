@@ -54,12 +54,22 @@ class MeiduoAdminImagesPaginator(MeiduoAdminPaginator):
 
 class MeiduoAdminOrdersPaginator(MeiduoAdminPaginator):
     """自定义分页器"""
-    max_page_size = constants.ADMIN_BRAND_ORDER_LIMIT
+    max_page_size = constants.ADMIN_ORDER_LIMIT
 
 
 class MeiduoAdminPermissionPaginator(MeiduoAdminPaginator):
     """自定义分页器"""
-    max_page_size = constants.ADMIN_BRAND_ORDER_LIMIT
+    max_page_size = constants.ADMIN_PERMISSION_LIMIT
+
+
+class MeiduoAdminGroupPaginator(MeiduoAdminPaginator):
+    """自定义分页器"""
+    max_page_size = constants.ADMIN_PERMISSION_LIMIT
+
+
+class MeiduoAdminAdministratorPaginator(MeiduoAdminPaginator):
+    """自定义分页器"""
+    max_page_size = constants.ADMIN_ADMINISTRATOR_LIMIT
 
 
 if __name__ == '__main__':
