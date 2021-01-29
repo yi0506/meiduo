@@ -42,9 +42,6 @@ urlpatterns = [
     url(r'^goods/channel/categories/(?P<pk>\d+)/$', spus.SPUView.as_view({'get': 'category_23'})),
     # 获取商品规格
     url(r'^goods/specs/simple/$', options.OptionView.as_view({'get': 'simple'})),
-    # 获取频道
-    # url(r'^goods/channels/$', channels.ChannelView.as_view({'get': 'list', 'post': 'create'})),
-    # url(r'^goods/channels/(?P<pk>\d+)/$', channels.ChannelView.as_view({'get': 'retrieve', 'put': 'update', 'delete': 'destroy'})),
     # 获取频道分类
     url(r'^goods/categories/$', channels.ChannelView.as_view({'get': 'category'})),
     # 获取频道组

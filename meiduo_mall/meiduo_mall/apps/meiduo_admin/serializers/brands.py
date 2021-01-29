@@ -46,6 +46,5 @@ class BrandSerializer(serializers.ModelSerializer):
             instance.name = validated_data['name']
             instance.first_letter = validated_data['first_letter']
             instance.save()
-
         # 返回创建的对象
         return instance

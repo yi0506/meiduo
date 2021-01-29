@@ -347,7 +347,7 @@ CRONJOBS = [
 CRONTAB_COMMAND_PREFIX = 'LANG_ALL=zh_cn.UTF-8'
 
 # MySQL读写分离路由
-# DATABASE_ROUTERS = ['meiduo_mall.utils.db_router.MasterSlaveDBRouter']
+DATABASE_ROUTERS = ['meiduo_mall.utils.db_router.MasterSlaveDBRouter']
 
 # 跨域访问的白名单
 CORS_ORIGIN_WHITELIST = (
