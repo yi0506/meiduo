@@ -43,13 +43,18 @@ urlpatterns = [
     # 获取商品规格
     url(r'^goods/specs/simple/$', options.OptionView.as_view({'get': 'simple'})),
     # 获取频道
-    url(r'^goods/channels/$', channels.ChannelView.as_view({'get': 'list', 'post': 'create'})),
-    url(r'^goods/channels/(?P<pk>\d+)/$', channels.ChannelView.as_view({'get': 'retrieve', 'put': 'update', 'delete': 'destroy'})),
+    # url(r'^goods/channels/$', channels.ChannelView.as_view({'get': 'list', 'post': 'create'})),
+    # url(r'^goods/channels/(?P<pk>\d+)/$', channels.ChannelView.as_view({'get': 'retrieve', 'put': 'update', 'delete': 'destroy'})),
     # 获取频道分类
     url(r'^goods/categories/$', channels.ChannelView.as_view({'get': 'category'})),
     # 获取频道组
     url(r'^goods/channel_types/$', channels.ChannelView.as_view({'get': 'channel_types'})),
 ]
+
+# 品牌路由
+brands_router = DefaultRouter()
+brands_router.register('goods/brands', brands.ChannelView, base_name='brands')
+urlpatterns += brands_router.urls
 
 # 商品规格管理路由
 specs_router = DefaultRouter()
@@ -57,6 +62,11 @@ specs_router = DefaultRouter()
 specs_router.register('goods/specs', specifications.SpecsView, base_name='specs')
 # specs路由合并
 urlpatterns += specs_router.urls
+
+# 频道管理路由
+channels_router = DefaultRouter()
+channels_router.register('goods/channels', channels.ChannelView, base_name='channels')
+urlpatterns += channels_router.urls
 
 # 图片管理路由
 images_router = DefaultRouter()
