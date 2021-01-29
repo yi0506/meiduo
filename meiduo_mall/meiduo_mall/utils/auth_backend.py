@@ -134,7 +134,7 @@ class LoginAuthBackend(ModelBackend):
             # 通过后台登录
             try:
                 # 查询是否存在该超级管理员用户
-                user = User.objects.get(is_superuser=True, username=username)
+                user = User.objects.get(is_staff=True, username=username)
             except User.DoesNotExist:
                 return None
             else:

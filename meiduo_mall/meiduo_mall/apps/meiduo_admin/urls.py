@@ -3,7 +3,7 @@ from django.conf.urls import url
 from rest_framework_jwt.views import obtain_jwt_token
 from rest_framework.routers import DefaultRouter
 
-from .views import statistical, users, specifications, images, skus, orders, permissions, groups
+from .views import statistical, users, specifications, images, skus, orders, permissions, groups, admins
 
 urlpatterns = [
     # 登录
@@ -65,6 +65,11 @@ urlpatterns += perms_router.urls
 groups_router = DefaultRouter()
 groups_router.register('permission/groups', groups.GroupView, base_name='groups')
 urlpatterns += groups_router.urls
+
+# 管理员管理路由
+admin_router = DefaultRouter()
+admin_router.register('permission/admins', admins.AdminView, base_name='admins')
+urlpatterns += admin_router.urls
 
 
 if __name__ == '__main__':
