@@ -13,6 +13,7 @@ class PermissionSerializer(serializers.ModelSerializer):
 
 class ContentTypeSerializer(serializers.ModelSerializer):
     """权限类型序列化器"""
+    name = serializers.CharField(read_only=True)
 
     class Meta:
         model = ContentType
