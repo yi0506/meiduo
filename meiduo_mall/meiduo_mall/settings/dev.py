@@ -125,14 +125,14 @@ DATABASES = {
         'PASSWORD': '211314',  # 数据库用户密码
         'NAME': 'meiduo'  # 数据库名字
     },
-    'slave': {  # 读（从机）
-        'ENGINE': 'django.db.backends.mysql',
-        'HOST': MEIDUO_DATABASE_SLAVE_IP,
-        'PORT': 3306,
-        'USER': 'root',  # 应该是从机的mysql账户（从机中不存在slave账户），而不是主机中的slave账户，
-        'PASSWORD': '211314',
-        'NAME': 'meiduo'
-    },
+    # 'slave': {  # 读（从机）
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'HOST': MEIDUO_DATABASE_SLAVE_IP,
+    #     'PORT': 3306,
+    #     'USER': 'root',  # 应该是从机的mysql账户（从机中不存在slave账户），而不是主机中的slave账户，
+    #     'PASSWORD': '211314',
+    #     'NAME': 'meiduo'
+    # },
 }
 
 
@@ -347,7 +347,7 @@ CRONJOBS = [
 CRONTAB_COMMAND_PREFIX = 'LANG_ALL=zh_cn.UTF-8'
 
 # MySQL读写分离路由
-DATABASE_ROUTERS = ['meiduo_mall.utils.db_router.MasterSlaveDBRouter']
+# DATABASE_ROUTERS = ['meiduo_mall.utils.db_router.MasterSlaveDBRouter']
 
 # 跨域访问的白名单
 CORS_ORIGIN_WHITELIST = (
