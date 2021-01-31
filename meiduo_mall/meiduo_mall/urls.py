@@ -19,7 +19,7 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     # users，总路由不校验，子路由校验
-    url(r'', include('users.urls', namespace='users')),
+    url(r'^', include('users.urls', namespace='users')),
     # contents,总路由不校验，子路由校验
     url(r'^', include('contents.urls', namespace='contents')),
     # verifications,总路由不校验，子路由校验
