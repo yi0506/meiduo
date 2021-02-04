@@ -356,6 +356,8 @@ CORS_ORIGIN_WHITELIST = (
     '127.0.0.1:8000',
     'localhost:8080',
     'localhost:8000',
+    '192.168.192.133:8000',
+    '192.168.192.133:8080',
 )
 # 允许跨域携带cookie
 CORS_ALLOW_CREDENTIALS = True
