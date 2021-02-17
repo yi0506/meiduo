@@ -7,7 +7,7 @@ import sys
 import datetime
 
 # 获取数据库计算机的ip地址
-MEIDUO_DATABASE_IP = "192.168.192.133"
+MEIDUO_DATABASE_IP = "192.168.192.132"
 MEIDUO_DATABASE_SLAVE_IP = "192.168.192.129"
 
 
@@ -110,7 +110,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',  # 数据库引擎
         'HOST': MEIDUO_DATABASE_IP,  # 数据库主机
         'PORT': 3306,  # 数据库端口
-        'USER': 'yi0506',  # 数据库用户名
+        'USER': 'root',  # 数据库用户名
         'PASSWORD': '211314',  # 数据库用户密码
         'NAME': 'meiduo'  # 数据库名字
     },
