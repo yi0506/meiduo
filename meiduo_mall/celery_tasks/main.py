@@ -2,7 +2,7 @@
 """
 Celery入口
         生产者：meiduo_mall
-        中间人：redis,使用redis作为任务队列，存放任务
+        中间人：RabbitMQ,使用RabbitMQ作为任务队列，存放任务
         消费者：Celery
         任务：自己定义，如发送短信的任务
 """
