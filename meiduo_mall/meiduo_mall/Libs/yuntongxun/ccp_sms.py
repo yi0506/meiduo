@@ -35,15 +35,15 @@ class CCP(object):
     """发送短信验证码的单例类"""
     def __new__(cls, *args, **kwargs):
         """创建单例模式"""
-        if not hasattr(cls, '__instance'):
+        if not hasattr(cls, '_instance'):
             # 创建单例
-            cls.__instance = super(CCP, cls).__new__(cls)
+            cls._instance = super(CCP, cls).__new__(cls)
             # 初始化REST SDK
-            cls.__instance.rest = REST(_serverIP, _serverPort, _softVersion)
-            cls.__instance.rest.setAccount(_accountSid, _accountToken)
-            cls.__instance.rest.setAppId(_appId)
+            cls._instance.rest = REST(_serverIP, _serverPort, _softVersion)
+            cls._instance.rest.setAccount(_accountSid, _accountToken)
+            cls._instance.rest.setAppId(_appId)
         # 返回单例
-        return cls.__instance
+        return cls._instance
 
     def send_template_sms(self, to, data, tempId):
         """
