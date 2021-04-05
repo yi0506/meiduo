@@ -2,7 +2,6 @@ from django.shortcuts import render
 from django.views import View
 from alipay import AliPay
 from django.conf import settings
-import os
 from django import http
 
 from meiduo_mall.utils.auth_backend import LoginRequiredJsonMixin
