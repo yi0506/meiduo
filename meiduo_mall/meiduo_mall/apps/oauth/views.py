@@ -25,6 +25,9 @@ class QQAuthCallBackView(View):
 
     def get(self, request):
         """获取authorization code，返回access token"""
+        # 用户扫码后，QQ互联将authorization code返回给浏览器，
+        # 让浏览器通过 QQ_REDIRECT_URI 携带authorization code进行重定向
+        # http://127.0.0.1:8000/oauth_callback?code=authorization_code
         # 获取authorization code
         code = request.GET.get('code')
         if not code:
